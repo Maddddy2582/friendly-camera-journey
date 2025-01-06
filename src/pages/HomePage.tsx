@@ -12,13 +12,19 @@ const HomePage = () => {
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
   const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [isConnecting, setIsConnecting] = useState(false);
 
   // Initialize WebSocket connection
   const connectWebSocket = () => {
-    const ws = new WebSocket("ws://localhost:8080"); // Replace with your WebSocket server URL
+    const ws = new WebSocket("ws://localhost:8080");
+    setIsConnecting(true);
     
     ws.onopen = () => {
       console.log("WebSocket Connected");
+      setIsConnecting(false);
+      // Send data once connection is established
+      const data = { name, gender };
+      ws.send(JSON.stringify(data));
     };
 
     ws.onmessage = (event) => {
@@ -34,6 +40,7 @@ const HomePage = () => {
     ws.onerror = (error) => {
       console.error("WebSocket error:", error);
       toast.error("Connection error. Please try again.");
+      setIsConnecting(false);
     };
 
     setSocket(ws);
@@ -52,23 +59,12 @@ const HomePage = () => {
       return;
     }
 
-    let ws = socket;
-    if (!ws || ws.readyState !== WebSocket.OPEN) {
-      ws = connectWebSocket();
+    if (isConnecting) {
+      toast.error("Please wait, connecting to server...");
+      return;
     }
 
-    // Send data through WebSocket
-    const data = {
-      name,
-      gender,
-    };
-
-    try {
-      ws.send(JSON.stringify(data));
-    } catch (error) {
-      console.error("Error sending data:", error);
-      toast.error("Failed to send data. Please try again.");
-    }
+    connectWebSocket();
   };
 
   // Cleanup WebSocket connection on component unmount
@@ -115,8 +111,8 @@ const HomePage = () => {
             </RadioGroup>
           </div>
 
-          <Button type="submit" className="w-full">
-            Continue to Camera
+          <Button type="submit" className="w-full" disabled={isConnecting}>
+            {isConnecting ? "Connecting..." : "Continue to Camera"}
           </Button>
         </form>
       </Card>
