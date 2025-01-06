@@ -11,6 +11,34 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+
+  // Initialize WebSocket connection
+  const connectWebSocket = () => {
+    const ws = new WebSocket("ws://localhost:8080"); // Replace with your WebSocket server URL
+    
+    ws.onopen = () => {
+      console.log("WebSocket Connected");
+    };
+
+    ws.onmessage = (event) => {
+      const response = JSON.parse(event.data);
+      if (response.success) {
+        toast.success("Form submitted successfully!");
+        navigate("/camera", { state: { name, gender } });
+      } else {
+        toast.error(response.message || "Failed to submit form");
+      }
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+      toast.error("Connection error. Please try again.");
+    };
+
+    setSocket(ws);
+    return ws;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,8 +52,33 @@ const HomePage = () => {
       return;
     }
 
-    navigate("/camera", { state: { name, gender } });
+    let ws = socket;
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+      ws = connectWebSocket();
+    }
+
+    // Send data through WebSocket
+    const data = {
+      name,
+      gender,
+    };
+
+    try {
+      ws.send(JSON.stringify(data));
+    } catch (error) {
+      console.error("Error sending data:", error);
+      toast.error("Failed to send data. Please try again.");
+    }
   };
+
+  // Cleanup WebSocket connection on component unmount
+  useState(() => {
+    return () => {
+      if (socket) {
+        socket.close();
+      }
+    };
+  }, [socket]);
 
   return (
     <div className="container mx-auto px-4 min-h-screen flex items-center justify-center">
