@@ -9,6 +9,8 @@ const CameraPage = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [isConnecting, setIsConnecting] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { name } = location.state || {};
@@ -40,8 +42,53 @@ const CameraPage = () => {
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
       }
+      if (socket) {
+        socket.close();
+      }
     };
   }, [name, navigate]);
+
+  const connectWebSocket = () => {
+    const ws = new WebSocket("ws://localhost:8080");
+    setIsConnecting(true);
+    
+    ws.onopen = () => {
+      console.log("WebSocket Connected");
+      setIsConnecting(false);
+      
+      // Send the captured image once connection is established
+      if (capturedImage) {
+        const data = {
+          name,
+          image: capturedImage
+        };
+        ws.send(JSON.stringify(data));
+      }
+    };
+
+    ws.onmessage = (event) => {
+      const response = JSON.parse(event.data);
+      if (response.success) {
+        toast.success("Image uploaded successfully!");
+      } else {
+        toast.error(response.message || "Failed to upload image");
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket Disconnected");
+      setSocket(null);
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+      toast.error("Connection error. Please try again.");
+      setIsConnecting(false);
+    };
+
+    setSocket(ws);
+    return ws;
+  };
 
   const captureImage = () => {
     if (!videoRef.current) return;
@@ -56,6 +103,14 @@ const CameraPage = () => {
       const imageUrl = canvas.toDataURL("image/png");
       setCapturedImage(imageUrl);
       toast.success("Image captured!");
+
+      // Connect to WebSocket and send image
+      if (isConnecting) {
+        toast.error("Please wait, connecting to server...");
+        return;
+      }
+
+      connectWebSocket();
     }
   };
 
@@ -78,9 +133,10 @@ const CameraPage = () => {
         <Button 
           onClick={captureImage}
           className="w-full flex items-center justify-center gap-2"
+          disabled={isConnecting}
         >
           <Camera className="w-5 h-5" />
-          Capture Image
+          {isConnecting ? "Uploading..." : "Capture Image"}
         </Button>
 
         {capturedImage && (
