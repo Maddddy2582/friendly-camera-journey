@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -72,7 +72,7 @@ const HomePage = () => {
   };
 
   // Cleanup WebSocket connection on component unmount
-  useState(() => {
+  useEffect(() => {
     return () => {
       if (socket) {
         socket.close();
