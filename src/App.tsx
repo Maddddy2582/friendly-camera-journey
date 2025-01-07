@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
 import HomePage from "./pages/HomePage";
 import CameraPage from "./pages/CameraPage";
+import ChatPage from "./pages/ChatPage";
+import MyComponent from "./pages/MyComponent";
 
 const queryClient = new QueryClient();
 
@@ -20,7 +22,10 @@ const App = () => (
             <Route path="/" element={<HomePage />} />
             <Route path="/camera" element={<CameraPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="/chat" element={<ChatPage />} />
+            <Route path="/mycomp" element={<MyComponent />} />
           </Routes>
+
         </BrowserRouter>
       </WebSocketProvider>
     </TooltipProvider>

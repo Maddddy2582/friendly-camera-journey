@@ -4,7 +4,7 @@ import { toast } from "sonner";
 interface WebSocketContextType {
   socket: WebSocket | null;
   isConnecting: boolean;
-  connectWebSocket: () => void;
+  connectWebSocket: (url: string, onOpenCallback?: (ws) => void) => void;
 }
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
@@ -13,14 +13,15 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
 
-  const connectWebSocket = () => {
+  const connectWebSocket = (url: string, onOpenCallback?: (ws) => void) => {
     if (socket?.readyState === WebSocket.OPEN) return;
     
-    const ws = new WebSocket("ws://localhost:8080");
+    const ws = new WebSocket(url);
     setIsConnecting(true);
     
     ws.onopen = () => {
       console.log("WebSocket Connected");
+      if (onOpenCallback) onOpenCallback(ws);
       setIsConnecting(false);
     };
 
@@ -39,13 +40,13 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
     return ws;
   };
 
-  useEffect(() => {
-    return () => {
-      if (socket) {
-        socket.close();
-      }
-    };
-  }, [socket]);
+  // useEffect(() => {
+  //   return () => {
+  //     if (socket) {
+  //       socket.close();
+  //     }
+  //   };
+  // }, [socket]);
 
   return (
     <WebSocketContext.Provider value={{ socket, isConnecting, connectWebSocket }}>

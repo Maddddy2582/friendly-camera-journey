@@ -1,0 +1,83 @@
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: inherit;
+}
+
+body {
+  --indicator-color: black;
+  background: radial-gradient(black 55%, var(--indicator-color));
+  min-height: 100vh;
+  color: white;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  font-weight: bold;
+  color: #fff;
+  font-size: 16pt;
+}
+
+.content {
+  padding-inline: 20px;
+  margin-inline: auto;
+  padding-top: 20px;
+}
+
+@media (min-width: 1250px) {
+  .content {
+    padding-top: 100px;
+    width: 800px;
+    padding-inline: 0;
+  }
+}
+
+#transcript {
+  width: 100%;
+  height: 50px;
+  white-space: nowrap;
+  overflow-x: auto;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  font-size: 14pt;
+  line-height: 1.5;
+  color: white;
+  display: block;
+}
+
+button {
+  background-color: black;
+  border: white 1px solid;
+  color: white;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+button:hover {
+  color: red;
+  border-color: red;
+}
+
+.controlRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.githubIcon {
+  color: white;
+  text-decoration: none;
+}
+.githubIcon:hover {
+  color: red;
+  text-decoration: none;
+}

@@ -31,23 +31,35 @@ const HomePage = () => {
       return;
     }
 
-    if (!socket || socket.readyState !== WebSocket.OPEN) {
-      connectWebSocket();
-      return;
-    }
-
-    const data = { name, gender };
-    socket.send(JSON.stringify(data));
-    navigate("/camera", { state: { name, gender } });
+    // if (!socket || socket.readyState !== WebSocket.OPEN) {
+    //   return;
+    // }
+    
+    
+    connectWebSocket("ws://localhost:8000/ws", (socket) => {
+      if (socket) {
+        const data = {
+          type: "message",
+          role: "user",
+          content: { name, gender },
+        };
+        socket.send(JSON.stringify(data));
+        console.log("Data sent:",data)
+        navigate("/camera", { state: { name, gender } });
+      }
+    });
+    // const data = { name, gender };
+    // socket.send(JSON.stringify(data));
+    // navigate("/camera", { state: { name, gender } });
   };
 
-  useEffect(() => {
-    if (socket?.readyState === WebSocket.OPEN) {
-      const data = { name, gender };
-      socket.send(JSON.stringify(data));
-      navigate("/camera", { state: { name, gender } });
-    }
-  }, [socket, name, gender, navigate]);
+  // useEffect(() => {
+  //   if (socket?.readyState === WebSocket.OPEN) {
+  //     const data = { name, gender };
+  //     socket.send(JSON.stringify(data));
+  //     navigate("/camera", { state: { name, gender } });
+  //   }
+  // }, [socket, name, gender, navigate]);
 
   return (
     <div className="container mx-auto px-4 min-h-screen flex items-center justify-center">
