@@ -32,20 +32,22 @@ const HomePage = () => {
     }
 
     if (!socket || socket.readyState !== WebSocket.OPEN) {
-      const newSocket = connectWebSocket();
-      if (newSocket) {
-        newSocket.onopen = () => {
-          const data = { name, gender };
-          newSocket.send(JSON.stringify(data));
-          navigate("/camera", { state: { name, gender } });
-        };
-      }
-    } else {
+      connectWebSocket();
+      return;
+    }
+
+    const data = { name, gender };
+    socket.send(JSON.stringify(data));
+    navigate("/camera", { state: { name, gender } });
+  };
+
+  useEffect(() => {
+    if (socket?.readyState === WebSocket.OPEN) {
       const data = { name, gender };
       socket.send(JSON.stringify(data));
       navigate("/camera", { state: { name, gender } });
     }
-  };
+  }, [socket, name, gender, navigate]);
 
   return (
     <div className="container mx-auto px-4 min-h-screen flex items-center justify-center">
