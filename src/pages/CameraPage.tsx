@@ -4,16 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Camera } from "lucide-react";
+import { useWebSocket } from "@/contexts/WebSocketContext";
 
 const CameraPage = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [isConnecting, setIsConnecting] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { name } = location.state || {};
+  const { socket, isConnecting } = useWebSocket();
 
   useEffect(() => {
     if (!name) {
@@ -42,53 +42,21 @@ const CameraPage = () => {
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
       }
-      if (socket) {
-        socket.close();
-      }
     };
   }, [name, navigate]);
 
-  const connectWebSocket = () => {
-    const ws = new WebSocket("ws://localhost:8080");
-    setIsConnecting(true);
-    
-    ws.onopen = () => {
-      console.log("WebSocket Connected");
-      setIsConnecting(false);
-      
-      // Send the captured image once connection is established
-      if (capturedImage) {
-        const data = {
-          name,
-          image: capturedImage
-        };
-        ws.send(JSON.stringify(data));
-      }
-    };
-
-    ws.onmessage = (event) => {
-      const response = JSON.parse(event.data);
-      if (response.success) {
-        toast.success("Image uploaded successfully!");
-      } else {
-        toast.error(response.message || "Failed to upload image");
-      }
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket Disconnected");
-      setSocket(null);
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-      toast.error("Connection error. Please try again.");
-      setIsConnecting(false);
-    };
-
-    setSocket(ws);
-    return ws;
-  };
+  useEffect(() => {
+    if (socket) {
+      socket.onmessage = (event) => {
+        const response = JSON.parse(event.data);
+        if (response.success) {
+          toast.success("Image uploaded successfully!");
+        } else {
+          toast.error(response.message || "Failed to upload image");
+        }
+      };
+    }
+  }, [socket]);
 
   const captureImage = () => {
     if (!videoRef.current) return;
@@ -104,13 +72,16 @@ const CameraPage = () => {
       setCapturedImage(imageUrl);
       toast.success("Image captured!");
 
-      // Connect to WebSocket and send image
-      if (isConnecting) {
-        toast.error("Please wait, connecting to server...");
+      if (!socket || socket.readyState !== WebSocket.OPEN) {
+        toast.error("Connection lost. Please try again.");
         return;
       }
 
-      connectWebSocket();
+      const data = {
+        name,
+        image: imageUrl
+      };
+      socket.send(JSON.stringify(data));
     }
   };
 
