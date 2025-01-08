@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voice Assistant</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.13/dist/bundle.min.js"></script>
+    <script type="module">
+      let socket;
+
+      async function connectWebSocket() {
+        socket = new WebSocket("ws://localhost:8000/ws");
+
+        socket.onopen = () => {
+          console.log("WebSocket connection established");
+          document.getElementById(
+            "indicator"
+          ).innerHTML = `<span style="color:green">CONNECTED</span>`;
+        };
+
+        socket.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          if (data.type === "transcript") {
+            document.getElementById("transcript").textContent += data.content;
+          } else if (data.type === "palm_detected_status") {
+            const palmStatus = document.getElementById("palm-status");
+            palmStatus.textContent = data.content.description;
+            if (data.content.status === "PALM_DETECTED") {
+              alert("Palm detected successfully! Processing your details.");
+            } else {
+              alert("Palm not detected. Please try again.");
+            }
+          } else if (data.type === "image_generated") {
+            const imageContainer = document.getElementById("generated-image");
+            imageContainer.innerHTML = `<img src="${data.content}" alt="Generated Image" />`;
+          }
+        };
+
+        socket.onerror = (error) => {
+          console.error("WebSocket error:", error);
+          document.getElementById(
+            "indicator"
+          ).innerHTML = `<span style="color:red">ERROR</span>`;
+        };
+
+        socket.onclose = () => {
+          console.warn("WebSocket connection closed");
+          document.getElementById(
+            "indicator"
+          ).innerHTML = `<span style="color:red">DISCONNECTED</span>`;
+        };
+      }
+
+      function submitUserDetails() {
+        const name = document.getElementById("name-input").value;
+        const gender = document.querySelector("input[name='gender']:checked").value;
+
+        const message = {
+          type: "user_details",
+          content: { name: name, gender: gender},
+        };
+
+        socket.send(JSON.stringify(message));
+        console.log("User details sent to server.");
+      }
+
+      function sendPalmImage() {
+        const fileInput = document.getElementById("palm-image-input");
+        const file = fileInput.files[0];
+
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const message = {
+              type: "palm_image",
+              content: { imageURL: reader.result },
+            };
+            socket.send(JSON.stringify(message));
+            console.log("Palm image sent to server.");
+          };
+          reader.readAsDataURL(file);
+        } else {
+          alert("Please select an image before submitting.");
+        }
+      }
+
+      async function main() {
+        await connectWebSocket();
+      }
+
+      main();
+    </script>
+  </head>
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 20px;
+    }
+    .input-row {
+      margin-bottom: 20px;
+    }
+    .button {
+      background-color: black;
+      border: 1px solid white;
+      color: white;
+      padding: 10px;
+      cursor: pointer;
+    }
+    .button:hover {
+      background-color: red;
+      border-color: red;
+    }
+    #transcript {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+  </style>
+  <body>
+    <h1>Voice Assistant Demo</h1>
+    <div id="indicator">LOADING...</div>
+
+    <div class="input-row">
+      <label for="name-input">Name:</label>
+      <input type="text" id="name-input" placeholder="Enter your name" />
+    </div>
+
+    <div class="input-row">
+      <label>Gender:</label>
+      <label><input type="radio" name="gender" value="male" /> Male</label>
+      <label><input type="radio" name="gender" value="female" /> Female</label>
+    </div>
+
+    <button class="button" onclick="submitUserDetails()">Submit Details</button>
+
+    <div class="input-row">
+      <label for="palm-image-input">Palm Image:</label>
+      <input type="file" id="palm-image-input" accept="image/*" />
+    </div>
+
+    <button class="button" onclick="sendPalmImage()">Submit Palm Image</button>
+
+    <div id="transcript" style="margin-top: 20px;"></div>
+    <div id="palm-status" style="margin-top: 20px;"></div>
+    <div id="generated-image" style="margin-top: 20px;"></div>
+  </body>
+</html>

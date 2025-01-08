@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voice Assistant</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.13/dist/bundle.min.js"></script>
+    <script>
+      // Define socket as a global variable
+      let socket;
+    
+      function submitUserDetails() {
+        const name = document.getElementById("name-input").value;
+        const gender = document.querySelector("input[name='gender']:checked").value;
+    
+        const message = {
+          type: "user_details",
+          content: { name, gender },
+        };
+    
+        if (socket && socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify(message));
+          console.log("User details sent to server.");
+        } else {
+          console.error("WebSocket is not connected.");
+        }
+      }
+    
+      function sendPalmImage() {
+        const fileInput = document.getElementById("palm-image-input");
+        const file = fileInput.files[0];
+    
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const message = {
+              type: "palm_image",
+              content: { imageURL: reader.result },
+            };
+    
+            if (socket && socket.readyState === WebSocket.OPEN) {
+              socket.send(JSON.stringify(message));
+              console.log("Palm image sent to server.");
+            } else {
+              console.error("WebSocket is not connected.");
+            }
+          };
+          reader.readAsDataURL(file);
+        } else {
+          alert("Please select an image before submitting.");
+        }
+      }
+    </script>
+    <script type="module">
+      import { interpolateInferno } from "https://cdn.skypack.dev/d3-scale-chromatic@3";
+
+      // let socket;
+      let audioContext;
+      let audioQueue = [];
+      let isPlaying = false;
+
+      async function connectWebSocket() {
+        socket = new WebSocket("ws://localhost:8000/ws");
+
+        socket.onopen = () => {
+          console.log("WebSocket connection established");
+          document.getElementById(
+            "indicator"
+          ).innerHTML = `<span style="color:green">CONNECTED</span>`;
+          initAudioContext();
+        };
+
+        socket.onmessage = async (event) => {
+          if (typeof event.data === "string") {
+            try {
+              const message = JSON.parse(event.data);
+              if (message.type === "transcript") {
+                // Update the transcript in a single line
+                const transcriptElement = document.getElementById("transcript");
+                transcriptElement.textContent += " " + message.content;
+                transcriptElement.scrollLeft = transcriptElement.scrollWidth; // Auto-scroll horizontally
+              } else {
+                console.warn("Unsupported message type:", message.type);
+              }
+            } catch (error) {
+              console.error("Error parsing JSON:", error);
+            }
+          } else if (event.data instanceof Blob) {
+            // Handle Binary Audio Blob
+            console.log(
+              "Binary audio blob received:",
+              event.data.size,
+              "bytes"
+            );
+            const arrayBuffer = await event.data.arrayBuffer();
+            const audioBuffer = await decodeAudioBuffer(arrayBuffer);
+            if (audioBuffer) {
+              audioQueue.push(audioBuffer);
+              playAudioStream();
+            }
+          } else {
+            console.warn("Unsupported message type:", event.data);
+          }
+        };
+
+        socket.onerror = (error) => {
+          console.error("WebSocket error:", error);
+          document.getElementById(
+            "indicator"
+          ).innerHTML = `<span style="color:red">ERROR</span>`;
+        };
+
+        socket.onclose = () => {
+          console.warn("WebSocket connection closed");
+          document.getElementById(
+            "indicator"
+          ).innerHTML = `<span style="color:red">DISCONNECTED</span>`;
+        };
+      }
+
+      function initAudioContext() {
+        if (!audioContext) {
+          audioContext = new (window.AudioContext ||
+            window.webkitAudioContext)();
+        }
+      }
+
+      async function decodeAudioBuffer(arrayBuffer) {
+        try {
+          return await audioContext.decodeAudioData(arrayBuffer);
+        } catch (error) {
+          console.error("Failed to decode audio data:", error);
+          return null;
+        }
+      }
+
+      // Play Audio Stream from Queue
+      function playAudioStream() {
+        if (isPlaying || audioQueue.length === 0) return;
+
+        isPlaying = true;
+        const audioBuffer = audioQueue.shift();
+
+        const sourceNode = audioContext.createBufferSource();
+        sourceNode.buffer = audioBuffer;
+        sourceNode.connect(audioContext.destination);
+
+        sourceNode.onended = () => {
+          isPlaying = false;
+          playAudioStream(); // Play the next chunk if available
+        };
+
+        sourceNode.start();
+        console.log("Playing audio chunk");
+      }
+
+      async function sendAudioToServer(wavBuffer) {
+        try {
+          const audioBase64 = btoa(
+            new Uint8Array(wavBuffer).reduce(
+              (data, byte) => data + String.fromCharCode(byte),
+              ""
+            )
+          );
+
+          const message = {
+            type: "audio",
+            content: audioBase64,
+          };
+
+          socket.send(JSON.stringify(message));
+          console.log("Audio sent to server");
+        } catch (error) {
+          console.error("Error sending audio to server:", error);
+        }
+      }
+
+      function resetAudioPlayer() {
+        console.log(audioQueue)
+        console.log(audioQueue)
+        audioQueue = [];
+        isPlaying = false;
+        console.log("Audio player reset on speech start");
+      }
+
+      async function main() {
+        await connectWebSocket();
+
+        const myvad = await vad.MicVAD.new({
+          positiveSpeechThreshold: 0.85,
+          minSpeechFrames: 3,
+          preSpeechPadFrames: 5,
+          negativeSpeechThreshold: 0.4,
+          onFrameProcessed: (probs) => {
+            const indicatorColor = interpolateInferno(probs.isSpeech / 2);
+            document.body.style.setProperty(
+              "--indicator-color",
+              indicatorColor
+            );
+          },
+          onSpeechStart: () => {
+            console.log("Speech start detected");
+            resetAudioPlayer(); // Clear the audio queue and reset playback
+
+            // Clear transcript UI
+            const transcriptElement = document.getElementById("transcript");
+            transcriptElement.textContent = ""; // Clear previous transcript
+            console.log("Transcript cleared for new speech");
+          },
+          onSpeechEnd: async (audio) => {
+            console.log("Speech end detected");
+            const wavBuffer = vad.utils.encodeWAV(audio);
+            await sendAudioToServer(wavBuffer);
+          },
+        });
+
+        window.myvad = myvad;
+
+        window.toggleVAD = () => {
+          if (myvad.listening === false) {
+            myvad.start();
+            document.getElementById("toggle_vad_button").textContent = "STOP";
+            document.getElementById("indicator").textContent = "running";
+          } else {
+            myvad.pause();
+            document.getElementById("toggle_vad_button").textContent =
+              "START VAD";
+            document.getElementById(
+              "indicator"
+            ).innerHTML = `<span style="color:red">stopped</span>`;
+            const indicatorColor = interpolateInferno(0);
+            document.body.style.setProperty(
+              "--indicator-color",
+              indicatorColor
+            );
+          }
+        };
+
+        window.toggleVAD();
+        document.getElementById("toggle_vad_button").disabled = false;
+      }
+
+      main();
+    </script>
+  </head>
+  <style>
+    html {
+      box-sizing: border-box;
+    }
+    *,
+    *::after,
+    *::before {
+      box-sizing: inherit;
+    }
+    body {
+      --indicator-color: black;
+      background: radial-gradient(black 55%, var(--indicator-color));
+      min-height: 100vh;
+      color: white;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      font-weight: bold;
+      color: #fff;
+      font-size: 16pt;
+    }
+    .content {
+      padding-inline: 20px;
+      margin-inline: auto;
+      padding-top: 20px;
+    }
+    @media (min-width: 1250px) {
+      .content {
+        padding-top: 100px;
+        width: 800px;
+        padding-inline: 0;
+      }
+    }
+
+    #transcript {
+      width: 100%;
+      height: 50px;
+      white-space: nowrap;
+      overflow-x: auto;
+      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      font-size: 14pt;
+      line-height: 1.5;
+      color: white;
+      display: block;
+    }
+
+    button {
+      background-color: black;
+      border: white 1px solid;
+      color: white;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+    button:hover {
+      color: red;
+      border-color: red;
+    }
+
+    .control-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .header {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .github-icon {
+      color: white;
+      text-decoration: none;
+    }
+    .github-icon:hover {
+      color: red;
+      text-decoration: none;
+    }
+  </style>
+  <body>
+    <div class="content-container">
+      <div class="content">
+        <h1>Voice Assistant Demo</h1>
+        <div class="control-row">
+          <div id="indicator">
+            <span style="color: red">LOADING</span>
+          </div>
+          <button id="toggle_vad_button" onclick="window.toggleVAD()" disabled>
+            START
+          </button>
+        </div>
+        <div id="transcript"></div>
+      </div>
+    </div>
+    <h1>Voice Assistant Demo</h1>
+    <div id="indicator">LOADING...</div>
+
+    <div class="input-row">
+      <label for="name-input">Name:</label>
+      <input type="text" id="name-input" placeholder="Enter your name" />
+    </div>
+
+    <div class="input-row">
+      <label>Gender:</label>
+      <label><input type="radio" name="gender" value="male" /> Male</label>
+      <label><input type="radio" name="gender" value="female" /> Female</label>
+    </div>
+
+    <button class="button" onclick="submitUserDetails()">Submit Details</button>
+
+    <div class="input-row">
+      <label for="palm-image-input">Palm Image:</label>
+      <input type="file" id="palm-image-input" accept="image/*" />
+    </div>
+
+    <button class="button" onclick="sendPalmImage()">Submit Palm Image</button>
+
+    <div id="transcript" style="margin-top: 20px;"></div>
+    <div id="palm-status" style="margin-top: 20px;"></div>
+    <div id="generated-image" style="margin-top: 20px;"></div>
+  </body>
+</html>

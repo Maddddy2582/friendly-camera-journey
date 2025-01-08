@@ -6,16 +6,433 @@ import { toast } from "sonner";
 import { Camera } from "lucide-react";
 import { useWebSocket } from "@/contexts/WebSocketContext";
 import styles from "./CameraPage.module.scss";
+import { interpolateInferno } from "d3-scale-chromatic";
+import { useMicVAD } from "@ricky0123/vad-react";
+
+// declare global {
+//   interface Window {
+//     webkitAudioContext?: typeof AudioContext;
+//   }
+// }
+
+// declare global {
+//   interface Window {
+//     vad: {
+//       MicVAD: {
+//         new (config: {
+//           positiveSpeechThreshold: number;
+//           minSpeechFrames: number;
+//           preSpeechPadFrames: number;
+//           negativeSpeechThreshold: number;
+//           onFrameProcessed: (probs: { isSpeech: number }) => void;
+//           onSpeechStart: () => void;
+//           onSpeechEnd: (audio: Float32Array) => void;
+//         }): VadInstance;
+//       };
+//       utils: {
+//         encodeWAV(audio: Float32Array): ArrayBuffer;
+//       };
+//     };
+//   }
+// }
+
+// export type VadInstance = {
+//   listening: boolean;
+//   start: () => void;
+//   pause: () => void;
+// };
+
+declare global {
+  interface Window {
+    webkitAudioContext?: typeof AudioContext;
+    vad: {
+      MicVAD: {
+        new (config: {
+          positiveSpeechThreshold: number;
+          minSpeechFrames: number;
+          preSpeechPadFrames: number;
+          negativeSpeechThreshold: number;
+          onFrameProcessed: (probs: { isSpeech: number }) => void;
+          onSpeechStart: () => void;
+          onSpeechEnd: (audio: Float32Array) => void;
+        }): VadInstance;
+      };
+      utils: {
+        encodeWAV(audio: Float32Array): ArrayBuffer;
+      };
+    };
+  }
+}
+export type VadInstance = {
+  listening: boolean;
+  start: () => void;
+  pause: () => void;
+};
 
 const CameraPage = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [serverResponse, setServerResponse] = useState<string | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [status, setStatus] = useState("LOADING");
+  const [transcript, setTranscript] = useState("");
+  const [isListening, setIsListening] = useState(false);
+  const [checking , setChecking] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { name } = location.state || {};
   const { socket, isConnecting } = useWebSocket();
+  const [vadInstance, setVadInstance] = useState<VadInstance | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const audioQueueRef = useRef<AudioBuffer[]>([]);
+  const isPlayingRef = useRef(false);
+  const currentSourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
+  const audioQueue = [];
+  // let isPlaying = false;
+  // let audioContext = null;
+  // let audioContext = null;
+  // const { socket, isConnecting } = useWebSocket();
+
+  const stopCurrentAudio = () => {
+    console.log("stopped");
+    if (currentSourceNodeRef.current) {
+      try {
+        console.log("stopped try");
+        currentSourceNodeRef.current.stop();
+        currentSourceNodeRef.current.disconnect();
+        currentSourceNodeRef.current = null;
+        audioQueueRef.current = [];
+      } catch (error) {
+        console.error("Error stopping current audio:", error);
+      }
+    }
+    isPlayingRef.current = false;
+    audioQueueRef.current = [];
+  };
+
+  const playAudioStream = () => {
+    if (
+      !audioContextRef.current ||
+      isPlayingRef.current ||
+      audioQueueRef.current.length === 0
+    )
+      return;
+    isPlayingRef.current = true;
+    const audioBuffer = audioQueueRef.current.shift();
+    if (!audioBuffer) return;
+    const sourceNode = audioContextRef.current.createBufferSource();
+    sourceNode.buffer = audioBuffer;
+    sourceNode.connect(audioContextRef.current.destination);
+    currentSourceNodeRef.current = sourceNode;
+    sourceNode.onended = () => {
+      isPlayingRef.current = false;
+      currentSourceNodeRef.current = null;
+      playAudioStream();
+    };
+    sourceNode.start();
+  };
+  // const resetAudioPlayer = () => {
+  //   audioQueue = [];
+  //   isPlaying = false;
+  // };
+  const resetAudioPlayer = () => {
+    stopCurrentAudio();
+    setTranscript("");
+    console.log("Audio player reset on speech start");
+  };
+
+  // const sendAudioToServer = async (wavBuffer) => {
+  //   try {
+  //     const audioBase64 = btoa(
+  //       new Uint8Array(wavBuffer).reduce(
+  //         (data, byte) => data + String.fromCharCode(byte),
+  //         ""
+  //       )
+  //     );
+
+  //     const message = {
+  //       type: "audio",
+  //       content: audioBase64,
+  //     };
+  //     console.log(socket);
+  //     console.log(message);
+  //     socket.send(JSON.stringify(message));
+  //     console.log("Audio sent to server");
+  //   } catch (error) {
+  //     console.error("Error sending audio to server:", error);
+  //   }
+  // };
+
+  const sendAudioToServer = async (wavBuffer: ArrayBuffer) => {
+    try {
+      const audioBase64 = btoa(
+        new Uint8Array(wavBuffer).reduce(
+          (data, byte) => data + String.fromCharCode(byte),
+          ""
+        )
+      );
+      const message = {
+        type: "audio",
+        content: audioBase64,
+      };
+      socket?.send(JSON.stringify(message));
+      console.log("Audio sent to server");
+    } catch (error) {
+      console.error("Error sending audio to server:", error);
+    }
+  };
+
+  // Use the VAD hook
+
+  // const vad = useMicVAD({
+  //   onFrameProcessed: (probs) => {
+  //     const indicatorColor = interpolateInferno(probs.isSpeech / 2);
+  //     document.body.style.setProperty("--indicator-color", indicatorColor);
+  //   },
+  //   onSpeechStart: () => {
+  //     console.log("Speech start detected");
+  //     resetAudioPlayer();
+  //     setTranscript("");
+  //   },
+  //   onSpeechEnd: async (audio) => {
+  //     console.log("Speech end detected");
+  //     const wavBuffer = window.vad.utils.encodeWAV(audio);
+  //     await sendAudioToServer(wavBuffer);
+  //   },
+  // });
+
+  const vad = useMicVAD({
+    onFrameProcessed: (probs) => {
+      const indicatorColor = interpolateInferno(probs.isSpeech / 2);
+      document.body.style.setProperty("--indicator-color", indicatorColor);
+    },
+    onSpeechStart: () => {
+      console.log("Speech start detected");
+      resetAudioPlayer();
+    },
+    onSpeechEnd: async (audio) => {
+      console.log("Speech end detected");
+      const wavBuffer = window.vad.utils.encodeWAV(audio);
+      await sendAudioToServer(wavBuffer);
+    },
+  });
+
+  // Using useEffect to initialize VAD and WebSocket
+  // useEffect(() => {
+  //   const loadVadScript = () => {
+  //     console.log("Loading VAD script...");
+  //     return new Promise<void>((resolve, reject) => {
+  //       const script = document.createElement("script");
+  //       script.src =
+  //         "https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.13/dist/bundle.min.js";
+  //       script.onload = () => {
+  //         resolve();
+  //         console.log("Successfully loaded VAD script");
+  //       };
+  //       script.onerror = () => {
+  //         reject("Failed to load VAD script");
+  //         console.log("Failed to load VAD script");
+  //       };
+  //       document.head.appendChild(script);
+  //     });
+  //   };
+
+  //   const connectWebSocket = async () => {
+  //     await loadVadScript();
+
+  //     socket.onopen = () => {
+  //       setStatus("CONNECTED");
+  //     };
+
+  //     socket.onmessage = async (event) => {
+  //       if (typeof event.data === "string") {
+  //         try {
+  //           console.log("STRIG");
+  //           const response = JSON.parse(event.data);
+  //           setServerResponse(response.content.description);
+  //           console.log(response);
+  //           if (response.content.status === "Palm detected") {
+  //             navigate("/chat");
+  //           } else if (response.content.status === "No Palm detected") {
+  //             toast.error("Palm not detected. Please try again.");
+  //           }
+  //           const message = JSON.parse(event.data);
+  //           if (message.type === "transcript") {
+  //             console.log("transcript");
+  //             setTranscript((prev) => prev + " " + message.content);
+  //           } else {
+  //             console.warn("Unsupported message type:", message.type);
+  //           }
+  //         } catch (error) {
+  //           console.error("Error parsing JSON:", error);
+  //         }
+  //       } else if (event.data instanceof Blob) {
+  //         console.log("BLOB");
+  //         const arrayBuffer = await event.data.arrayBuffer();
+  //         const audioBuffer = await decodeAudioBuffer(arrayBuffer);
+  //         if (audioBuffer) {
+  //           audioQueue.push(audioBuffer);
+  //           playAudioStream();
+  //         }
+  //       }
+  //     };
+
+  //     socket.onerror = () => {
+  //       setStatus("ERROR");
+  //     };
+
+  //     socket.onclose = () => {
+  //       setStatus("DISCONNECTED");
+  //     };
+  //   };
+
+  //   const decodeAudioBuffer = async (arrayBuffer) => {
+  //     try {
+  //       console.log("Decoding audio data...", arrayBuffer);
+  //       console.log(audioContext);
+  //       // audioContext.current.pause();
+  //       audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  //       return await audioContext.decodeAudioData(arrayBuffer);
+  //     } catch (error) {
+  //       console.error("Failed to decode audio data:", error);
+  //       return null;
+  //     }
+  //   };
+
+  //   const playAudioStream = () => {
+  //     if (isPlaying || audioQueue.length === 0) return;
+
+  //     isPlaying = true;
+  //     const audioBuffer = audioQueue.shift();
+
+  //     const sourceNode = audioContext.createBufferSource();
+  //     sourceNode.buffer = audioBuffer;
+  //     sourceNode.connect(audioContext.destination);
+
+  //     sourceNode.onended = () => {
+  //       isPlaying = false;
+  //       playAudioStream();
+  //     };
+
+  //     sourceNode.start();
+  //   };
+
+  //   const initialize = () => {
+  //     connectWebSocket();
+  //     console.log("intlie");
+  //   };
+
+  //   initialize();
+  // }, [socket]);
+  //
+  //  // Empty dependency array ensures this runs once on mount
+
+  useEffect(() => {
+    const loadVadScript = () => {
+      return new Promise<void>((resolve, reject) => {
+        if (!audioContextRef.current) {
+          audioContextRef.current = new (window.AudioContext ||
+            window.webkitAudioContext)();
+        }
+        const script = document.createElement("script");
+        script.src =
+          "https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.13/dist/bundle.min.js";
+        script.onload = () => {
+          resolve();
+          console.log("Successfully loaded VAD script");
+        };
+        script.onerror = () => {
+          reject("Failed to load VAD script");
+          console.log("Failed to load VAD script");
+        };
+        document.head.appendChild(script);
+      });
+    };
+    const decodeAudioBuffer = async (
+      arrayBuffer: ArrayBuffer
+    ): Promise<AudioBuffer | null> => {
+      try {
+        if (!audioContextRef.current) {
+          audioContextRef.current = new (window.AudioContext ||
+            window.webkitAudioContext)();
+        }
+        return await audioContextRef.current.decodeAudioData(arrayBuffer);
+      } catch (error) {
+        console.error("Failed to decode audio data:", error);
+        return null;
+      }
+    };
+    const handleWebSocketMessage = async (event: MessageEvent) => {
+      if (typeof event.data === "string") {
+        try {
+          // const message = JSON.parse(event.data);
+          // if (message.type === "transcript") {
+          //   setTranscript((prev) => prev + " " + message.content);
+          // }
+          console.log("STRIG");
+          const response = JSON.parse(event.data);
+          setServerResponse(response.content.description);
+          console.log(response);
+          if (response.content.status === "Palm detected") {
+            navigate("/chat");
+          } else if (response.content.status === "No Palm detected") {
+            toast.error("Palm not detected. Please try again.");
+          }
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+        }
+      } else if (event.data instanceof Blob) {
+        // stopCurrentAudio(); // Stop current audio before playing new one
+        const arrayBuffer = await event.data.arrayBuffer();
+        const audioBuffer = await decodeAudioBuffer(arrayBuffer);
+        if (audioBuffer) {
+          audioQueueRef.current.push(audioBuffer);
+          playAudioStream();
+        }
+      }
+    };
+    const initialize = async () => {
+      await loadVadScript();
+      if (socket) {
+        socket.onmessage = handleWebSocketMessage;
+        socket.onopen = () => setStatus("CONNECTED");
+        socket.onerror = () => setStatus("ERROR");
+        socket.onclose = () => setStatus("DISCONNECTED");
+      }
+    };
+    initialize();
+    return () => {
+      // stopCurrentAudio();
+    };
+  }, [socket]);
+
+  // const togglevad = () => {
+  //   if (vadInstance) {
+  //     if (!vadInstance.listening) {
+  //       vadInstance.start();
+  //       setIsListening(true);
+  //       setStatus("running");
+  //     } else {
+  //       vadInstance.pause();
+  //       setIsListening(false);
+  //       setStatus("stopped");
+  //     }
+  //   }
+  // };
+
+  const togglevad = () => {
+    if (vadInstance) {
+      if (!vadInstance.listening) {
+        vadInstance.start();
+        setIsListening(true);
+        setStatus("running");
+      } else {
+        vadInstance.pause();
+        setIsListening(false);
+        setStatus("stopped");
+      }
+    }
+  };
 
   useEffect(() => {
     if (!name) {
@@ -47,21 +464,35 @@ const CameraPage = () => {
     };
   }, [name, navigate]);
 
-  useEffect(() => {
-    if (socket) {
-      socket.onmessage = (event) => {
-        const response = JSON.parse(event.data);
-        setServerResponse(response.content.description);
-        console.log(response);
-        console.log("websocket response", serverResponse);
-        if (response.success) {
-          toast.success("Image uploaded successfully!");
-        } else {
-          toast.error(response.message || "Failed to upload image");
-        }
-      };
-    }
-  }, [socket]);
+  // useEffect(() => {
+  //   if (socket) {
+  //     socket.onmessage = (event) => {
+  //       const response = JSON.parse(event.data);
+  //       setServerResponse(response.content.description);
+  //       console.log(response);
+  //       console.log("Status", response.content.status)
+  //       console.log("websocket response", serverResponse);
+  //       if (response.content.status === "Palm detected") {
+  //         navigate("/chat");
+  //       }
+  //       else if (response.content.status === "No Palm detected") {
+  //         toast.error("Palm not detected. Please try again.");
+  //       }
+  //       if (response.success) {
+  //         toast.success("Image uploaded successfully!");
+  //         // if (response.content.status === "Palm detected") {
+  //         //   navigate("/chat");
+  //         // }
+  //         // else{a
+  //         //   toast.error("Palm not detected. Please try again.");
+  //         // }
+  //       }
+  //       // else {
+  //       //   toast.error(response.message || "Failed to upload image");
+  //       // }
+  //     };
+  //   }
+  // }, [socket]);
 
   const captureImage = () => {
     if (!videoRef.current) return;
@@ -82,11 +513,16 @@ const CameraPage = () => {
         return;
       }
 
-      const data = { type: "image", content: imageUrl };
+      const data = {
+        type: "palm_image",
+        content: {
+          imageURL: imageUrl,
+        },
+      };
       console.log(socket);
       console.log(JSON.stringify(data));
       socket.send(JSON.stringify(data));
-      navigate("/chat");
+      // navigate("/chat");
     }
   };
 

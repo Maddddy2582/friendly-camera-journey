@@ -7,28 +7,26 @@ import { WebSocketProvider } from "./contexts/WebSocketContext";
 import HomePage from "./pages/HomePage";
 import CameraPage from "./pages/CameraPage";
 import ChatPage from "./pages/ChatPage";
-import MyComponent from "./pages/MyComponent";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <WebSocketProvider>
+    <WebSocketProvider>
+      <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* <Route path="/" element={<InitialPage />} /> */}
             <Route path="/" element={<HomePage />} />
             <Route path="/camera" element={<CameraPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
             <Route path="/chat" element={<ChatPage />} />
-            <Route path="/mycomp" element={<MyComponent />} />
           </Routes>
-
         </BrowserRouter>
-      </WebSocketProvider>
-    </TooltipProvider>
+      </TooltipProvider>
+    </WebSocketProvider>
   </QueryClientProvider>
 );
 

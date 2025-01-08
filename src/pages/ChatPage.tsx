@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styles from "./ChatPage.module.scss";
 import { interpolateInferno } from "d3-scale-chromatic";
 import { useMicVAD } from "@ricky0123/vad-react";
 import { useWebSocket } from "@/contexts/WebSocketContext";
-import { useNavigate } from "react-router-dom";
-
 declare global {
   interface Window {
     webkitAudioContext?: typeof AudioContext;
-  }
-}
-
-declare global {
-  interface Window {
     vad: {
       MicVAD: {
         new (config: {
@@ -31,31 +24,67 @@ declare global {
     };
   }
 }
-
-// Define the VadInstance type
 export type VadInstance = {
   listening: boolean;
   start: () => void;
   pause: () => void;
 };
-
 const ChatPage = () => {
   const [status, setStatus] = useState("LOADING");
   const [transcript, setTranscript] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [vadInstance, setVadInstance] = useState<VadInstance | null>(null);
-//   const [audioContext, setAudioContext] = useState(null);
-  let audioQueue = [];
-  let isPlaying = false;
-  let audioContext = null;
-const { socket, isConnecting } = useWebSocket();
+  const [image, setImage] = useState("");
+  const [generating, setGenerating] = useState(false);
 
-  const resetAudioPlayer = () => {
-    audioQueue = [];
-    isPlaying = false;
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const audioQueueRef = useRef<AudioBuffer[]>([]);
+  const isPlayingRef = useRef(false);
+  const currentSourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
+  const { socket, isConnecting } = useWebSocket();
+  const stopCurrentAudio = () => {
+    console.log("stopped");
+    if (currentSourceNodeRef.current) {
+      try {
+        console.log("stopped try");
+        currentSourceNodeRef.current.stop();
+        currentSourceNodeRef.current.disconnect();
+        currentSourceNodeRef.current = null;
+        audioQueueRef.current = [];
+      } catch (error) {
+        console.error("Error stopping current audio:", error);
+      }
+    }
+    isPlayingRef.current = false;
+    audioQueueRef.current = [];
   };
-
-  const sendAudioToServer = async (wavBuffer) => {
+  const playAudioStream = () => {
+    if (
+      !audioContextRef.current ||
+      isPlayingRef.current ||
+      audioQueueRef.current.length === 0
+    )
+      return;
+    isPlayingRef.current = true;
+    const audioBuffer = audioQueueRef.current.shift();
+    if (!audioBuffer) return;
+    const sourceNode = audioContextRef.current.createBufferSource();
+    sourceNode.buffer = audioBuffer;
+    sourceNode.connect(audioContextRef.current.destination);
+    currentSourceNodeRef.current = sourceNode;
+    sourceNode.onended = () => {
+      isPlayingRef.current = false;
+      currentSourceNodeRef.current = null;
+      playAudioStream();
+    };
+    sourceNode.start();
+  };
+  const resetAudioPlayer = () => {
+    stopCurrentAudio();
+    setTranscript("");
+    console.log("Audio player reset on speech start");
+  };
+  const sendAudioToServer = async (wavBuffer: ArrayBuffer) => {
     try {
       const audioBase64 = btoa(
         new Uint8Array(wavBuffer).reduce(
@@ -63,22 +92,16 @@ const { socket, isConnecting } = useWebSocket();
           ""
         )
       );
-
       const message = {
         type: "audio",
         content: audioBase64,
       };
-      console.log(socket)
-      console.log(message)
-      socket.send(JSON.stringify(message));
+      socket?.send(JSON.stringify(message));
       console.log("Audio sent to server");
     } catch (error) {
       console.error("Error sending audio to server:", error);
     }
   };
-
-  // Use the VAD hook
-  
   const vad = useMicVAD({
     onFrameProcessed: (probs) => {
       const indicatorColor = interpolateInferno(probs.isSpeech / 2);
@@ -87,22 +110,23 @@ const { socket, isConnecting } = useWebSocket();
     onSpeechStart: () => {
       console.log("Speech start detected");
       resetAudioPlayer();
-      setTranscript("");
     },
     onSpeechEnd: async (audio) => {
       console.log("Speech end detected");
-      console.log(window.vad)
       const wavBuffer = window.vad.utils.encodeWAV(audio);
       await sendAudioToServer(wavBuffer);
     },
   });
-
-  // Using useEffect to initialize VAD and WebSocket
   useEffect(() => {
     const loadVadScript = () => {
       return new Promise<void>((resolve, reject) => {
+        if (!audioContextRef.current) {
+          audioContextRef.current = new (window.AudioContext ||
+            window.webkitAudioContext)();
+        }
         const script = document.createElement("script");
-        script.src = "https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.13/dist/bundle.min.js";
+        script.src =
+          "https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.13/dist/bundle.min.js";
         script.onload = () => {
           resolve();
           console.log("Successfully loaded VAD script");
@@ -114,94 +138,63 @@ const { socket, isConnecting } = useWebSocket();
         document.head.appendChild(script);
       });
     };
-
-    const connectWebSocket = async () => {
-        await loadVadScript();
-
-      socket.onopen = () => {
-        setStatus("CONNECTED");
-        // initAudioContext();
-      };
-
-      socket.onmessage = async (event) => {
-        if (typeof event.data === "string") {
-          try {
-            const message = JSON.parse(event.data);
-            if (message.type === "transcript") {
-              setTranscript((prev) => prev + " " + message.content);
-                          
-            } else {
-              console.warn("Unsupported message type:", message.type);
-            }
-          } catch (error) {
-            console.error("Error parsing JSON:", error);
-          }
-        } else if (event.data instanceof Blob) {
-            console.log("madav")
-            // audioQueue = [];
-          const arrayBuffer = await event.data.arrayBuffer();
-          const audioBuffer = await decodeAudioBuffer(arrayBuffer);
-          if (audioBuffer) {
-            audioQueue.push(audioBuffer);
-            playAudioStream();
-          }
-        }
-      };
-
-      socket.onerror = () => {
-        setStatus("ERROR");
-      };
-
-      socket.onclose = () => {
-        setStatus("DISCONNECTED");
-      };
-    };
-
-    // const initAudioContext = () => {
-    //     if (!audioContext) {
-    //         setAudioContext(new (window.AudioContext || window.webkitAudioContext)());
-    //         console.log("Audio context initialized");
-    //       }
-    // };
-
-    const decodeAudioBuffer = async (arrayBuffer) => {
+    const decodeAudioBuffer = async (
+      arrayBuffer: ArrayBuffer
+    ): Promise<AudioBuffer | null> => {
       try {
-        console.log("Decoding audio data...", arrayBuffer);
-        console.log(audioContext)
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        return await audioContext.decodeAudioData(arrayBuffer);
+        if (!audioContextRef.current) {
+          audioContextRef.current = new (window.AudioContext ||
+            window.webkitAudioContext)();
+        }
+        return await audioContextRef.current.decodeAudioData(arrayBuffer);
       } catch (error) {
         console.error("Failed to decode audio data:", error);
         return null;
       }
     };
-
-    const playAudioStream = () => {
-      if (isPlaying || audioQueue.length === 0) return;
-
-      isPlaying = true;
-      const audioBuffer = audioQueue.shift();
-
-      const sourceNode = audioContext.createBufferSource();
-      sourceNode.buffer = audioBuffer;
-      sourceNode.connect(audioContext.destination);
-
-      sourceNode.onended = () => {
-        isPlaying = false;
-        playAudioStream();
-      };
-
-      sourceNode.start();
+    const handleWebSocketMessage = async (event: MessageEvent) => {
+      if (typeof event.data === "string") {
+        try {
+          const message = JSON.parse(event.data);
+          if (message.type === "transcript") {
+            setTranscript((prev) => prev + " " + message.content);
+          } else if (message.type === "currently_image_generating") {
+            setGenerating(true);
+            console.log("surrently_image_generating", message.content);
+          } else if (message.type === "image_generated") {
+            console.log("image_generated", message.content);
+            const cleanedImage = message.content.replace(/^"|"$/g, "");
+            console.log(cleanedImage);
+            setImage(cleanedImage);
+            setGenerating(false);
+          }
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+        }
+      } else if (event.data instanceof Blob) {
+        // stopCurrentAudio(); // Stop current audio before playing new one
+        const arrayBuffer = await event.data.arrayBuffer();
+        const audioBuffer = await decodeAudioBuffer(arrayBuffer);
+        if (audioBuffer) {
+          audioQueueRef.current.push(audioBuffer);
+          playAudioStream();
+        }
+      }
     };
-
     const initialize = async () => {
-      await connectWebSocket();
-    console.log("initialize")
+      await loadVadScript();
+      if (socket) {
+        socket.onmessage = handleWebSocketMessage;
+        socket.onopen = () => setStatus("CONNECTED");
+        socket.onerror = () => setStatus("ERROR");
+        socket.onclose = () => setStatus("DISCONNECTED");
+      }
     };
-
     initialize();
-  }, []);  // Empty dependency array ensures this runs once on mount
-
+    return () => {
+      // stopCurrentAudio();
+    };
+  }, [socket]);
   const togglevad = () => {
     if (vadInstance) {
       if (!vadInstance.listening) {
@@ -215,7 +208,6 @@ const { socket, isConnecting } = useWebSocket();
       }
     }
   };
-
   return (
     <div className={styles.container}>
       <div className={styles.content}>
@@ -236,9 +228,15 @@ const { socket, isConnecting } = useWebSocket();
           </button>
         </div>
         <div id="transcript">{transcript}</div>
+        <div>
+          {generating ? (
+            <div className={styles.loader}>Loading...</div>
+          ) : (
+            <img src={`data:image/png;base64,${image}`} alt="Generated Image" />
+          )}
+        </div>
       </div>
     </div>
   );
 };
-
 export default ChatPage;
