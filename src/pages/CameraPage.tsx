@@ -59,17 +59,6 @@ const CameraPage = () => {
   let temp = "";
   let imageUrl = "";
 
-  // useEffect(() => {
-  //   const isPageRefreshed = !sessionStorage.getItem("pageLoaded");
-
-  //   if (isPageRefreshed && !location.state?.name) {
-  //     navigate("/");
-  //   }
-
-  //   // Mark the page as loaded
-  //   sessionStorage.setItem("pageLoaded", "true");
-  // }, [navigate, location.state]);
-
   const stopCurrentAudio = () => {
     console.log("stopped");
     if (currentSourceNodeRef.current) {
@@ -115,24 +104,6 @@ const CameraPage = () => {
     console.log("Audio player reset on speech start");
   };
 
-  // const sendAudioToServer = async (wavBuffer: ArrayBuffer) => {
-  //   try {
-  //     const audioBase64 = btoa(
-  //       new Uint8Array(wavBuffer).reduce(
-  //         (data, byte) => data + String.fromCharCode(byte),
-  //         ""
-  //       )
-  //     );
-  //     const message = {
-  //       type: "audio",
-  //       content: audioBase64,
-  //     };
-  //     socket?.send(JSON.stringify(message));
-  //     console.log("Audio sent to server");
-  //   } catch (error) {
-  //     console.error("Error sending audio to server:", error);
-  //   }
-  // };
 
   const vad = useMicVAD({
     onFrameProcessed: (probs) => {
@@ -146,7 +117,6 @@ const CameraPage = () => {
     onSpeechEnd: async (audio) => {
       console.log("Speech end detected");
       const wavBuffer = window.vad.utils.encodeWAV(audio);
-      // await sendAudioToServer(wavBuffer);
     },
   });
 
@@ -188,11 +158,7 @@ const CameraPage = () => {
     const handleWebSocketMessage = async (event: MessageEvent) => {
       if (typeof event.data === "string") {
         try {
-          // const message = JSON.parse(event.data);
-          // if (message.type === "transcript") {
-          //   setTranscript((prev) => prev + " " + message.content);
-          // }
-          console.log("STRIG");
+        
           const response = JSON.parse(event.data);
           setServerResponse(response.content.description);
           console.log(response);
@@ -214,7 +180,6 @@ const CameraPage = () => {
           console.error("Error parsing JSON:", error);
         }
       } else if (event.data instanceof Blob) {
-        // stopCurrentAudio(); // Stop current audio before playing new one
         const arrayBuffer = await event.data.arrayBuffer();
         const audioBuffer = await decodeAudioBuffer(arrayBuffer);
         if (audioBuffer) {
@@ -324,7 +289,6 @@ const CameraPage = () => {
   }, [showLiveVideo, stream]);
 
   return (
-    // <div className={styles.scanner}>
     <div className="container mx-auto px-4 min-h-screen py-8">
       <Card className="w-full max-w-2xl mx-auto space-y-6 p-6">
         <h1 className="text-2xl font-bold text-center text-gray-900">
@@ -352,14 +316,7 @@ const CameraPage = () => {
               />
             </div>
           )}
-          {/* // <div className={styles.scanner}>
-          //   <video
-          //     ref={videoRef}
-          //     autoPlay
-          //     playsInline
-          //     className={`w-full h-full object-cover1 ${styles.scanner}`}
-          //   />
-          // </div> */}
+         
         </div>
 
         <Button
@@ -371,23 +328,8 @@ const CameraPage = () => {
           {isConnecting ? "Uploading..." : "Capture Image"}
         </Button>
 
-        {/* {capturedImage && (
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">
-              Captured Image
-            </h2>
-            <div className="relative aspect-video rounded-lg overflow-hidden bg-black">
-              <img
-                src={capturedImage}
-                alt="Captured"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <h1>{serverResponse}</h1>
-          </div>
-        )} */}
+   
       </Card>
-      {/* <img src={capturedImage} alt="Captured" /> */}
     </div>
   );
 };
