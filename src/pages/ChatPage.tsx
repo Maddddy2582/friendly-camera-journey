@@ -125,7 +125,7 @@ const ChatPage = () => {
   const resetAudioPlayer = () => {
     console.log("🔄 Resetting audio player");
     stopCurrentAudio();
-    setTranscript("");
+    // setTranscript("");
   };
 
   const sendAudioToServer = async (wavBuffer: ArrayBuffer) => {
@@ -235,11 +235,12 @@ const ChatPage = () => {
           console.error("❌ Error parsing WebSocket message:", error);
         }
       } else if (event.data instanceof Blob) {
-        console.log("📥 Received audio blob from server");
+        console.log("EVENT DATA",event)
+        console.log("📥 Received audio blob from server", event.data);
         const arrayBuffer = await event.data.arrayBuffer();
         const audioBuffer = await decodeAudioBuffer(arrayBuffer);
         if (audioBuffer) {
-          console.log("🔊 Adding decoded audio to playback queue");
+          console.log("🔊 Adding decoded audio to playback queue", audioBuffer);
           audioQueueRef.current.push(audioBuffer);
           playAudioStream();
         }
@@ -295,7 +296,7 @@ const ChatPage = () => {
       {/* Left Side */}
       <div className="w-2/5 bg-gradient-to-br from-purple-900 to-indigo-900 flex flex-col">
         {/* Avatar Section - Top Left */}
-        <div className="h-2/3 relative flex items-center justify-center">
+        <div className="h-2/5 relative flex items-center justify-center">
           <div
             className="absolute inset-0 opacity-10"
             style={{
@@ -332,8 +333,8 @@ const ChatPage = () => {
         </div>
 
         {/* Image Section - Bottom Left */}
-        <div className="h-1/3 flex items-center justify-center p-8">
-          {generating ? (
+        <div className="h-3/5 flex items-center justify-center p-8">
+          {/* {generating ? (
             <div className="loader">Loading...</div>
           ) : image ? (
             <img
@@ -341,7 +342,7 @@ const ChatPage = () => {
               alt="Generated Image"
               className="max-w-full max-h-full object-contain"
             />
-          ) : null}
+          ) : null} */}
           {imageResponse && (
             <img
               src={imageResponse}
@@ -361,7 +362,7 @@ const ChatPage = () => {
           <div className="flex justify-between items-center mb-4">
             <p className="text-white">
               Start by asking clara about your Palm Details!!!
-            </p>
+            </p><br/><br/>
             <button
               onClick={toggleMic}
               className="p-3 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
@@ -379,9 +380,18 @@ const ChatPage = () => {
         <div className="flex-1 bg-gray-800 rounded-lg p-6 overflow-auto">
           <p className="text-white text-lg leading-relaxed">
             {transcript}
-            <span className="animate-pulse">|</span>
-          </p>
-        </div>
+            <span className="animate-pulse">|</span><br/><br/>
+          </p><br/><br/>
+          {generating ? (
+            <div className="loader">Loading...</div>
+          ) : image ? (
+            <img
+              src={`data:image/png;base64,${image}`}
+              alt="Generated Image"
+              className="max-w-full max-h-full object-contain"
+            />
+          ) : null}
+        </div><br/><br/>
       </div>
     </div>
   );
