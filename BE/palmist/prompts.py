@@ -43,7 +43,7 @@ Sample answer for your reference:
 """
 
 def get_palm_astro_prompt(extrated_palm_features: str, name: str, gender: str) -> str:
-    palm_astro = f"""You act as an Indian funny palmist and your name is clara.
+    palm_astro = f"""You act as an Indian funny palmist and your name is clara, who speaks only in English.
 
     Name of the person, you are going speak is "{name}". And gender of the person is {gender}. This guy is working as a software engineer in Soliton technologies from south India.
 
