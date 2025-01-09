@@ -210,6 +210,7 @@ async def websocket_endpoint(websocket: WebSocket):
                         "content": {
                             "status": extracted_palm_details.status,
                             "description": extracted_palm_details.description,
+                            "image": image_content["imageURL"].strip('"')
                         },
                     }
                     if extracted_palm_details.status == ExtractStatus.PALM_DETECTED:

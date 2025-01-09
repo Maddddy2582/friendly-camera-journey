@@ -9,39 +9,6 @@ import styles from "./CameraPage.module.scss";
 import { interpolateInferno } from "d3-scale-chromatic";
 import { useMicVAD } from "@ricky0123/vad-react";
 
-// declare global {
-//   interface Window {
-//     webkitAudioContext?: typeof AudioContext;
-//   }
-// }
-
-// declare global {
-//   interface Window {
-//     vad: {
-//       MicVAD: {
-//         new (config: {
-//           positiveSpeechThreshold: number;
-//           minSpeechFrames: number;
-//           preSpeechPadFrames: number;
-//           negativeSpeechThreshold: number;
-//           onFrameProcessed: (probs: { isSpeech: number }) => void;
-//           onSpeechStart: () => void;
-//           onSpeechEnd: (audio: Float32Array) => void;
-//         }): VadInstance;
-//       };
-//       utils: {
-//         encodeWAV(audio: Float32Array): ArrayBuffer;
-//       };
-//     };
-//   }
-// }
-
-// export type VadInstance = {
-//   listening: boolean;
-//   start: () => void;
-//   pause: () => void;
-// };
-
 declare global {
   interface Window {
     webkitAudioContext?: typeof AudioContext;
@@ -77,7 +44,7 @@ const CameraPage = () => {
   const [status, setStatus] = useState("LOADING");
   const [transcript, setTranscript] = useState("");
   const [isListening, setIsListening] = useState(false);
-  const [checking , setChecking] = useState(false);
+  const [checking, setChecking] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { name } = location.state || {};
@@ -88,10 +55,34 @@ const CameraPage = () => {
   const isPlayingRef = useRef(false);
   const currentSourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
   const audioQueue = [];
-  // let isPlaying = false;
-  // let audioContext = null;
-  // let audioContext = null;
-  // const { socket, isConnecting } = useWebSocket();
+  let temp = "";
+  let imageUrl = "";
+
+  // useEffect(() => {
+  //   const isPageRefreshed = !sessionStorage.getItem("pageLoaded");
+    
+  //   if (isPageRefreshed && !location.state?.name) {
+  //     navigate("/");
+  //   }
+  
+  //   // Mark the page as loaded
+  //   sessionStorage.setItem("pageLoaded", "true");
+  // }, [navigate, location.state]);
+
+  // const RedirectOnRefresh = () => {
+  //   const navigate = useNavigate();
+  
+  //   useEffect(() => {
+  //     const navigationEntries = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[];
+  //     if (navigationEntries[0]?.type === "reload") {
+  //       navigate("/");
+  //     }
+  //   }, [navigate]);
+  
+  //   return null;
+  // };
+  
+  
 
   const stopCurrentAudio = () => {
     console.log("stopped");
@@ -131,37 +122,12 @@ const CameraPage = () => {
     };
     sourceNode.start();
   };
-  // const resetAudioPlayer = () => {
-  //   audioQueue = [];
-  //   isPlaying = false;
-  // };
+
   const resetAudioPlayer = () => {
     stopCurrentAudio();
     setTranscript("");
     console.log("Audio player reset on speech start");
   };
-
-  // const sendAudioToServer = async (wavBuffer) => {
-  //   try {
-  //     const audioBase64 = btoa(
-  //       new Uint8Array(wavBuffer).reduce(
-  //         (data, byte) => data + String.fromCharCode(byte),
-  //         ""
-  //       )
-  //     );
-
-  //     const message = {
-  //       type: "audio",
-  //       content: audioBase64,
-  //     };
-  //     console.log(socket);
-  //     console.log(message);
-  //     socket.send(JSON.stringify(message));
-  //     console.log("Audio sent to server");
-  //   } catch (error) {
-  //     console.error("Error sending audio to server:", error);
-  //   }
-  // };
 
   const sendAudioToServer = async (wavBuffer: ArrayBuffer) => {
     try {
@@ -182,25 +148,6 @@ const CameraPage = () => {
     }
   };
 
-  // Use the VAD hook
-
-  // const vad = useMicVAD({
-  //   onFrameProcessed: (probs) => {
-  //     const indicatorColor = interpolateInferno(probs.isSpeech / 2);
-  //     document.body.style.setProperty("--indicator-color", indicatorColor);
-  //   },
-  //   onSpeechStart: () => {
-  //     console.log("Speech start detected");
-  //     resetAudioPlayer();
-  //     setTranscript("");
-  //   },
-  //   onSpeechEnd: async (audio) => {
-  //     console.log("Speech end detected");
-  //     const wavBuffer = window.vad.utils.encodeWAV(audio);
-  //     await sendAudioToServer(wavBuffer);
-  //   },
-  // });
-
   const vad = useMicVAD({
     onFrameProcessed: (probs) => {
       const indicatorColor = interpolateInferno(probs.isSpeech / 2);
@@ -216,116 +163,6 @@ const CameraPage = () => {
       await sendAudioToServer(wavBuffer);
     },
   });
-
-  // Using useEffect to initialize VAD and WebSocket
-  // useEffect(() => {
-  //   const loadVadScript = () => {
-  //     console.log("Loading VAD script...");
-  //     return new Promise<void>((resolve, reject) => {
-  //       const script = document.createElement("script");
-  //       script.src =
-  //         "https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.13/dist/bundle.min.js";
-  //       script.onload = () => {
-  //         resolve();
-  //         console.log("Successfully loaded VAD script");
-  //       };
-  //       script.onerror = () => {
-  //         reject("Failed to load VAD script");
-  //         console.log("Failed to load VAD script");
-  //       };
-  //       document.head.appendChild(script);
-  //     });
-  //   };
-
-  //   const connectWebSocket = async () => {
-  //     await loadVadScript();
-
-  //     socket.onopen = () => {
-  //       setStatus("CONNECTED");
-  //     };
-
-  //     socket.onmessage = async (event) => {
-  //       if (typeof event.data === "string") {
-  //         try {
-  //           console.log("STRIG");
-  //           const response = JSON.parse(event.data);
-  //           setServerResponse(response.content.description);
-  //           console.log(response);
-  //           if (response.content.status === "Palm detected") {
-  //             navigate("/chat");
-  //           } else if (response.content.status === "No Palm detected") {
-  //             toast.error("Palm not detected. Please try again.");
-  //           }
-  //           const message = JSON.parse(event.data);
-  //           if (message.type === "transcript") {
-  //             console.log("transcript");
-  //             setTranscript((prev) => prev + " " + message.content);
-  //           } else {
-  //             console.warn("Unsupported message type:", message.type);
-  //           }
-  //         } catch (error) {
-  //           console.error("Error parsing JSON:", error);
-  //         }
-  //       } else if (event.data instanceof Blob) {
-  //         console.log("BLOB");
-  //         const arrayBuffer = await event.data.arrayBuffer();
-  //         const audioBuffer = await decodeAudioBuffer(arrayBuffer);
-  //         if (audioBuffer) {
-  //           audioQueue.push(audioBuffer);
-  //           playAudioStream();
-  //         }
-  //       }
-  //     };
-
-  //     socket.onerror = () => {
-  //       setStatus("ERROR");
-  //     };
-
-  //     socket.onclose = () => {
-  //       setStatus("DISCONNECTED");
-  //     };
-  //   };
-
-  //   const decodeAudioBuffer = async (arrayBuffer) => {
-  //     try {
-  //       console.log("Decoding audio data...", arrayBuffer);
-  //       console.log(audioContext);
-  //       // audioContext.current.pause();
-  //       audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  //       return await audioContext.decodeAudioData(arrayBuffer);
-  //     } catch (error) {
-  //       console.error("Failed to decode audio data:", error);
-  //       return null;
-  //     }
-  //   };
-
-  //   const playAudioStream = () => {
-  //     if (isPlaying || audioQueue.length === 0) return;
-
-  //     isPlaying = true;
-  //     const audioBuffer = audioQueue.shift();
-
-  //     const sourceNode = audioContext.createBufferSource();
-  //     sourceNode.buffer = audioBuffer;
-  //     sourceNode.connect(audioContext.destination);
-
-  //     sourceNode.onended = () => {
-  //       isPlaying = false;
-  //       playAudioStream();
-  //     };
-
-  //     sourceNode.start();
-  //   };
-
-  //   const initialize = () => {
-  //     connectWebSocket();
-  //     console.log("intlie");
-  //   };
-
-  //   initialize();
-  // }, [socket]);
-  //
-  //  // Empty dependency array ensures this runs once on mount
 
   useEffect(() => {
     const loadVadScript = () => {
@@ -374,7 +211,13 @@ const CameraPage = () => {
           setServerResponse(response.content.description);
           console.log(response);
           if (response.content.status === "Palm detected") {
-            navigate("/chat");
+            stopCurrentAudio();
+            console.log("Palm image", capturedImage);
+            console.log(temp);
+            console.log("NAVIAGTED")
+            console.log(imageUrl)
+            console.log(response)
+            navigate("/chat", { state: { imageResponse: response.content.image } });
           } else if (response.content.status === "No Palm detected") {
             toast.error("Palm not detected. Please try again.");
           }
@@ -405,20 +248,6 @@ const CameraPage = () => {
       // stopCurrentAudio();
     };
   }, [socket]);
-
-  // const togglevad = () => {
-  //   if (vadInstance) {
-  //     if (!vadInstance.listening) {
-  //       vadInstance.start();
-  //       setIsListening(true);
-  //       setStatus("running");
-  //     } else {
-  //       vadInstance.pause();
-  //       setIsListening(false);
-  //       setStatus("stopped");
-  //     }
-  //   }
-  // };
 
   const togglevad = () => {
     if (vadInstance) {
@@ -464,36 +293,6 @@ const CameraPage = () => {
     };
   }, [name, navigate]);
 
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.onmessage = (event) => {
-  //       const response = JSON.parse(event.data);
-  //       setServerResponse(response.content.description);
-  //       console.log(response);
-  //       console.log("Status", response.content.status)
-  //       console.log("websocket response", serverResponse);
-  //       if (response.content.status === "Palm detected") {
-  //         navigate("/chat");
-  //       }
-  //       else if (response.content.status === "No Palm detected") {
-  //         toast.error("Palm not detected. Please try again.");
-  //       }
-  //       if (response.success) {
-  //         toast.success("Image uploaded successfully!");
-  //         // if (response.content.status === "Palm detected") {
-  //         //   navigate("/chat");
-  //         // }
-  //         // else{a
-  //         //   toast.error("Palm not detected. Please try again.");
-  //         // }
-  //       }
-  //       // else {
-  //       //   toast.error(response.message || "Failed to upload image");
-  //       // }
-  //     };
-  //   }
-  // }, [socket]);
-
   const captureImage = () => {
     if (!videoRef.current) return;
 
@@ -504,8 +303,10 @@ const CameraPage = () => {
 
     if (context) {
       context.drawImage(videoRef.current, 0, 0);
-      const imageUrl = canvas.toDataURL("image/png");
+      imageUrl = canvas.toDataURL("image/png");
       setCapturedImage(imageUrl);
+      console.log(imageUrl)
+      temp = imageUrl;
       toast.success("Image captured!");
 
       if (!socket || socket.readyState !== WebSocket.OPEN) {
@@ -570,6 +371,7 @@ const CameraPage = () => {
           </div>
         )}
       </Card>
+      <img src={capturedImage} alt="Captured" />
     </div>
     // </div>
   );

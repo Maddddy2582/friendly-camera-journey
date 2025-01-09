@@ -3,6 +3,8 @@ import styles from "./ChatPage.module.scss";
 import { interpolateInferno } from "d3-scale-chromatic";
 import { useMicVAD } from "@ricky0123/vad-react";
 import { useWebSocket } from "@/contexts/WebSocketContext";
+import { useLocation } from "react-router-dom";
+
 declare global {
   interface Window {
     webkitAudioContext?: typeof AudioContext;
@@ -29,6 +31,7 @@ export type VadInstance = {
   start: () => void;
   pause: () => void;
 };
+
 const ChatPage = () => {
   const [status, setStatus] = useState("LOADING");
   const [transcript, setTranscript] = useState("");
@@ -42,6 +45,9 @@ const ChatPage = () => {
   const isPlayingRef = useRef(false);
   const currentSourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
   const { socket, isConnecting } = useWebSocket();
+  const location =  useLocation();
+  const {imageResponse} = location.state || {};
+  console.log("imageResponse", imageResponse);
   const stopCurrentAudio = () => {
     console.log("stopped");
     if (currentSourceNodeRef.current) {
@@ -208,6 +214,11 @@ const ChatPage = () => {
       }
     }
   };
+
+  useEffect(() => {
+    resetAudioPlayer();
+  }, []);
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
