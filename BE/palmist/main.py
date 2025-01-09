@@ -9,7 +9,7 @@ from openai import AsyncOpenAI
 from fastapi import FastAPI, WebSocket
 from pydub import AudioSegment
 from extract_palm_features import get_palm_details, ExtractEvent, ExtractStatus
-from prompts import get_palm_astro_prompt
+from prompts import get_palm_astro_prompt, WELCOME_PROMPT, PHOTO_CAPTURE_PROMPT
 from image_generation import generate_image_based_on_the_prompt
  
 client = AsyncOpenAI()
@@ -20,7 +20,7 @@ PALMIST_NAME = "Clara"
 generate_image_based_on_the_prompt_tool = {
     "type": "function",
     "name": "generate_image_based_on_the_user_question",
-    "description": "when user asks images/photo or regarding visualizing anything,  For example: 'Image of my future bike', 'photo of my future partner', 'visualize my feature house', This function can be called and generates an image based on the user question and palm features.",
+    "description": "when user asks images/photo or regarding visualizing anything,  For example: 'photo of my future bike', 'image of my future partner', 'visualize my feature house', This function can be called and generates an image based on the user question.",
     "parameters": {
         "type": "object",
         "properties": {
@@ -29,18 +29,18 @@ generate_image_based_on_the_prompt_tool = {
         "required": ["user_question"]
     }
 }
-stop_generate_image_based_on_the_prompt_tool = {
-    "type": "function",
-    "name": "stop_generate_image_based_on_the_user_question",
-    "description": "when user asks to stop image generation, this function can be called and stop image generation.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "user_input": { "type": "string" }
-        },
-        "required": ["user_question"]
-    }
-}
+# stop_generate_image_based_on_the_prompt_tool = {
+#     "type": "function",
+#     "name": "stop_generate_image_based_on_the_user_question",
+#     "description": "when user asks to stop image generation, this function can be called and stop image generation.",
+#     "parameters": {
+#         "type": "object",
+#         "properties": {
+#             "user_input": { "type": "string" }
+#         },
+#         "required": ["user_question"]
+#     }
+# }
  
 def convert_wav_to_pcm16(wav_bytes):
     """
@@ -163,11 +163,11 @@ async def websocket_endpoint(websocket: WebSocket):
                                     except asyncio.CancelledError:
                                         print("Task cancellation acknowledged.")
                                     await websocket.send_text(json.dumps({"type": "image_cancelled", "content": "image generation stopped"}))
-                                
-    
+
                             elif event.type == "response.done":
                                 print("Conversation response done")
                                 break
+
                             elif event.type == "session.updated":
                                 print(event)
  
@@ -185,7 +185,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 if message["type"] == "started":
                     await connection.session.update(
                     session={
-                        "instructions": f"You are an humorous English assistant. Your name is {PALMIST_NAME}. Your only goal is to Ask user to enter the details and not do any palmistry. First welcome the user with greet message 'Welcome to palmistry AI' with your name. You only need to ask user to enter user details in the UI. The UI will have text box for name, radio button for gender. Ask user to enter the details.",
+                        "instructions": WELCOME_PROMPT.format(palmist_name=PALMIST_NAME),
                         "modalities": ["text", "audio"],
                         "output_audio_format": "pcm16",
                         "input_audio_format": "pcm16",
@@ -205,7 +205,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 
                     await connection.session.update(
                         session={
-                            "instructions": f"You are an humorous English assistant. Your name is {PALMIST_NAME}. Your only goal is to Ask user to show palm in front of his camera and click Take photo button, user name your are talking is : {user_info['name']}, feel free to call the user by name. Ask user to take the photo",
+                            "instructions": PHOTO_CAPTURE_PROMPT.format(palmist_name=PALMIST_NAME, user_name=user_info["name"]),
                         }
                     )
                     await connection.response.create()
@@ -221,12 +221,15 @@ async def websocket_endpoint(websocket: WebSocket):
                             "image": image_content["imageURL"].strip('"')
                         },
                     }
+                    await websocket.send_text(json.dumps(message_dict))
                     if extracted_palm_details.status == ExtractStatus.PALM_DETECTED:
-                        await connection.session.update(
-                            session={
-                                "instructions": get_palm_astro_prompt(extracted_palm_details.description, user_info["name"], user_info["gender"]),
-                            }
-                        )
+                        if user_info["gender"] == "male":
+                            await connection.session.update(
+                                session={
+                                    "instructions": get_palm_astro_prompt(extracted_palm_details.description, user_info["name"], user_info["gender"]),
+                                    "voice": "coral",
+                                }
+                            )
                         await connection.response.create()
                     else:
                         await connection.session.update(
@@ -235,7 +238,6 @@ async def websocket_endpoint(websocket: WebSocket):
                             }
                         )
                         await connection.response.create()
-                    await websocket.send_text(json.dumps(message_dict))
 
 
                 elif message["type"] == "audio":
@@ -249,14 +251,14 @@ async def websocket_endpoint(websocket: WebSocket):
  
                     # Send the PCM 16-bit audio to OpenAI
 
-                    await connection.session.update(
-                            session={
-                                "tools": [
-                                    generate_image_based_on_the_prompt_tool
-                                ],
-                            }
+                    # await connection.session.update(
+                    #         session={
+                    #             "tools": [
+                    #                 generate_image_based_on_the_prompt_tool
+                    #             ],
+                    #         }
 
-                        )
+                    #     )
 
                     await connection.conversation.item.create(
                         item={
@@ -271,6 +273,10 @@ async def websocket_endpoint(websocket: WebSocket):
                         }
                     )
                     await connection.response.create()
+                elif message["type"] == "end":
+                    print("Ended")
+                    break
+
                 if event_task.done():
                     event_task = asyncio.create_task(handle_openai_events())
 
