@@ -134,7 +134,6 @@ const HomePage = () => {
   const vad = useMicVAD({
     onFrameProcessed: (probs) => {
       const indicatorColor = interpolateInferno(probs.isSpeech / 2);
-      document.body.style.setProperty("--indicator-color", indicatorColor);
     },
     onSpeechStart: () => {
       console.log("Speech start detected");
