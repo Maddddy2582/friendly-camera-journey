@@ -134,7 +134,7 @@ async def websocket_endpoint(websocket: WebSocket):
                                     },
                                 }
                                 past_response_id = event.response_id
-                                print(audio_message_dict)
+                                print(audio_message_dict["content"]["reset_audio_buffer"])
                                 await websocket.send_text(json.dumps(audio_message_dict))
     
                             elif event.type == "response.text.done":
@@ -206,7 +206,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     )
                     await connection.response.create()
                 elif message["type"] == "palm_image":
-                    image_content = message["content"]
+                    image_content: str = message["content"]
                     extracted_palm_details = get_palm_details(image_content["imageURL"])
                     print(f"Extracted palm details: {extracted_palm_details}")
                     message_dict = {
@@ -214,6 +214,7 @@ async def websocket_endpoint(websocket: WebSocket):
                         "content": {
                             "status": extracted_palm_details.status,
                             "description": extracted_palm_details.description,
+                            "image": image_content["imageURL"].strip('"')
                         },
                     }
                     if extracted_palm_details.status == ExtractStatus.PALM_DETECTED:
@@ -231,7 +232,8 @@ async def websocket_endpoint(websocket: WebSocket):
                         )
                         await connection.response.create()
                     await websocket.send_text(json.dumps(message_dict))
- 
+
+
                 elif message["type"] == "audio":
                     print("Received audio message")
  
