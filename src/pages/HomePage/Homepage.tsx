@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import styles from "./CameraPage.module.scss";
 import { interpolateInferno } from "d3-scale-chromatic";
 import { useMicVAD } from "@ricky0123/vad-react";
+import {  Hand } from 'lucide-react';
 
 declare global {
   interface Window {
@@ -258,11 +259,7 @@ const HomePage = () => {
       <div className="flex items-center justify-center mb-6">
         <div className="w-32 h-32 rounded-full bg-gradient-to-r from-orange-400 to-pink-400 p-1">
           <div className="w-full h-full rounded-full overflow-hidden bg-white flex items-center justify-center">
-            <img
-              src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHBhdGggZD0iTTUwIDkwQzI4LjE5IDkwIDEwIDcxLjgxIDEwIDUwQzEwIDI4LjE5IDI4LjE5IDEwIDUwIDEwQzcxLjgxIDEwIDkwIDI4LjE5IDkwIDUwQzkwIDcxLjgxIDcxLjgxIDkwIDUwIDkwWiIgZmlsbD0iI0ZGOTk2NiIvPgogIDxwYXRoIGQ9Ik01MCAyNUM0Mi4yNyAyNSAzNiAzMS4yNyAzNiAzOUMzNiA0Ni43MyA0Mi4yNyA1MyA1MCA1M0M1Ny43MyA1MyA2NCA0Ni43MyA2NCAzOUM2NCAzMS4yNyA1Ny43MyAyNSA1MCAyNVoiIGZpbGw9IiNGRkZGRkYiLz4KPC9zdmc+Cg=="
-              alt="Clara Palm Icon"
-              className="w-24 h-24 object-contain"
-            />
+            <Hand className="w-16 h-16 text-orange-400" />
           </div>
         </div>
       </div>
