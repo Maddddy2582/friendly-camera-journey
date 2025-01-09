@@ -273,6 +273,10 @@ async def websocket_endpoint(websocket: WebSocket):
                         }
                     )
                     await connection.response.create()
+                elif message["type"] == "end":
+                    print("Ended")
+                    break
+
                 if event_task.done():
                     event_task = asyncio.create_task(handle_openai_events())
 
