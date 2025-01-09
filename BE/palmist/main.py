@@ -1,8 +1,13 @@
+import csv
 import io
 import base64
 import json
 import asyncio
 from dotenv import load_dotenv
+import time
+
+# Record start time
+
  
 load_dotenv()
 from openai import AsyncOpenAI
@@ -83,6 +88,7 @@ def convert_pcm16_to_wav(pcm16_data, sample_rate=24000, num_channels=1):
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
+    start_time = time.time()
     try: 
         user_info = {}
         extracted_palm_details = ExtractEvent(status=ExtractStatus.NO_PALM_DETECTED, description="Palm not captured")
@@ -300,10 +306,19 @@ async def websocket_endpoint(websocket: WebSocket):
         print(f"Error: {e}")
         raise e
     finally:
+        end_time = time.time()
+        total_spent_time = end_time - start_time
+        with open('log.csv', mode='a', newline='') as file:
+            writer = csv.writer(file)
+            if file.tell() == 0:
+                writer.writerow(["Name", "Time (seconds)"])
+            
+            writer.writerow(user_info["name"], str(total_spent_time))
         await websocket.close()
+    
+
  
  
 if __name__ == "__main__":
     import uvicorn
- 
     uvicorn.run(app, host="0.0.0.0", port=8000)
