@@ -115,24 +115,24 @@ const CameraPage = () => {
     console.log("Audio player reset on speech start");
   };
 
-  const sendAudioToServer = async (wavBuffer: ArrayBuffer) => {
-    try {
-      const audioBase64 = btoa(
-        new Uint8Array(wavBuffer).reduce(
-          (data, byte) => data + String.fromCharCode(byte),
-          ""
-        )
-      );
-      const message = {
-        type: "audio",
-        content: audioBase64,
-      };
-      socket?.send(JSON.stringify(message));
-      console.log("Audio sent to server");
-    } catch (error) {
-      console.error("Error sending audio to server:", error);
-    }
-  };
+  // const sendAudioToServer = async (wavBuffer: ArrayBuffer) => {
+  //   try {
+  //     const audioBase64 = btoa(
+  //       new Uint8Array(wavBuffer).reduce(
+  //         (data, byte) => data + String.fromCharCode(byte),
+  //         ""
+  //       )
+  //     );
+  //     const message = {
+  //       type: "audio",
+  //       content: audioBase64,
+  //     };
+  //     socket?.send(JSON.stringify(message));
+  //     console.log("Audio sent to server");
+  //   } catch (error) {
+  //     console.error("Error sending audio to server:", error);
+  //   }
+  // };
 
   const vad = useMicVAD({
     onFrameProcessed: (probs) => {
@@ -141,12 +141,12 @@ const CameraPage = () => {
     },
     onSpeechStart: () => {
       console.log("Speech start detected");
-      resetAudioPlayer();
+      // resetAudioPlayer();
     },
     onSpeechEnd: async (audio) => {
       console.log("Speech end detected");
       const wavBuffer = window.vad.utils.encodeWAV(audio);
-      await sendAudioToServer(wavBuffer);
+      // await sendAudioToServer(wavBuffer);
     },
   });
 
@@ -316,7 +316,7 @@ const CameraPage = () => {
       // navigate("/chat");
     }
   };
-  
+
   useEffect(() => {
     if (showLiveVideo && videoRef.current && stream) {
       videoRef.current.srcObject = stream;

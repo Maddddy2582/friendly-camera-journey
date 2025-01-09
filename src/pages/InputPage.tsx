@@ -218,7 +218,7 @@ const InputPage = () => {
     },
     onSpeechStart: () => {
       console.log("Speech start detected");
-      resetAudioPlayer();
+      // resetAudioPlayer();
     },
     onSpeechEnd: async (audio) => {
       console.log("Speech end detected");
