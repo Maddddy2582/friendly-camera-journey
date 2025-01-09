@@ -287,6 +287,8 @@ const ChatPage = () => {
     }
   };
 
+  const { name } = location.state || {};
+
   useEffect(() => {
     resetAudioPlayer();
   }, []);
@@ -357,7 +359,7 @@ const ChatPage = () => {
       <div className="w-3/5 bg-gray-900 p-8 flex flex-col">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white mb-4">
-            Voice Assistant Demo
+            Hi {name},
           </h1>
           <div className="flex justify-between items-center mb-4">
             <p className="text-white">

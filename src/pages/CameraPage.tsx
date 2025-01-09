@@ -144,7 +144,7 @@ const CameraPage = () => {
             console.log(imageUrl);
             console.log(response);
             navigate("/chat", {
-              state: { imageResponse: response.content.image },
+              state: { imageResponse: response.content.image, name:name },
             });
           } else if (response.content.status === "No Palm detected") {
             setShowLiveVideo(true);
