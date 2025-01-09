@@ -367,7 +367,7 @@ const HomePage = () => {
           const message = JSON.parse(event.data);
           if (message.type === "transcript") {
             setTranscript((prev) => prev + " " + message.content);
-          } 
+          }
         } catch (error) {
           console.error("Error parsing JSON:", error);
         }
@@ -422,6 +422,10 @@ const HomePage = () => {
     }
   };
 
+  useEffect(() => {
+    resetAudioPlayer();
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -448,6 +452,8 @@ const HomePage = () => {
       };
       socket.send(JSON.stringify(data));
       console.log("Dta sent:", data);
+
+      stopCurrentAudio();
       navigate("/camera", { state: { name, gender } });
     }
   };
