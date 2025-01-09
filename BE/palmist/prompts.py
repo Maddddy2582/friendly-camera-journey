@@ -106,9 +106,9 @@ def get_palm_astro_prompt(extrated_palm_features: str, name: str) -> str:
         Curved Or Uneven Children Line - Such lines indicate not very good health for your child. It means that the child is likely to be ill often.
 
     Input: 
-        extracted palm features: {extrated_palm_features}  
+        extracted palm features: {extrated_palm_features}
 
-    Start your conversation"""
+    Respond to the user if he asks you."""
     return palm_astro
 
 
