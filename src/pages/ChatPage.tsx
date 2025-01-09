@@ -3,11 +3,12 @@ import styles from "./ChatPage.module.scss";
 import { interpolateInferno } from "d3-scale-chromatic";
 import { useMicVAD } from "@ricky0123/vad-react";
 import { useWebSocket } from "@/contexts/WebSocketContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Mic, MicOff } from "lucide-react";
 import image2 from "../../public/bot-talking.gif";
 import image1 from "../../public/bot_not_talking.png";
 import { set } from "date-fns";
+import { Button } from "@/components/ui/button";
 
 declare global {
   interface Window {
@@ -288,6 +289,7 @@ const ChatPage = () => {
   };
 
   const { name } = location.state || {};
+  const navigate = useNavigate();
 
   useEffect(() => {
     resetAudioPlayer();
@@ -336,15 +338,7 @@ const ChatPage = () => {
 
         {/* Image Section - Bottom Left */}
         <div className="h-3/5 flex items-center justify-center p-8">
-          {/* {generating ? (
-            <div className="loader">Loading...</div>
-          ) : image ? (
-            <img
-              src={`data:image/png;base64,${image}`}
-              alt="Generated Image"
-              className="max-w-full max-h-full object-contain"
-            />
-          ) : null} */}
+         
           {imageResponse && (
             <img
               src={imageResponse}
@@ -365,6 +359,7 @@ const ChatPage = () => {
             <p className="text-white">
               Start by asking clara about your Palm Details!!!
             </p><br/><br/>
+           
             <button
               onClick={toggleMic}
               className="p-3 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
@@ -394,6 +389,10 @@ const ChatPage = () => {
             />
           ) : null}
         </div><br/><br/>
+        <Button
+        onClick={()=> navigate('/thankyou')}
+              className="pr-9 pl-9 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors w-10 self-end"
+            >Exit</Button>
       </div>
     </div>
   );
