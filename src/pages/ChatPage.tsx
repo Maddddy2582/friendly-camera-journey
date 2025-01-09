@@ -5,6 +5,9 @@ import { useMicVAD } from "@ricky0123/vad-react";
 import { useWebSocket } from "@/contexts/WebSocketContext";
 import { useLocation } from "react-router-dom";
 import { Mic, MicOff } from "lucide-react";
+import image2 from "../../public/bot-talking.gif";
+import image1 from "../../public/bot_not_talking.png";
+import { set } from "date-fns";
 
 declare global {
   interface Window {
@@ -41,6 +44,7 @@ const ChatPage = () => {
   const [image, setImage] = useState("");
   const [generating, setGenerating] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [showGif, setShowGif] = useState(true);
 
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioQueueRef = useRef<AudioBuffer[]>([]);
@@ -49,6 +53,14 @@ const ChatPage = () => {
   const { socket, isConnecting } = useWebSocket();
   const location = useLocation();
   const { imageResponse } = location.state || {};
+
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     setShowGif(false);
+  //   }, 8000);
+
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   const stopCurrentAudio = () => {
     console.log("🔊 Stopping current audio playback");
@@ -68,23 +80,26 @@ const ChatPage = () => {
   };
 
   const playAudioStream = () => {
+    setShowGif(true);
     console.log("🔊 Starting audio stream playback");
-    setIsMuted(true)
+    setIsMuted(true);
     vad.pause();
     if (
       !audioContextRef.current ||
       isPlayingRef.current ||
       audioQueueRef.current.length === 0
     ) {
-      console.log("FINISHEDDDDD")
+      console.log("FINISHEDDDDD");
       console.log("⏸️ Audio playback conditions not met:", {
         hasAudioContext: !!audioContextRef.current,
         isPlaying: isPlayingRef.current,
-        queueLength: audioQueueRef.current.length
+        queueLength: audioQueueRef.current.length,
       });
-      if(audioQueueRef.current.length === 0) {
-        setIsMuted(false)
+      if (audioQueueRef.current.length === 0) {
+        setIsMuted(false);
+        setShowGif(false);
         vad.start();
+
         console.log("🔊❌❌❌ Audio playback ended");
       }
       return;
@@ -110,7 +125,7 @@ const ChatPage = () => {
   const resetAudioPlayer = () => {
     console.log("🔄 Resetting audio player");
     stopCurrentAudio();
-    setTranscript("");
+    // setTranscript("");
   };
 
   const sendAudioToServer = async (wavBuffer: ArrayBuffer) => {
@@ -140,14 +155,21 @@ const ChatPage = () => {
     onSpeechStart: () => {
       if (!isMuted) {
         console.log("🎤 Speech detection started");
-        console.log("🎙️ Audio input detected - Speech probability:", Date.now());
+        console.log(
+          "🎙️ Audio input detected - Speech probability:",
+          Date.now()
+        );
         resetAudioPlayer();
       }
     },
     onSpeechEnd: async (audio) => {
       if (!isMuted) {
         console.log("🎤 Speech detection ended");
-        console.log("📝 Processing speech segment - Duration:", audio.length / 16000, "seconds");
+        console.log(
+          "📝 Processing speech segment - Duration:",
+          audio.length / 16000,
+          "seconds"
+        );
         const wavBuffer = window.vad.utils.encodeWAV(audio);
         await sendAudioToServer(wavBuffer);
       }
@@ -213,11 +235,12 @@ const ChatPage = () => {
           console.error("❌ Error parsing WebSocket message:", error);
         }
       } else if (event.data instanceof Blob) {
-        console.log("📥 Received audio blob from server");
+        console.log("EVENT DATA",event)
+        console.log("📥 Received audio blob from server", event.data);
         const arrayBuffer = await event.data.arrayBuffer();
         const audioBuffer = await decodeAudioBuffer(arrayBuffer);
         if (audioBuffer) {
-          console.log("🔊 Adding decoded audio to playback queue");
+          console.log("🔊 Adding decoded audio to playback queue", audioBuffer);
           audioQueueRef.current.push(audioBuffer);
           playAudioStream();
         }
@@ -251,7 +274,7 @@ const ChatPage = () => {
   }, [socket]);
 
   const toggleMic = () => {
-    console.log(`🎤 Microphone ${!isMuted ? 'muted' : 'unmuted'}`);
+    console.log(`🎤 Microphone ${!isMuted ? "muted" : "unmuted"}`);
     setIsMuted(!isMuted);
     if (!isMuted) {
       console.log("⏸️ Pausing voice detection");
@@ -269,34 +292,106 @@ const ChatPage = () => {
   }, []);
 
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
-        <h1>Voice Assistant Demo</h1>
-        <div className={styles.controlRow}>
-          <div>
-            <p>Start by asking clara about your Palm Details!!!</p>
+    <div className="flex h-screen">
+      {/* Left Side */}
+      <div className="w-2/5 bg-gradient-to-br from-purple-900 to-indigo-900 flex flex-col">
+        {/* Avatar Section - Top Left */}
+        <div className="h-2/5 relative flex items-center justify-center">
+          <div
+            className="absolute inset-0 opacity-10"
+            style={{
+              backgroundImage:
+                "url('https://images.unsplash.com/photo-1614850715649-1d0106293bd1?q=80&w=1470&auto=format&fit=crop')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          ></div>
+          <div className="relative w-80 h-80 flex items-center justify-center">
+            <div
+              className={`absolute transition-opacity duration-500 ${
+                showGif ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <img
+                src={image2}
+                alt="Clara AI Avatar Animated"
+                className="w-100 h-100 object-contain"
+              />
+            </div>
+            <div
+              className={`absolute transition-opacity duration-500 ${
+                showGif ? "opacity-0" : "opacity-100"
+              }`}
+            >
+              <img
+                src={image1}
+                alt="Clara AI Avatar Static"
+                className="w-100 h-100 object-contain"
+              />
+            </div>
           </div>
-          <button
-            onClick={toggleMic}
-            className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
-            aria-label={isMuted ? "Unmute microphone" : "Mute microphone"}
-          >
-            {isMuted ? (
-              <MicOff className="w-6 h-6 text-red-500" />
-            ) : (
-              <Mic className="w-6 h-6 text-green-500" />
-            )}
-          </button>
         </div>
-        <div id="transcript">{transcript}</div>
-        <div>
-          {generating ? (
-            <div className={styles.loader}>Loading...</div>
+
+        {/* Image Section - Bottom Left */}
+        <div className="h-3/5 flex items-center justify-center p-8">
+          {/* {generating ? (
+            <div className="loader">Loading...</div>
           ) : image ? (
-            <img src={`data:image/png;base64,${image}`} alt="Generated Image" />
-          ) : null}
+            <img
+              src={`data:image/png;base64,${image}`}
+              alt="Generated Image"
+              className="max-w-full max-h-full object-contain"
+            />
+          ) : null} */}
+          {imageResponse && (
+            <img
+              src={imageResponse}
+              alt="Captured"
+              className="max-w-full max-h-full object-contain"
+            />
+          )}
         </div>
-        <img src={imageResponse} alt="Captured" />
+      </div>
+
+      {/* Right Side */}
+      <div className="w-3/5 bg-gray-900 p-8 flex flex-col">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-white mb-4">
+            Voice Assistant Demo
+          </h1>
+          <div className="flex justify-between items-center mb-4">
+            <p className="text-white">
+              Start by asking clara about your Palm Details!!!
+            </p><br/><br/>
+            <button
+              onClick={toggleMic}
+              className="p-3 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
+              aria-label={isMuted ? "Unmute microphone" : "Mute microphone"}
+            >
+              {isMuted ? (
+                <MicOff className="w-6 h-6 text-red-500" />
+              ) : (
+                <Mic className="w-6 h-6 text-green-500" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        <div className="flex-1 bg-gray-800 rounded-lg p-6 overflow-auto">
+          <p className="text-white text-lg leading-relaxed">
+            {transcript}
+            <span className="animate-pulse">|</span><br/><br/>
+          </p><br/><br/>
+          {generating ? (
+            <div className="loader">Loading...</div>
+          ) : image ? (
+            <img
+              src={`data:image/png;base64,${image}`}
+              alt="Generated Image"
+              className="max-w-full max-h-full object-contain"
+            />
+          ) : null}
+        </div><br/><br/>
       </div>
     </div>
   );

@@ -9,9 +9,8 @@ import { useMicVAD } from "@ricky0123/vad-react";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useWebSocket } from "@/contexts/WebSocketContext";
-import image from '../../public/bot-talking.gif';
-import image1 from '../../public/bot_not_talking.png'
-
+import image from "../../public/bot-talking.gif";
+import image1 from "../../public/bot_not_talking.png";
 
 declare global {
   interface Window {
@@ -58,7 +57,7 @@ const InputPage = () => {
   const isPlaying = false;
   const audioContext = null;
   const [showGif, setShowGif] = useState(true);
- 
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowGif(false);
@@ -167,10 +166,9 @@ const InputPage = () => {
           const message = JSON.parse(event.data);
           if (message.type === "transcript") {
             setTranscript((prev) => prev + " " + message.content);
-          }
-          else if(message.type === "response_audio"){
-            console.log("response_audio",message.content.wav_audio_base64);
-            console.log(message.content.reset_audio_buffer)
+          } else if (message.type === "response_audio") {
+            console.log("response_audio", message.content.wav_audio_base64);
+            console.log(message.content.reset_audio_buffer);
           }
         } catch (error) {
           console.error("Error parsing JSON:", error);
@@ -194,10 +192,9 @@ const InputPage = () => {
       }
     };
     initialize();
-    return () => {
-    };
+    return () => {};
   }, [socket]);
- 
+
   const togglevad = () => {
     if (vadInstance) {
       if (!vadInstance.listening) {
@@ -211,7 +208,6 @@ const InputPage = () => {
       }
     }
   };
-
 
   useEffect(() => {
     resetAudioPlayer();
@@ -250,22 +246,33 @@ const InputPage = () => {
 
   return (
     <div className="min-h-screen flex">
-     <div className="w-1/2 bg-gradient-to-br from-purple-900 to-indigo-900 flex items-center justify-center relative">
-        <div className="absolute inset-0 opacity-10" style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1614850715649-1d0106293bd1?q=80&w=1470&auto=format&fit=crop')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}></div>
-        
+      <div className="w-1/2 bg-gradient-to-br from-purple-900 to-indigo-900 flex items-center justify-center relative">
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1614850715649-1d0106293bd1?q=80&w=1470&auto=format&fit=crop')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        ></div>
         <div className="relative w-64 h-64 flex items-center justify-center">
-          <div className={`absolute transition-opacity duration-500 ${showGif ? 'opacity-100' : 'opacity-0'}`}>
+          <div
+            className={`absolute transition-opacity duration-500 ${
+              showGif ? "opacity-100" : "opacity-0"
+            }`}
+          >
             <img
               src={image}
               alt="Clara AI Avatar Animated"
               className="w-64 h-64 object-contain"
             />
           </div>
-          <div className={`absolute transition-opacity duration-500 ${showGif ? 'opacity-0' : 'opacity-100'}`}>
+          <div
+            className={`absolute transition-opacity duration-500 ${
+              showGif ? "opacity-0" : "opacity-100"
+            }`}
+          >
             <img
               src={image1}
               alt="Clara AI Avatar Static"
@@ -273,71 +280,89 @@ const InputPage = () => {
             />
           </div>
         </div>
-{/* Animated Transcript */}
-          <div className="flex-1 relative">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 max-w-md">
-              <p className="text-white text-lg leading-relaxed">
-                {transcript}
-                <span className="animate-pulse">|</span>
-              </p>
-            </div>
-            {/* Chat Bubble Triangle */}
-            <div className="absolute left-[-10px] top-4 w-0 h-0 
+        {/* Animated Transcript */}
+        <div className="flex-1 relative">
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 max-w-md">
+            <p className="text-white text-lg leading-relaxed">
+              {transcript}
+              <span className="animate-pulse">|</span>
+            </p>
+          </div>
+          {/* Chat Bubble Triangle */}
+          <div
+            className="absolute left-[-10px] top-4 w-0 h-0 
               border-t-[10px] border-t-transparent
               border-r-[10px] border-r-white/10
-              border-b-[10px] border-b-transparent">
-            </div>
-          </div>      </div>
+              border-b-[10px] border-b-transparent"
+          ></div>
+        </div>{" "}
+      </div>
 
       <div className="w-1/2 bg-white flex items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5" style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=1632&auto=format&fit=crop')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}></div>
-        
+        <div
+          className="absolute inset-0 opacity-5"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=1632&auto=format&fit=crop')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        ></div>
+
         <Card className="w-full max-w-md p-8 space-y-6 bg-white/90 backdrop-blur-sm shadow-xl m-4">
-        <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
             Welcome to Clara!
           </h1>
-          <p className="text-center text-gray-600">Let's discover what your palm reveals about you</p>
-        <form  className="space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-2">
-          <Label htmlFor="name" className="text-gray-700">Your Name</Label>
-          <Input
-              id="name"
-              type="text"
-              placeholder="Enter your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full border-purple-200 focus:border-purple-500"
-            />
-          </div>
+          <p className="text-center text-gray-600">
+            Let's discover what your palm reveals about you
+          </p>
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-gray-700">
+                Your Name
+              </Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Enter your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full border-purple-200 focus:border-purple-500"
+              />
+            </div>
 
-          <div className="space-y-2">
-          <Label className="text-gray-700">Gender</Label>
-          <RadioGroup value={gender} onValueChange={setGender} className="gap-4">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="male" id="male" />
-                <Label htmlFor="male">Male</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="female" id="female" />
-                <Label htmlFor="female">Female</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="other" id="other" />
-                <Label htmlFor="other">Other</Label>
-              </div>
-            </RadioGroup>
-          </div>
+            <div className="space-y-2">
+              <Label className="text-gray-700">Gender</Label>
+              <RadioGroup
+                value={gender}
+                onValueChange={setGender}
+                className="gap-4"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="male" id="male" />
+                  <Label htmlFor="male">Male</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="female" id="female" />
+                  <Label htmlFor="female">Female</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="other" id="other" />
+                  <Label htmlFor="other">Other</Label>
+                </div>
+              </RadioGroup>
+            </div>
 
-          <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white" disabled={isConnecting}>
-            {isConnecting ? "Connecting..." : "Continue to Camera"}
-          </Button>
-        </form>
-      </Card>
-    </div>
+            <Button
+              type="submit"
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
+              disabled={isConnecting}
+            >
+              {isConnecting ? "Connecting..." : "Continue to Camera"}
+            </Button>
+          </form>
+        </Card>
+      </div>
     </div>
   );
 };
