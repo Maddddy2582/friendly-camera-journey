@@ -213,7 +213,10 @@ const ChatPage = () => {
       <div className={styles.content}>
         <h1>Voice Assistant Demo</h1>
         <div className={styles.controlRow}>
-          <div
+          <div>
+          <p>Start by asking clara about your Palm Details!!!</p>
+          </div>
+          {/* <div
             id="indicator"
             style={{ color: status === "CONNECTED" ? "green" : "red" }}
           >
@@ -225,15 +228,15 @@ const ChatPage = () => {
             disabled={status === "LOADING"}
           >
             {isListening ? "STOP" : "START VAD"}
-          </button>
+          </button> */}
         </div>
         <div id="transcript">{transcript}</div>
         <div>
           {generating ? (
             <div className={styles.loader}>Loading...</div>
-          ) : (
+          ) : ( image ? (
             <img src={`data:image/png;base64,${image}`} alt="Generated Image" />
-          )}
+          ): null)}
         </div>
       </div>
     </div>
