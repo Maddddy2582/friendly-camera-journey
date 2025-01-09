@@ -176,7 +176,7 @@ async def websocket_endpoint(websocket: WebSocket):
  
             # Start OpenAI event handler as a background task
             event_task = asyncio.create_task(handle_openai_events())
-            await connection.response.create()
+            # await connection.response.create()
  
             while True:
                 data = await websocket.receive_text()
