@@ -58,7 +58,7 @@ const InputPage = () => {
   const isPlaying = false;
   const audioContext = null;
   const [showGif, setShowGif] = useState(true);
-
+ 
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowGif(false);
@@ -213,6 +213,7 @@ const InputPage = () => {
     }
   };
 
+
   useEffect(() => {
     resetAudioPlayer();
   }, []);
@@ -273,7 +274,21 @@ const InputPage = () => {
             />
           </div>
         </div>
-      </div>
+{/* Animated Transcript */}
+          <div className="flex-1 relative">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 max-w-md">
+              <p className="text-white text-lg leading-relaxed">
+                {transcript}
+                <span className="animate-pulse">|</span>
+              </p>
+            </div>
+            {/* Chat Bubble Triangle */}
+            <div className="absolute left-[-10px] top-4 w-0 h-0 
+              border-t-[10px] border-t-transparent
+              border-r-[10px] border-r-white/10
+              border-b-[10px] border-b-transparent">
+            </div>
+          </div>      </div>
 
       <div className="w-1/2 bg-white flex items-center justify-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-5" style={{
