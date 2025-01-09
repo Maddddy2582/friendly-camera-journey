@@ -174,24 +174,24 @@ const InputPage = () => {
   //     console.error("Error sending audio to server:", error);
   //   }
   // };
-  const sendAudioToServer = async (wavBuffer: ArrayBuffer) => {
-    try {
-      const audioBase64 = btoa(
-        new Uint8Array(wavBuffer).reduce(
-          (data, byte) => data + String.fromCharCode(byte),
-          ""
-        )
-      );
-      const message = {
-        type: "audio",
-        content: audioBase64,
-      };
-      socket?.send(JSON.stringify(message));
-      console.log("Audio sent to server");
-    } catch (error) {
-      console.error("Error sending audio to server:", error);
-    }
-  };
+  // const sendAudioToServer = async (wavBuffer: ArrayBuffer) => {
+  //   try {
+  //     const audioBase64 = btoa(
+  //       new Uint8Array(wavBuffer).reduce(
+  //         (data, byte) => data + String.fromCharCode(byte),
+  //         ""
+  //       )
+  //     );
+  //     const message = {
+  //       type: "audio",
+  //       content: audioBase64,
+  //     };
+  //     socket?.send(JSON.stringify(message));
+  //     console.log("Audio sent to server");
+  //   } catch (error) {
+  //     console.error("Error sending audio to server:", error);
+  //   }
+  // };
   // Use the VAD hook
 
   // const vad = useMicVAD({
@@ -223,7 +223,7 @@ const InputPage = () => {
     onSpeechEnd: async (audio) => {
       console.log("Speech end detected");
       const wavBuffer = window.vad.utils.encodeWAV(audio);
-      await sendAudioToServer(wavBuffer);
+      // await sendAudioToServer(wavBuffer);
     },
   });
   // Using useEffect to initialize VAD and WebSocket
