@@ -91,20 +91,10 @@ async def websocket_endpoint(websocket: WebSocket):
             model="gpt-4o-mini-realtime-preview"
         ) as connection:
             past_response_id = None 
-            await connection.session.update(
-                session={
-                    "instructions": f"You are an humorous English assistant. Your name is {PALMIST_NAME}. Your only goal is to Ask user to enter the details and not do any palmistry. First welcome the user with greet message 'Welcome to palmistry AI' with your name. You only need to ask user to enter user details in the UI. The UI will have text box for name, radio button for gender. Ask user to enter the details.",
-                    "modalities": ["text", "audio"],
-                    "output_audio_format": "pcm16",
-                    "input_audio_format": "pcm16",
-                    "turn_detection": None,
-                    "voice": "coral",
-                }
-            )
 
             async def handle_generate_image_event(arguments):
                 print("image generation task created")
-                await websocket.send_text(json.dumps({"type": "image_generated", "content": generate_image_based_on_the_prompt(arguments["user_question"], extracted_palm_details.description, user_info["gender"])}))
+                await websocket.send_text(json.dumps({"type": "image_generated", "content": generate_image_based_on_the_prompt(arguments["user_question"], user_info["gender"])}))
 
             async def handle_openai_events():
                 """
@@ -192,7 +182,20 @@ async def websocket_endpoint(websocket: WebSocket):
                 data = await websocket.receive_text()
                 message = json.loads(data)
                 # print(f"Received message: {message}")
-                if message["type"] == "user_details":
+                if message["type"] == "started":
+                    await connection.session.update(
+                    session={
+                        "instructions": f"You are an humorous English assistant. Your name is {PALMIST_NAME}. Your only goal is to Ask user to enter the details and not do any palmistry. First welcome the user with greet message 'Welcome to palmistry AI' with your name. You only need to ask user to enter user details in the UI. The UI will have text box for name, radio button for gender. Ask user to enter the details.",
+                        "modalities": ["text", "audio"],
+                        "output_audio_format": "pcm16",
+                        "input_audio_format": "pcm16",
+                        "turn_detection": None,
+                        "voice": "coral",
+                        }
+                    )
+                    await connection.response.create()
+
+                elif message["type"] == "user_details":
                     user_info = message["content"]
                     print(f"Received user info: {user_info}")
                     # await connection.session.update(

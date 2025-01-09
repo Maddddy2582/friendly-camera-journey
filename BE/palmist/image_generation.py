@@ -9,7 +9,7 @@ import openai
 # initialize OpenAI client
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "<your OpenAI API key if not set as env var>"))
 
-def generate_image_based_on_the_prompt(user_query:str, palm_features: str, gender: str):
+def generate_image_based_on_the_prompt(user_query:str, gender: str):
     prompt = create_user_query_to_generate_image_template()
     response = openai.chat.completions.create(
             model="gpt-4o",

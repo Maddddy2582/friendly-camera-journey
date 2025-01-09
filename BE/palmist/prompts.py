@@ -159,27 +159,51 @@ def create_user_query_to_generate_image_template():
 
 def prompt_to_generate_image_template(user_prompt: str, gender: str):
 
-    prompt_to_generate_image = f"""Yor are an expert in generating image based on the given prompt, gender. 
+    prompt_to_generate_image = f"""
+    Objective: Generate a unique image based on the user’s description while adhering to specific cultural, professional, and ethical guidelines.
 
-    Instructions:
-    1. You will receive the extracted user prompt, gender of the person.
-    2. The palm features Extracted from the software engineer working in Soliton technologies from south India.
-    3. if the user asks for the image of the partner(like that),
-        3.1. If the gender of the person is male, generate female image.
-        3.2. If the gender of the person is female, generate male image.
-    4. The image generated should be unique.
-    5. The image should be void of glamour and should be decent.
-    6. The generated image should not be offensive or hurt anyone's feelings.
-    
-    Sample question and how the image should be:
-    Question 1: Image of the my future house.
-    How image should be: Image should be 
-
-    Inputs:
-    user prompt:
-    {user_prompt}
-
-    gender: {gender}
+    Instructions for Image Generation:
+    1. User Input:
+        Prompt: {user_prompt}
+        Gender: {gender}
+    2. Cultural & Professional Context:
+        The image should reflect the attributes of a software engineer from South India working at Soliton Technologies.
+        Incorporate subtle palm features representative of this context without making them the central focus.
+    3. Partner Image Guidelines:
+        If the user requests an image of their future partner:
+        For Male Users: Generate an image of a culturally South Indian female with a decent, modest appearance.
+        For Female Users: Generate an image of a culturally South Indian male with similar attributes.
+        Avoid glamour and ensure the image respects cultural sensitivities.
+    4. Image Style:
+        The image should be unique and personalized to the user’s description.
+        Maintain a professional, modest, and authentic look.
+        Ensure the image is devoid of offensive or inappropriate elements.
+    5. Scenario-Based Customization:
+        For prompts like “my dream house,” “future office,” etc., create environments or designs that resonate with South Indian culture and a professional lifestyle.
 
     """
     return prompt_to_generate_image
+
+    # Yor are an expert in generating image based on the given prompt, gender. 
+
+    # Instructions:
+    # 1. You will receive the user prompt and gender of the person as a input.
+    # 2. The palm features Extracted from the software engineer working in Soliton technologies from south India.
+    # 3. if the user asks for the image of the partner(like that),
+    #     3.1. If the gender of the person is male, generate female image.
+    #     3.2. If the gender of the person is female, generate male image.
+    # 4. The image generated should be unique.
+    # 5. The image should be void of glamour and should be decent.
+    # 6. The generated image should not be offensive or hurt anyone's feelings.
+    
+    # Sample question and how the image should be:
+    # Question 1: Image of the my future house.
+    # How image should be: Image should be 
+
+    
+
+    # Inputs:
+    # user prompt:
+    # {user_prompt}
+
+    # gender: {gender}
