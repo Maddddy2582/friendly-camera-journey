@@ -289,7 +289,7 @@ const CameraPage = () => {
   }, [showLiveVideo, stream]);
 
   return (
-    <div className="container mx-auto px-4 min-h-screen py-8">
+    <div className="container mx-auto px-4 min-h-screen py-8 justify-center flex items-center bg-gradient-to-br from-purple-900 to-indigo-900" style={{width:"100%"}}>
       <Card className="w-full max-w-2xl mx-auto space-y-6 p-6">
         <h1 className="text-2xl font-bold text-center text-gray-900">
           Hi {name}, Let's Take Your Picture!
