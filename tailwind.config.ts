@@ -61,7 +61,16 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				mystic: {
+					dark: '#1E1B4B',
+					light: '#E2E8F0',
+				  },
+				  palm: {
+					purple: '#8B5CF6',
+					indigo: '#4338CA',
+				  }
+
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

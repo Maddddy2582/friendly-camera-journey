@@ -6,8 +6,7 @@ import { toast } from "sonner";
 import { Camera } from "lucide-react";
 import { useWebSocket } from "@/contexts/WebSocketContext";
 import styles from "./CameraPage.module.scss";
-import { interpolateInferno } from "d3-scale-chromatic";
-import { useMicVAD } from "@ricky0123/vad-react";
+import {  Sparkles, Hand } from "lucide-react";
 
 declare global {
   interface Window {
@@ -42,9 +41,6 @@ const CameraPage = () => {
   const [serverResponse, setServerResponse] = useState<string | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [status, setStatus] = useState("LOADING");
-  const [transcript, setTranscript] = useState("");
-  const [isListening, setIsListening] = useState(false);
-  const [checking, setChecking] = useState(false);
   const [showLiveVideo, setShowLiveVideo] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
@@ -55,7 +51,6 @@ const CameraPage = () => {
   const audioQueueRef = useRef<AudioBuffer[]>([]);
   const isPlayingRef = useRef(false);
   const currentSourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
-  const audioQueue = [];
   let temp = "";
   let imageUrl = "";
 
@@ -98,26 +93,6 @@ const CameraPage = () => {
     sourceNode.start();
   };
 
-  const resetAudioPlayer = () => {
-    stopCurrentAudio();
-    setTranscript("");
-    console.log("Audio player reset on speech start");
-  };
-
-
-  const vad = useMicVAD({
-    onFrameProcessed: (probs) => {
-      const indicatorColor = interpolateInferno(probs.isSpeech / 2);
-    },
-    onSpeechStart: () => {
-      console.log("Speech start detected");
-      // resetAudioPlayer();
-    },
-    onSpeechEnd: async (audio) => {
-      console.log("Speech end detected");
-      const wavBuffer = window.vad.utils.encodeWAV(audio);
-    },
-  });
 
   useEffect(() => {
     const loadVadScript = () => {
@@ -202,19 +177,6 @@ const CameraPage = () => {
     };
   }, [socket]);
 
-  const togglevad = () => {
-    if (vadInstance) {
-      if (!vadInstance.listening) {
-        vadInstance.start();
-        setIsListening(true);
-        setStatus("running");
-      } else {
-        vadInstance.pause();
-        setIsListening(false);
-        setStatus("stopped");
-      }
-    }
-  };
 
   useEffect(() => {
     if (!name) {
@@ -277,7 +239,6 @@ const CameraPage = () => {
       console.log(socket);
       console.log(JSON.stringify(data));
       socket.send(JSON.stringify(data));
-      // navigate("/chat");
     }
   };
 
@@ -288,15 +249,25 @@ const CameraPage = () => {
   }, [showLiveVideo, stream]);
 
   return (
-    <div className="container mx-auto px-4 min-h-screen py-8 justify-center flex items-center bg-gradient-to-br from-purple-900 to-indigo-900" style={{width:"100%"}}>
-      <Card className="w-full max-w-2xl mx-auto space-y-6 p-6">
-        <h1 className="text-2xl font-bold text-center text-gray-900">
-          Hi {name}, Let's Take Your Picture!
-        </h1>
+    <div className={`min-h-screen py-12 px-4 ${styles.mysticGlow}`}>
+      <Card className="w-full max-w-2xl mx-auto bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl shadow-2xl overflow-hidden">
+        <div className="p-2 space-y-8">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <Hand className="w-8 h-8 text-purple-400" />
+            <h1 className="mystical-text text-3xl font-semibold text-center bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+              AI Palm Reading Portal
+            </h1>
+            <Sparkles className="w-8 h-8 text-purple-400" />
+          </div>
+          
+          <p className="text-center text-gray-300 max-w-md mx-auto">
+            Greetings {name}, let the ancient wisdom meet modern technology. 
+            Position your palm facing up the camera for your digital reading.
+          </p>
 
-        <div className="relative aspect-video rounded-lg overflow-hidden bg-black">
-          {showLiveVideo ? (
-            <div className="relative aspect-video rounded-lg overflow-hidden bg-black">
+        <div className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-black/40 ${styles.palmFrame}`} style={{height: "400px", width:"100%"}}>
+                  {showLiveVideo ? (
+            <div className="relative aspect-video rounded-lg overflow-hidden bg-black" style={{height: "100%"}}>
             <div className={styles.scanner}>
               <video
                 ref={videoRef}
@@ -307,7 +278,7 @@ const CameraPage = () => {
             </div>
             </div>
           ) : (
-            <div className="relative aspect-video rounded-lg overflow-hidden bg-black">
+            <div className="relative aspect-video rounded-lg overflow-hidden bg-black" style={{height: "100%"}}>
               <img
                 src={capturedImage}
                 alt="Captured"
@@ -315,9 +286,7 @@ const CameraPage = () => {
               />
             </div>
           )}
-         
         </div>
-
         <Button
           onClick={captureImage}
           className="w-full flex items-center justify-center gap-2"
@@ -326,8 +295,7 @@ const CameraPage = () => {
           <Camera className="w-5 h-5" />
           {isConnecting ? "Uploading..." : "Capture Image"}
         </Button>
-
-   
+        </div>
       </Card>
     </div>
   );
