@@ -27,8 +27,6 @@
   }
  
   body {
-    /* @apply bg-gradient-to-br from-purple-500 to-purple-700 min-h-screen; */
-    /* background-image: url("mystic-image.jpeg"); */
     background-color: black;
   }
 }
