@@ -9,10 +9,33 @@ import { useMicVAD } from "@ricky0123/vad-react";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useWebSocket } from "@/contexts/WebSocketContext";
-import image from '../../public/bot-talking.gif';
-import image1 from '../../public/bot_not_talking.png'
 
+// declare global {
+//   interface Window {
+//     webkitAudioContext?: typeof AudioContext;
+//   }
+// }
 
+// declare global {
+//   interface Window {
+//     vad: {
+//       MicVAD: {
+//         new (config: {
+//           positiveSpeechThreshold: number;
+//           minSpeechFrames: number;
+//           preSpeechPadFrames: number;
+//           negativeSpeechThreshold: number;
+//           onFrameProcessed: (probs: { isSpeech: number }) => void;
+//           onSpeechStart: () => void;
+//           onSpeechEnd: (audio: Float32Array) => void;
+//         }): VadInstance;
+//       };
+//       utils: {
+//         encodeWAV(audio: Float32Array): ArrayBuffer;
+//       };
+//     };
+//   }
+// }
 declare global {
   interface Window {
     webkitAudioContext?: typeof AudioContext;
@@ -41,7 +64,7 @@ export type VadInstance = {
   pause: () => void;
 };
 
-const InputPage = () => {
+const HomePage = () => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
@@ -57,15 +80,6 @@ const InputPage = () => {
   const currentSourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
   const isPlaying = false;
   const audioContext = null;
-  const [showGif, setShowGif] = useState(true);
- 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowGif(false);
-    }, 8000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   const stopCurrentAudio = () => {
     console.log("stopped");
@@ -83,6 +97,24 @@ const InputPage = () => {
     isPlayingRef.current = false;
     audioQueueRef.current = [];
   };
+
+  // const playAudioStream = () => {
+  //   if (isPlaying || audioQueue.length === 0) return;
+
+  //   isPlaying = true;
+  //   const audioBuffer = audioQueue.shift();
+
+  //   const sourceNode = audioContext.createBufferSource();
+  //   sourceNode.buffer = audioBuffer;
+  //   sourceNode.connect(audioContext.destination);
+
+  //   sourceNode.onended = () => {
+  //     isPlaying = false;
+  //     playAudioStream();
+  //   };
+
+  //   sourceNode.start();
+  // };
 
   const playAudioStream = () => {
     if (
@@ -106,26 +138,193 @@ const InputPage = () => {
     sourceNode.start();
   };
 
+  // const resetAudioPlayer = () => {
+  //   console.log(audioQueue);
+  //   // audioQueue = [];
+  //   setAudioQueue([]);
+  //   console.log(audioQueue);
+  //   isPlaying = false;
+  //   playAudioStream();
+  // };
+
   const resetAudioPlayer = () => {
     stopCurrentAudio();
     setTranscript("");
     console.log("Audio player reset on speech start");
   };
 
+  // const sendAudioToServer = async (wavBuffer) => {
+  //   try {
+  //     const audioBase64 = btoa(
+  //       new Uint8Array(wavBuffer).reduce(
+  //         (data, byte) => data + String.fromCharCode(byte),
+  //         ""
+  //       )
+  //     );
+
+  //     const message = {
+  //       type: "audio",
+  //       content: audioBase64,
+  //     };
+  //     console.log(socket);
+  //     console.log(message);
+  //     socket.send(JSON.stringify(message));
+  //     console.log("Audio sent to server");
+  //   } catch (error) {
+  //     console.error("Error sending audio to server:", error);
+  //   }
+  // };
+  const sendAudioToServer = async (wavBuffer: ArrayBuffer) => {
+    try {
+      const audioBase64 = btoa(
+        new Uint8Array(wavBuffer).reduce(
+          (data, byte) => data + String.fromCharCode(byte),
+          ""
+        )
+      );
+      const message = {
+        type: "audio",
+        content: audioBase64,
+      };
+      socket?.send(JSON.stringify(message));
+      console.log("Audio sent to server");
+    } catch (error) {
+      console.error("Error sending audio to server:", error);
+    }
+  };
+  // Use the VAD hook
+
+  // const vad = useMicVAD({
+  //   onFrameProcessed: (probs) => {
+  //     const indicatorColor = interpolateInferno(probs.isSpeech / 2);
+  //     document.body.style.setProperty("--indicator-color", indicatorColor);
+  //   },
+  //   onSpeechStart: () => {
+  //     console.log(audioQueue);
+  //     console.log("Speech start detected");
+  //     resetAudioPlayer();
+  //     setTranscript("");
+  //   },
+  //   onSpeechEnd: async (audio) => {
+  //     console.log("Speech end detected");
+  //     const wavBuffer = window.vad.utils.encodeWAV(audio);
+  //     await sendAudioToServer(wavBuffer);
+  //   },
+  // });
   const vad = useMicVAD({
     onFrameProcessed: (probs) => {
       const indicatorColor = interpolateInferno(probs.isSpeech / 2);
     },
     onSpeechStart: () => {
       console.log("Speech start detected");
-      // resetAudioPlayer();
+      resetAudioPlayer();
     },
     onSpeechEnd: async (audio) => {
       console.log("Speech end detected");
       const wavBuffer = window.vad.utils.encodeWAV(audio);
+      await sendAudioToServer(wavBuffer);
     },
   });
+  // Using useEffect to initialize VAD and WebSocket
+  // useEffect(() => {
+  //   const loadVadScript = () => {
+  //     console.log("Loading VAD script...");
+  //     return new Promise<void>((resolve, reject) => {
+  //       const script = document.createElement("script");
+  //       script.src =
+  //         "https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.13/dist/bundle.min.js";
+  //       script.onload = () => {
+  //         resolve();
+  //         console.log("Successfully loaded VAD script");
+  //       };
+  //       script.onerror = () => {
+  //         reject("Failed to load VAD script");
+  //         console.log("Failed to load VAD script");
+  //       };
+  //       document.head.appendChild(script);
+  //     });
+  //   };
 
+  //   const connectWebSocket = async () => {
+  //     await loadVadScript();
+
+  //     socket.onopen = () => {
+  //       setStatus("CONNECTED");
+  //     };
+
+  //     socket.onmessage = async (event) => {
+  //       if (typeof event.data === "string") {
+  //         try {
+  //           console.log("STRIG");
+  //           const message = JSON.parse(event.data);
+  //           if (message.type === "transcript") {
+  //             console.log("transcript");
+  //             setTranscript((prev) => prev + " " + message.content);
+  //           } else {
+  //             console.warn("Unsupported message type:", message.type);
+  //           }
+  //         } catch (error) {
+  //           console.error("Error parsing JSON:", error);
+  //         }
+  //       } else if (event.data instanceof Blob) {
+  //         console.log("BLOB");
+  //         const arrayBuffer = await event.data.arrayBuffer();
+  //         const audioBuffer = await decodeAudioBuffer(arrayBuffer);
+  //         if (audioBuffer) {
+  //           audioQueue.push(audioBuffer);
+  //           console.log("Audio queue length:", audioQueue);
+  //           playAudioStream();
+  //         }
+  //       }
+  //     };
+
+  //     socket.onerror = () => {
+  //       setStatus("ERROR");
+  //     };
+
+  //     socket.onclose = () => {
+  //       setStatus("DISCONNECTED");
+  //     };
+  //   };
+
+  //   const decodeAudioBuffer = async (arrayBuffer) => {
+  //     try {
+  //       console.log("Decoding audio data...", arrayBuffer);
+  //       console.log(audioContext);
+  //       // audioContext.current.pause();
+  //       audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  //       return await audioContext.decodeAudioData(arrayBuffer);
+  //     } catch (error) {
+  //       console.error("Failed to decode audio data:", error);
+  //       return null;
+  //     }
+  //   };
+
+  //   const playAudioStream = () => {
+  //     if (isPlaying || audioQueue.length === 0) return;
+
+  //     isPlaying = true;
+  //     const audioBuffer = audioQueue.shift();
+
+  //     const sourceNode = audioContext.createBufferSource();
+  //     sourceNode.buffer = audioBuffer;
+  //     sourceNode.connect(audioContext.destination);
+
+  //     sourceNode.onended = () => {
+  //       isPlaying = false;
+  //       playAudioStream();
+  //     };
+
+  //     sourceNode.start();
+  //   };
+
+  //   const initialize = () => {
+  //     connectWebSocket();
+  //     console.log("intlie");
+  //   };
+
+  //   initialize();
+  // }, [socket]); // Empty dependency array ensures this runs once on mount
   useEffect(() => {
     const loadVadScript = () => {
       return new Promise<void>((resolve, reject) => {
@@ -168,14 +367,11 @@ const InputPage = () => {
           if (message.type === "transcript") {
             setTranscript((prev) => prev + " " + message.content);
           }
-          else if(message.type === "response_audio"){
-            console.log("response_audio",message.content.wav_audio_base64);
-            console.log(message.content.reset_audio_buffer)
-          }
         } catch (error) {
           console.error("Error parsing JSON:", error);
         }
       } else if (event.data instanceof Blob) {
+        // stopCurrentAudio(); // Stop current audio before playing new one
         const arrayBuffer = await event.data.arrayBuffer();
         const audioBuffer = await decodeAudioBuffer(arrayBuffer);
         if (audioBuffer) {
@@ -195,9 +391,22 @@ const InputPage = () => {
     };
     initialize();
     return () => {
+      // stopCurrentAudio();
     };
   }, [socket]);
- 
+  // const togglevad = () => {
+  //   if (vadInstance) {
+  //     if (!vadInstance.listening) {
+  //       vadInstance.start();
+  //       setIsListening(true);
+  //       setStatus("running");
+  //     } else {
+  //       vadInstance.pause();
+  //       setIsListening(false);
+  //       setStatus("stopped");
+  //     }
+  //   }
+  // };
   const togglevad = () => {
     if (vadInstance) {
       if (!vadInstance.listening) {
@@ -211,7 +420,6 @@ const InputPage = () => {
       }
     }
   };
-
 
   useEffect(() => {
     resetAudioPlayer();
@@ -234,6 +442,7 @@ const InputPage = () => {
       return;
     }
 
+    //   // connectWebSocket("ws://localhost:8000/ws", (socket) => {
     if (socket) {
       const data = {
         type: "user_details",
@@ -249,74 +458,32 @@ const InputPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex">
-     <div className="w-1/2 bg-gradient-to-br from-purple-900 to-indigo-900 flex items-center justify-center relative">
-        <div className="absolute inset-0 opacity-10" style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1614850715649-1d0106293bd1?q=80&w=1470&auto=format&fit=crop')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}></div>
-        
-        <div className="relative w-64 h-64 flex items-center justify-center">
-          <div className={`absolute transition-opacity duration-500 ${showGif ? 'opacity-100' : 'opacity-0'}`}>
-            <img
-              src={image}
-              alt="Clara AI Avatar Animated"
-              className="w-64 h-64 object-contain"
-            />
-          </div>
-          <div className={`absolute transition-opacity duration-500 ${showGif ? 'opacity-0' : 'opacity-100'}`}>
-            <img
-              src={image1}
-              alt="Clara AI Avatar Static"
-              className="w-64 h-64 object-contain"
-            />
-          </div>
-        </div>
-{/* Animated Transcript */}
-          <div className="flex-1 relative">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 max-w-md">
-              <p className="text-white text-lg leading-relaxed">
-                {transcript}
-                <span className="animate-pulse">|</span>
-              </p>
-            </div>
-            {/* Chat Bubble Triangle */}
-            <div className="absolute left-[-10px] top-4 w-0 h-0 
-              border-t-[10px] border-t-transparent
-              border-r-[10px] border-r-white/10
-              border-b-[10px] border-b-transparent">
-            </div>
-          </div>      </div>
+    <div style={{display: "flex"}}>
+    <div style={{height: "100vh", width: "100vw"}}>
 
-      <div className="w-1/2 bg-white flex items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5" style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=1632&auto=format&fit=crop')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}></div>
-        
-        <Card className="w-full max-w-md p-8 space-y-6 bg-white/90 backdrop-blur-sm shadow-xl m-4">
-        <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-            Welcome to Clara!
-          </h1>
-          <p className="text-center text-gray-600">Let's discover what your palm reveals about you</p>
-        <form  className="space-y-6" onSubmit={handleSubmit}>
+    </div>
+
+    <div className="container mx-auto px-4 min-h-screen flex items-center justify-center">
+      <Card className="w-full max-w-md p-6 space-y-6">
+        <h1 className="text-2xl font-bold text-center text-gray-900">
+          Welcome!
+        </h1>
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-2">
-          <Label htmlFor="name" className="text-gray-700">Your Name</Label>
-          <Input
+            <Label htmlFor="name">Name</Label>
+            <Input
               id="name"
               type="text"
               placeholder="Enter your name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full border-purple-200 focus:border-purple-500"
+              className="w-full"
             />
           </div>
 
           <div className="space-y-2">
-          <Label className="text-gray-700">Gender</Label>
-          <RadioGroup value={gender} onValueChange={setGender} className="gap-4">
+            <Label>Gender</Label>
+            <RadioGroup value={gender} onValueChange={setGender}>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="male" id="male" />
                 <Label htmlFor="male">Male</Label>
@@ -332,7 +499,7 @@ const InputPage = () => {
             </RadioGroup>
           </div>
 
-          <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white" disabled={isConnecting}>
+          <Button type="submit" className="w-full" disabled={isConnecting}>
             {isConnecting ? "Connecting..." : "Continue to Camera"}
           </Button>
         </form>
@@ -342,4 +509,4 @@ const InputPage = () => {
   );
 };
 
-export default InputPage;
+export default HomePage;

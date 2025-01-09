@@ -9,8 +9,6 @@ html {
 }
 
 body {
-  --indicator-color: black;
-  background: radial-gradient(black 55%, var(--indicator-color));
   min-height: 100vh;
   color: white;
   margin: 0;
@@ -58,10 +56,6 @@ button {
   padding: 10px 15px;
   cursor: pointer;
 }
-// button:hover {
-//   color: red;
-//   border-color: red;
-// }
 
 .controlRow {
   display: flex;
