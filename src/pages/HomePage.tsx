@@ -459,6 +459,11 @@ const HomePage = () => {
   };
 
   return (
+    <div style={{display: "flex"}}>
+    <div style={{height: "100vh", width: "100vw"}}>
+
+    </div>
+
     <div className="container mx-auto px-4 min-h-screen flex items-center justify-center">
       <Card className="w-full max-w-md p-6 space-y-6">
         <h1 className="text-2xl font-bold text-center text-gray-900">
@@ -500,6 +505,7 @@ const HomePage = () => {
           </Button>
         </form>
       </Card>
+    </div>
     </div>
   );
 };
