@@ -249,6 +249,7 @@ const ChatPage = () => {
             <img src={`data:image/png;base64,${image}`} alt="Generated Image" />
           ): null)}
         </div>
+        <img src={imageResponse} alt="Captured" />
       </div>
     </div>
   );

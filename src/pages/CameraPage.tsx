@@ -45,6 +45,7 @@ const CameraPage = () => {
   const [transcript, setTranscript] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [checking, setChecking] = useState(false);
+  const [showLiveVideo, setShowLiveVideo] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
   const { name } = location.state || {};
@@ -60,29 +61,14 @@ const CameraPage = () => {
 
   // useEffect(() => {
   //   const isPageRefreshed = !sessionStorage.getItem("pageLoaded");
-    
+
   //   if (isPageRefreshed && !location.state?.name) {
   //     navigate("/");
   //   }
-  
+
   //   // Mark the page as loaded
   //   sessionStorage.setItem("pageLoaded", "true");
   // }, [navigate, location.state]);
-
-  // const RedirectOnRefresh = () => {
-  //   const navigate = useNavigate();
-  
-  //   useEffect(() => {
-  //     const navigationEntries = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[];
-  //     if (navigationEntries[0]?.type === "reload") {
-  //       navigate("/");
-  //     }
-  //   }, [navigate]);
-  
-  //   return null;
-  // };
-  
-  
 
   const stopCurrentAudio = () => {
     console.log("stopped");
@@ -214,11 +200,14 @@ const CameraPage = () => {
             stopCurrentAudio();
             console.log("Palm image", capturedImage);
             console.log(temp);
-            console.log("NAVIAGTED")
-            console.log(imageUrl)
-            console.log(response)
-            navigate("/chat", { state: { imageResponse: response.content.image } });
+            console.log("NAVIAGTED");
+            console.log(imageUrl);
+            console.log(response);
+            navigate("/chat", {
+              state: { imageResponse: response.content.image },
+            });
           } else if (response.content.status === "No Palm detected") {
+            setShowLiveVideo(true);
             toast.error("Palm not detected. Please try again.");
           }
         } catch (error) {
@@ -294,6 +283,7 @@ const CameraPage = () => {
   }, [name, navigate]);
 
   const captureImage = () => {
+    setShowLiveVideo(false);
     if (!videoRef.current) return;
 
     const canvas = document.createElement("canvas");
@@ -305,7 +295,7 @@ const CameraPage = () => {
       context.drawImage(videoRef.current, 0, 0);
       imageUrl = canvas.toDataURL("image/png");
       setCapturedImage(imageUrl);
-      console.log(imageUrl)
+      console.log(imageUrl);
       temp = imageUrl;
       toast.success("Image captured!");
 
@@ -326,6 +316,12 @@ const CameraPage = () => {
       // navigate("/chat");
     }
   };
+  
+  useEffect(() => {
+    if (showLiveVideo && videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+    }
+  }, [showLiveVideo, stream]);
 
   return (
     // <div className={styles.scanner}>
@@ -336,14 +332,34 @@ const CameraPage = () => {
         </h1>
 
         <div className="relative aspect-video rounded-lg overflow-hidden bg-black">
-          <div className={styles.scanner}>
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              className={`w-full h-full object-cover1 ${styles.scanner}`}
-            />
-          </div>
+          {showLiveVideo ? (
+            <div className="relative aspect-video rounded-lg overflow-hidden bg-black">
+            <div className={styles.scanner}>
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                className={`w-full h-full object-cover1 ${styles.scanner}`}
+              />
+            </div>
+            </div>
+          ) : (
+            <div className="relative aspect-video rounded-lg overflow-hidden bg-black">
+              <img
+                src={capturedImage}
+                alt="Captured"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+          {/* // <div className={styles.scanner}>
+          //   <video
+          //     ref={videoRef}
+          //     autoPlay
+          //     playsInline
+          //     className={`w-full h-full object-cover1 ${styles.scanner}`}
+          //   />
+          // </div> */}
         </div>
 
         <Button
@@ -355,7 +371,7 @@ const CameraPage = () => {
           {isConnecting ? "Uploading..." : "Capture Image"}
         </Button>
 
-        {capturedImage && (
+        {/* {capturedImage && (
           <div className="space-y-4">
             <h2 className="text-xl font-semibold text-gray-900">
               Captured Image
@@ -369,11 +385,10 @@ const CameraPage = () => {
             </div>
             <h1>{serverResponse}</h1>
           </div>
-        )}
+        )} */}
       </Card>
-      <img src={capturedImage} alt="Captured" />
+      {/* <img src={capturedImage} alt="Captured" /> */}
     </div>
-    // </div>
   );
 };
 
