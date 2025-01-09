@@ -125,18 +125,19 @@ async def websocket_endpoint(websocket: WebSocket):
                                 print("Received audio delta from OpenAI")
                                 audio_bytes = base64.b64decode(event.delta)
                                 wav_audio = convert_pcm16_to_wav(audio_bytes)
-                                wav_audio_base64 = base64.b64encode(wav_audio).decode("utf-8")
-                                audio_message_dict = {
-                                    "type": "response_audio",
-                                    "content": {
-                                        "reset_audio_buffer": not (past_response_id == event.response_id),
-                                        "wav_audio_base64": wav_audio_base64,
-                                    },
-                                }
-                                past_response_id = event.response_id
-                                print(audio_message_dict["content"]["reset_audio_buffer"])
-                                await websocket.send_text(json.dumps(audio_message_dict))
-    
+                                await websocket.send_bytes(wav_audio)
+                                # wav_audio_base64 = base64.b64encode(wav_audio).decode("utf-8")
+                                # audio_message_dict = {
+                                #     "type": "response_audio",
+                                #     "content": {
+                                #         "reset_audio_buffer": not (past_response_id == event.response_id),
+                                #         "wav_audio_base64": wav_audio_base64,
+                                #     },
+                                # }
+                                # past_response_id = event.response_id
+                                # print(audio_message_dict["content"]["reset_audio_buffer"])
+                                # await websocket.send_text(json.dumps(audio_message_dict))
+                                
                             elif event.type == "response.text.done":
                                 print("Text response done")
                             elif event.type == "response.created":
@@ -220,7 +221,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     if extracted_palm_details.status == ExtractStatus.PALM_DETECTED:
                         await connection.session.update(
                             session={
-                                "instructions": get_palm_astro_prompt(extracted_palm_details.description, user_info["name"]),
+                                "instructions": get_palm_astro_prompt(extracted_palm_details.description, user_info["name"], user_info["gender"]),
                             }
                         )
                         await connection.response.create()
