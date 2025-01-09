@@ -368,6 +368,10 @@ const InputPage = () => {
           if (message.type === "transcript") {
             setTranscript((prev) => prev + " " + message.content);
           }
+          else if(message.type === "response_audio"){
+            console.log("response_audio",message.content.wav_audio_base64);
+            console.log(message.content.reset_audio_buffer)
+          }
         } catch (error) {
           console.error("Error parsing JSON:", error);
         }
