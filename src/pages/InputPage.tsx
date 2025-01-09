@@ -64,7 +64,7 @@ export type VadInstance = {
   pause: () => void;
 };
 
-const HomePage = () => {
+const InputPage = () => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
@@ -510,4 +510,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default InputPage;

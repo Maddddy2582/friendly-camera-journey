@@ -90,6 +90,7 @@ async def websocket_endpoint(websocket: WebSocket):
         async with client.beta.realtime.connect(
             model="gpt-4o-mini-realtime-preview"
         ) as connection:
+            past_response_id = None 
             await connection.session.update(
                 session={
                     "instructions": f"You are an humorous English assistant. Your name is {PALMIST_NAME}. Your only goal is to Ask user to enter the details and not do any palmistry. First welcome the user with greet message 'Welcome to palmistry AI' with your name. You only need to ask user to enter user details in the UI. The UI will have text box for name, radio button for gender. Ask user to enter the details.",
@@ -109,6 +110,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 """
                 Handles events from the OpenAI connection asynchronously.
                 """
+                nonlocal past_response_id
                 try:
                         async for event in connection:
                             if event.type == "response.audio_transcript.delta":
@@ -119,24 +121,39 @@ async def websocket_endpoint(websocket: WebSocket):
                                 await websocket.send_text(json.dumps(message_dict))
     
                             elif event.type == "response.audio.delta":
+                                print(event.item_id, event.response_id)
                                 print("Received audio delta from OpenAI")
                                 audio_bytes = base64.b64decode(event.delta)
                                 wav_audio = convert_pcm16_to_wav(audio_bytes)
-                                await websocket.send_bytes(wav_audio)
+                                wav_audio_base64 = base64.b64encode(wav_audio).decode("utf-8")
+                                audio_message_dict = {
+                                    "type": "response_audio",
+                                    "content": {
+                                        "reset_audio_buffer": not (past_response_id == event.response_id),
+                                        "wav_audio_base64": wav_audio_base64,
+                                    },
+                                }
+                                past_response_id = event.response_id
+                                print(audio_message_dict["content"]["reset_audio_buffer"])
+                                await websocket.send_text(json.dumps(audio_message_dict))
     
                             elif event.type == "response.text.done":
                                 print("Text response done")
+                            elif event.type == "response.created":
+                                if not past_response_id:
+                                    past_response_id = event.response.id
+                                print("response created", event.response.id)
     
                             elif event.type == "response.function_call_arguments.done":
                                 # check tool whether generate image or stop image
                                 image_task: asyncio.Task
                                 if list(json.loads(event.arguments).keys())[0] == "user_question":
-                                    await connection.session.update(
-                                        session={
-                                            "instructions": "You are an English assistant to ask user stop image generation or you ask about your palm",
-                                            "tools": [stop_generate_image_based_on_the_prompt_tool],
-                                        }
-                                    )
+                                    # await connection.session.update(
+                                    #     session={
+                                    #         "instructions": "You are an English assistant to respond if user asks stop image generation or you ask about your palm",
+                                    #         "tools": [stop_generate_image_based_on_the_prompt_tool],
+                                    #     }
+                                    # )
                                     await websocket.send_text(json.dumps({"type": "currently_image_generating", "content": "please wait"}))
                                     if user_info and extracted_palm_details.status == ExtractStatus.PALM_DETECTED:
                                         arguments = json.loads(event.arguments)
@@ -168,6 +185,7 @@ async def websocket_endpoint(websocket: WebSocket):
  
             # Start OpenAI event handler as a background task
             event_task = asyncio.create_task(handle_openai_events())
+            await connection.response.create()
  
             while True:
                 data = await websocket.receive_text()
@@ -183,26 +201,12 @@ async def websocket_endpoint(websocket: WebSocket):
                 
                     await connection.session.update(
                         session={
-                            "instructions": f"You are an English assistant to ask, to show user palm in front of his camera and click Take photo button, user name your are talking is : {user_info['name']}, feel free to call the user by name",
+                            "instructions": f"You are an humorous English assistant. Your name is {PALMIST_NAME}. Your only goal is to Ask user to show palm in front of his camera and click Take photo button, user name your are talking is : {user_info['name']}, feel free to call the user by name. Ask user to take the photo",
                         }
                     )
-                    await connection.conversation.item.create(
-                            item={
-                                "type": "message",
-                                "role": "user",
-                                "content": [
-                                    {
-                                        "type": "text",
-                                        "audio": "Hi",
-                                    }
-                                ],
-                            }
-                        )
                     await connection.response.create()
-                    # if event_task.done():
-                    # asyncio.create_task(handle_openai_events())
                 elif message["type"] == "palm_image":
-                    image_content = message["content"]
+                    image_content: str = message["content"]
                     extracted_palm_details = get_palm_details(image_content["imageURL"])
                     print(f"Extracted palm details: {extracted_palm_details}")
                     message_dict = {
@@ -219,44 +223,17 @@ async def websocket_endpoint(websocket: WebSocket):
                                 "instructions": get_palm_astro_prompt(extracted_palm_details.description, user_info["name"]),
                             }
                         )
-                        # await connection.conversation.item.create(
-                        #     item={
-                        #         "type": "message",
-                        #         "role": "user",
-                        #         "content": [
-                        #             {
-                        #                 "type": "input_text",
-                        #                 "audio": "Complete uploading the image of the palm",
-                        #             }
-                        #         ],
-                        #     }
-                        # )
-                        # await connection.response.create()
-                        # if event_task.done():
-                        #     asyncio.create_task(handle_openai_events())
+                        await connection.response.create()
                     else:
                         await connection.session.update(
                             session={
                                 "instructions": "You are an English assistant to ask user to 'show palm in front of his camera and click Take photo button. Palm not detected. Please try again.'",
                             }
                         )
-                        # await connection.conversation.item.create(
-                        #     item={
-                        #         "type": "message",
-                        #         "role": "user",
-                        #         "content": [
-                        #             {
-                        #                 "type": "input_text",
-                        #                 "audio": "Complete uploading the image of the palm",
-                        #             }
-                        #         ],
-                        #     }
-                        # )
-                        # await connection.response.create()
-                        # if event_task.done():
-                        #     asyncio.create_task(handle_openai_events())
+                        await connection.response.create()
                     await websocket.send_text(json.dumps(message_dict))
- 
+
+
                 elif message["type"] == "audio":
                     print("Received audio message")
  
