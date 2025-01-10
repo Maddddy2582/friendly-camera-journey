@@ -5,6 +5,7 @@ import json
 import asyncio
 from dotenv import load_dotenv
 import time
+from send_mail import send_mail_to_user 
 
 # Record start time
 
@@ -287,6 +288,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     #     if file.tell() == 0:
                     #         writer.writerow(["Name", "Time (seconds)"])
                     # writer.writerow([user_info["name"], str(total_spent_time)])
+                    send_mail_to_user()
                     print("Ended")
 
                 if event_task.done():
