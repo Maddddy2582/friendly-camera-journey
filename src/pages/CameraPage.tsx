@@ -210,7 +210,7 @@ const CameraPage = () => {
             console.log("NAVIAGTED");
             console.log(imageUrl);
             console.log(message);
-            navigate("/face", {
+            navigate("/chat", {
               state: { imageResponse: message.content.image, name:name },
             });
           } else if (message.content.status === "No Palm detected") {
