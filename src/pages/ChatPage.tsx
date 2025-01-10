@@ -99,7 +99,7 @@ const ChatPage = () => {
       if (audioQueueRef.current.length === 0) {
         setIsMuted(false);
         setShowGif(false);
-        // vad.start();
+        vad.start();
 
         console.log("🔊❌❌❌ Audio playback ended");
       }
