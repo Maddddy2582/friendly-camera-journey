@@ -230,13 +230,12 @@ async def websocket_endpoint(websocket: WebSocket):
                     await websocket.send_text(json.dumps(message_dict))
                     print(f"status: {extracted_palm_details.status}")
                     if extracted_palm_details.status == ExtractStatus.PALM_DETECTED:
-                        if user_info["gender"] == "male":
-                            await connection.session.update(
-                                session={
-                                    "instructions": get_palm_astro_prompt(extracted_palm_details.description, user_info["name"], user_info["gender"], palmist_name=PALMIST_NAME),
-                                    "voice": "coral",
-                                }
-                            )
+                        await connection.session.update(
+                            session={
+                                "instructions": get_palm_astro_prompt(extracted_palm_details.description, user_info["name"], user_info["gender"], palmist_name=PALMIST_NAME),
+                                "voice": "coral",
+                            }
+                        )
                         await connection.response.create()
                     else:
                         await connection.session.update(
