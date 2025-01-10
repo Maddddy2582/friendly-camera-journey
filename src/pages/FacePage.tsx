@@ -211,9 +211,9 @@ const FacePage = () => {
             console.log("NAVIAGTED");
             console.log(imageUrl);
             console.log(message);
-            navigate("/chat", {
-              state: { imageResponse: message.content.image, name: name },
-            });
+            // navigate("/chat", {
+            //   state: { imageResponse: message.content.image, name: name },
+            // });
           } else if (message.content.status === "No Face detected") {
             setShowLiveVideo(true);
             toast.error("Palm not detected. Please try again.");
@@ -329,7 +329,7 @@ const FacePage = () => {
         },
       };
       console.log(socket);
-      console.log(JSON.stringify(data));
+      console.log("Data sent to BE: ",JSON.stringify(data));
       socket.send(JSON.stringify(data));
     }
   };
