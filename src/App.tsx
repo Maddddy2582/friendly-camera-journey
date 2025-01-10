@@ -9,6 +9,7 @@ import CameraPage from "./pages/CameraPage";
 import ChatPage from "./pages/ChatPage";
 import InputPage from "./pages/InputPage";
 import Thankyou from "./pages/ThankYou/ThankYou";
+import FacePage from "./pages/FacePage";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/camera" element={<CameraPage />} />
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/thankyou" element={<Thankyou />} />
+            <Route path="/face" element={<FacePage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>

@@ -44,7 +44,7 @@ const ChatPage = () => {
   const [vadInstance, setVadInstance] = useState<VadInstance | null>(null);
   const [image, setImage] = useState("");
   const [generating, setGenerating] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [showGif, setShowGif] = useState(true);
 
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -344,19 +344,19 @@ const ChatPage = () => {
     };
   }, [socket]);
 
-  // const toggleMic = () => {
-  //   console.log(`🎤 Microphone ${!isMuted ? "muted" : "unmuted"}`);
-  //   setIsMuted(!isMuted);
-  //   if (!isMuted) {
-  //     console.log("⏸️ Pausing voice detection");
-  //     vad.pause();
-  //     setIsListening(false);
-  //   } else {
-  //     console.log("▶️ Starting voice detection");
-  //     vad.start();
-  //     setIsListening(true);
-  //   }
-  // };
+  const toggleMic = () => {
+    console.log(`🎤 Microphone ${!isMuted ? "muted" : "unmuted"}`);
+    setIsMuted(!isMuted);
+    if (!isMuted) {
+      console.log("⏸️ Pausing voice detection");
+      vad.pause();
+      setIsListening(false);
+    } else {
+      console.log("▶️ Starting voice detection");
+      vad.start();
+      setIsListening(true);
+    }
+  };
 
   const { name } = location.state || {};
   console.log("CHatPage: ", name);
@@ -429,7 +429,7 @@ const ChatPage = () => {
             </p>
 
             <button
-              // onClick={toggleMic}
+              onClick={toggleMic}
               className="p-3 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
               aria-label={isMuted ? "Unmute microphone" : "Mute microphone"}
             >
