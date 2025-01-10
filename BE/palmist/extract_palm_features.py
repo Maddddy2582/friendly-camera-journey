@@ -64,7 +64,7 @@ def get_palm_details(base64_image: str, prompt: str, name: str) -> ExtractEvent:
         ],
         response_format=response_format
     )
-    return ExtractEvent.model_validate_json(response.choices[0].message.content)
+    return response_format.model_validate_json(response.choices[0].message.content)
 
 if __name__ == "__main__":
     with open("palm_images/face.jpeg", "rb") as image_file:
