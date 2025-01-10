@@ -89,7 +89,7 @@ def convert_pcm16_to_wav(pcm16_data, sample_rate=24000, num_channels=1):
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    start_time = time.time()
+    conversation = []
     try: 
         user_info = {}
         extracted_palm_details = ExtractEvent(status=ExtractStatus.NO_PALM_DETECTED, description="Palm not captured")
@@ -109,14 +109,22 @@ async def websocket_endpoint(websocket: WebSocket):
                 """
                 nonlocal past_response_id
                 try:
+                        
                         async for event in connection:
+                            # print(event)
                             if event.type == "response.audio_transcript.delta":
                                 message_dict = {
                                     "type": "transcript",
                                     "content": event.delta,
                                 }
                                 await websocket.send_text(json.dumps(message_dict))
-    
+                            
+                            elif event.type == "conversation.item.input_audio_transcription.completed":
+                                    print("response -- add to dictionary")
+                                    print(event)
+                                    # conversation.append({"user": content[0]["transcript"]})
+                                    # print(conversation)
+        
                             elif event.type == "response.audio.delta":
                                 print(event.item_id, event.response_id)
                                 print("Received audio delta from OpenAI")
@@ -177,7 +185,9 @@ async def websocket_endpoint(websocket: WebSocket):
 
                             elif event.type == "session.updated":
                                 print(event)
- 
+
+                            else:
+                                print(event)
                 except Exception as e:
                     print(f"Error in OpenAI event handler: {e}")
  
@@ -205,9 +215,6 @@ async def websocket_endpoint(websocket: WebSocket):
                 elif message["type"] == "user_details":
                     user_info = message["content"]
                     print(f"Received user info: {user_info}")
-                    # await connection.session.update(
-                    #     session={"instructions": ""}
-                    # )
                     print(user_info['name'])
                 
                     await connection.session.update(
@@ -255,17 +262,6 @@ async def websocket_endpoint(websocket: WebSocket):
                         base64.b64decode(message["content"])
                     )
                     pcm16_audio_base64 = base64.b64encode(pcm16_audio).decode("utf-8")
- 
-                    # Send the PCM 16-bit audio to OpenAI
-
-                    # await connection.session.update(
-                    #         session={
-                    #             "tools": [
-                    #                 generate_image_based_on_the_prompt_tool
-                    #             ],
-                    #         }
-
-                    #     )
 
                     await connection.conversation.item.create(
                         item={
@@ -295,26 +291,10 @@ async def websocket_endpoint(websocket: WebSocket):
                     #         }
                     #     )
                     # await connection.response.create()
-                    send_mail_to_user()
                     print("Ended")
 
                 if event_task.done():
                     event_task = asyncio.create_task(handle_openai_events())
-
-                # elif message["type"] == "image_generation":
-                #     await connection.session.update(
-                #             session={
-                #                 "instructions": "You are an English assistant to ask user to write a prompt for the image generation. Read through some sample prompt examples :{'how is future partner look like?', 'how is my future house look like?', 'how is my future car look like?', 'how is my future pet look like?', 'how is my future job look like?', 'how is my future vacation look like?','how is my future friend}",
-                #             }
-                #         )
-
-                # elif message["type"] == "image_generation_prompt":    
-                #     content = message["content"]
-                #     if extracted_palm_details.description != "Palm not captured":
-                #         image_url = generate_image_based_on_the_prompt(content["prompt"], extracted_palm_details.description, user_info["gender"])
-                #         await websocket.send_text(json.dumps({"type": "image_generated", "content": image_url}))
-                    # else:
-                    #     await websocket.send_text(json.dumps({"type": "image_generated", "content": "Palm not captured"}))
                         
  
     except Exception as e:
