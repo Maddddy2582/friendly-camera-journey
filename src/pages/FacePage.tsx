@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Camera } from "lucide-react";
 import { useWebSocket } from "@/contexts/WebSocketContext";
 import styles from "./CameraPage.module.scss";
-import {  Sparkles, Hand } from "lucide-react";
+import { Sparkles, Hand } from "lucide-react";
 
 declare global {
   interface Window {
@@ -42,6 +42,8 @@ const FacePage = () => {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [status, setStatus] = useState("LOADING");
   const [showLiveVideo, setShowLiveVideo] = useState(true);
+  const [image, setImage] = useState("");
+  const [generating, setGenerating] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { name } = location.state || {};
@@ -98,7 +100,6 @@ const FacePage = () => {
     };
     sourceNode.start();
   };
-
 
   useEffect(() => {
     const loadVadScript = () => {
@@ -164,7 +165,7 @@ const FacePage = () => {
     // const handleWebSocketMessage = async (event: MessageEvent) => {
     //   if (typeof event.data === "string") {
     //     try {
-        
+
     //       const response = JSON.parse(event.data);
     //       setServerResponse(response.content.description);
     //       console.log(response);
@@ -185,8 +186,8 @@ const FacePage = () => {
     //     } catch (error) {
     //       console.error("Error parsing JSON:", error);
     //     }
-    //   } 
-    // 
+    //   }
+    //
     // else if (event.data instanceof Blob) {
     //     const arrayBuffer = await event.data.arrayBuffer();
     //     const audioBuffer = await decodeAudioBuffer(arrayBuffer);
@@ -203,37 +204,44 @@ const FacePage = () => {
           const message = JSON.parse(event.data);
           setServerResponse(message.content.description);
           console.log(message);
-          if (message.content.status === "Palm detected") {
+          if (message.content.status === "Face detected") {
             stopCurrentAudio();
             console.log("Palm image", capturedImage);
             console.log(temp);
             console.log("NAVIAGTED");
             console.log(imageUrl);
             console.log(message);
-            navigate("/chat", {
-              state: { imageResponse: message.content.image, name:name },
-            });
-          } else if (message.content.status === "No Palm detected") {
+            // navigate("/chat", {
+            //   state: { imageResponse: message.content.image, name: name },
+            // });
+          } else if (message.content.status === "No Face detected") {
             setShowLiveVideo(true);
             toast.error("Palm not detected. Please try again.");
-          }
-            else if (message.type === "response_audio") {
+          } else if (message.type === "currently_image_generating") {
+            setGenerating(true);
+            console.log("🎨 Image generation started");
+          } else if (message.type === "image_generated") {
+            console.log("✨ Image generation completed");
+            const cleanedImage = message.content.replace(/^"|"$/g, "");
+            setImage(cleanedImage);
+            setGenerating(false);
+          } else if (message.type === "response_audio") {
             console.log("📥 Received audio response");
             const { reset_audio_buffer, wav_audio_base64 } = message.content;
-  
+
             if (reset_audio_buffer) {
               console.log("🔄 Resetting audio buffer");
               resetAudioPlayer();
               stopCurrentAudio();
-              console.log("RESETED AUDIO STREAM")
-              return
+              console.log("RESETED AUDIO STREAM");
+              return;
             }
-  
+
             if (wav_audio_base64) {
               console.log("🎵 Processing audio data");
               const arrayBuffer = base64ToArrayBuffer(wav_audio_base64);
               const audioBuffer = await decodeAudioBuffer(arrayBuffer);
-              
+
               if (audioBuffer) {
                 console.log("🔊 Adding decoded audio to playback queue");
                 audioQueueRef.current.push(audioBuffer);
@@ -315,13 +323,13 @@ const FacePage = () => {
       }
 
       const data = {
-        type: "palm_image",
+        type: "avatar",
         content: {
           imageURL: imageUrl,
         },
       };
       console.log(socket);
-      console.log(JSON.stringify(data));
+      console.log("Data sent to BE: ",JSON.stringify(data));
       socket.send(JSON.stringify(data));
     }
   };
@@ -332,9 +340,9 @@ const FacePage = () => {
     }
   }, [showLiveVideo, stream]);
 
-    useEffect(() => {
-      resetAudioPlayer();
-    }, []);
+  useEffect(() => {
+    resetAudioPlayer();
+  }, []);
 
   return (
     <div className={`min-h-screen py-12 px-4 ${styles.mysticGlow}`}>
@@ -347,41 +355,59 @@ const FacePage = () => {
             </h1>
             <Sparkles className="w-8 h-8 text-purple-400" />
           </div>
-          
+
           <p className="text-center text-gray-300 max-w-md mx-auto">
-            Greetings {name}, let the ancient wisdom meet modern technology. 
+            Greetings {name}, let the ancient wisdom meet modern technology.
             Position your face facing up the camera for your digital reading.
           </p>
-        <div className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-black/40 ${styles.palmFrame}`} style={{height: "400px", width:"100%"}}>
-                  {showLiveVideo ? (
-            <div className="relative aspect-video rounded-lg overflow-hidden bg-black" style={{height: "100%"}}>
-            <div className={styles.scanner}>
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                className={`w-full h-full object-cover1 ${styles.scanner}`}
-              />
-            </div>
-            </div>
-          ) : (
-            <div className="relative aspect-video rounded-lg overflow-hidden bg-black" style={{height: "100%"}}>
-              <img
-                src={capturedImage}
-                alt="Captured"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
-        </div>
-        <Button
-          onClick={captureImage}
-          className="w-full flex items-center justify-center gap-2"
-          disabled={isConnecting}
-        >
-          <Camera className="w-5 h-5" />
-          {isConnecting ? "Uploading..." : "Capture Image"}
-        </Button>
+          <div
+            className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-black/40 ${styles.palmFrame}`}
+            style={{ height: "400px", width: "100%" }}
+          >
+            {showLiveVideo ? (
+              <div
+                className="relative aspect-video rounded-lg overflow-hidden bg-black"
+                style={{ height: "100%" }}
+              >
+                <div className={styles.scanner}>
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    className={`w-full h-full object-cover1 ${styles.scanner}`}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div
+                className="relative aspect-video rounded-lg overflow-hidden bg-black"
+                style={{ height: "100%" }}
+              >
+                <img
+                  src={capturedImage}
+                  alt="Captured"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+          </div>
+          <Button
+            onClick={captureImage}
+            className="w-full flex items-center justify-center gap-2"
+            disabled={isConnecting}
+          >
+            <Camera className="w-5 h-5" />
+            {isConnecting ? "Uploading..." : "Capture Image"}
+          </Button>
+          {generating ? (
+            <div className="loader">Loading...</div>
+          ) : image ? (
+            <img
+              src={`data:image/png;base64,${image}`}
+              alt="Generated Image"
+              className="max-w-full max-h-full object-contain"
+            />
+          ) : null}
         </div>
       </Card>
     </div>

@@ -389,11 +389,12 @@ async def websocket_endpoint(websocket: WebSocket):
                             }
                         )
                         await connection.response.create()
-                        asyncio.create_task(
-                            handle_generate_avatar_event(
-                                base64.b64decode(image_content)
-                            )
-                        )
+                        image_base64 = image_content["imageURL"].strip('"')
+                        # padding_len = len(image_base64) % 4
+                        # image_base64 += padding_len * '='
+                        image_base64 += "=" * ((4 - len(image_base64) % 4) % 4)
+                        print(base64.b64decode(image_base64))
+                        asyncio.create_task(handle_generate_avatar_event())
                     else:
                         await connection.session.update(
                             session={

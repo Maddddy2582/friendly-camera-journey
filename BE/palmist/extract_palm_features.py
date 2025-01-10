@@ -22,7 +22,7 @@ class ExtractEventFace(BaseModel):
         status: ExtractStatusFace = Field(description="The status of the extraction")
         description: str = Field(description="The extracted details from the face image")
 
-def get_palm_details(base64_image: str, prompt: str, name: str) -> ExtractEvent:
+def get_palm_details(base64_image: str, prompt: str, name: str):
     # with open(image_file, "rb") as image_file:
     # with open("received_image.png", "wb") as file:                         
     #      file.write(base64.b64decode(image_binary))
@@ -64,7 +64,7 @@ def get_palm_details(base64_image: str, prompt: str, name: str) -> ExtractEvent:
         ],
         response_format=response_format
     )
-    return ExtractEvent.model_validate_json(response.choices[0].message.content)
+    return response_format.model_validate_json(response.choices[0].message.content)
 
 if __name__ == "__main__":
     with open("palm_images/face.jpeg", "rb") as image_file:
