@@ -35,7 +35,7 @@ export type VadInstance = {
   pause: () => void;
 };
 
-const CameraPage = () => {
+const FacePage = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [serverResponse, setServerResponse] = useState<string | null>(null);
@@ -350,7 +350,7 @@ const CameraPage = () => {
           
           <p className="text-center text-gray-300 max-w-md mx-auto">
             Greetings {name}, let the ancient wisdom meet modern technology. 
-            Position your palm facing up the camera for your digital reading.
+            Position your face facing up the camera for your digital reading.
           </p>
         <div className={`relative aspect-[4/3] rounded-xl overflow-hidden bg-black/40 ${styles.palmFrame}`} style={{height: "400px", width:"100%"}}>
                   {showLiveVideo ? (
@@ -388,4 +388,4 @@ const CameraPage = () => {
   );
 };
 
-export default CameraPage;
+export default FacePage;
