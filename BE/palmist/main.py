@@ -14,7 +14,7 @@ from openai import AsyncOpenAI
 from fastapi import FastAPI, WebSocket
 from pydub import AudioSegment
 from extract_palm_features import get_palm_details, ExtractEvent, ExtractStatus
-from prompts import get_palm_astro_prompt, WELCOME_PROMPT, PHOTO_CAPTURE_PROMPT
+from prompts import get_palm_astro_prompt, WELCOME_PROMPT, PHOTO_CAPTURE_PROMPT, PHOTO_RE_CAPTURE_PROMPT
 from image_generation import generate_image_based_on_the_prompt
  
 client = AsyncOpenAI()
@@ -159,7 +159,7 @@ async def websocket_endpoint(websocket: WebSocket):
                                 else:
                                     await connection.session.update(
                                         session={
-                                            "instructions": get_palm_astro_prompt(extracted_palm_details.description, user_info["name"]),
+                                            "instructions": get_palm_astro_prompt(extracted_palm_details.description, user_info["name"], palmist_name=PALMIST_NAME),
                                             "tools": [generate_image_based_on_the_prompt_tool],
                                         }
                                     )
@@ -228,11 +228,12 @@ async def websocket_endpoint(websocket: WebSocket):
                         },
                     }
                     await websocket.send_text(json.dumps(message_dict))
+                    print(f"status: {extracted_palm_details.status}")
                     if extracted_palm_details.status == ExtractStatus.PALM_DETECTED:
                         if user_info["gender"] == "male":
                             await connection.session.update(
                                 session={
-                                    "instructions": get_palm_astro_prompt(extracted_palm_details.description, user_info["name"], user_info["gender"]),
+                                    "instructions": get_palm_astro_prompt(extracted_palm_details.description, user_info["name"], user_info["gender"], palmist_name=PALMIST_NAME),
                                     "voice": "coral",
                                 }
                             )
@@ -240,7 +241,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     else:
                         await connection.session.update(
                             session={
-                                "instructions": "You are an English assistant to ask user to 'show palm in front of his camera and click Take photo button. Palm not detected. Please try again.'",
+                                "instructions": PHOTO_RE_CAPTURE_PROMPT.format(palmist_name=PALMIST_NAME, user_name=user_info["name"]),
                             }
                         )
                         await connection.response.create()
@@ -280,8 +281,15 @@ async def websocket_endpoint(websocket: WebSocket):
                     )
                     await connection.response.create()
                 elif message["type"] == "end":
+                    end_time = time.time()
+                    total_spent_time = end_time - start_time
+                    with open('log.csv', mode='a', newline='') as file:
+                        writer = csv.writer(file)
+                        if file.tell() == 0:
+                            writer.writerow(["Name", "Time (seconds)"])
+                    writer.writerow([user_info["name"], str(total_spent_time)])
                     print("Ended")
-                    break
+                    continue
 
                 if event_task.done():
                     event_task = asyncio.create_task(handle_openai_events())
@@ -306,14 +314,6 @@ async def websocket_endpoint(websocket: WebSocket):
         print(f"Error: {e}")
         raise e
     finally:
-        end_time = time.time()
-        total_spent_time = end_time - start_time
-        with open('log.csv', mode='a', newline='') as file:
-            writer = csv.writer(file)
-            if file.tell() == 0:
-                writer.writerow(["Name", "Time (seconds)"])
-            
-            writer.writerow(user_info["name"], str(total_spent_time))
         await websocket.close()
     
 
