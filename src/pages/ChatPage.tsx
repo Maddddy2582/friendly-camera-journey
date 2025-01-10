@@ -391,8 +391,10 @@ const ChatPage = () => {
         </div>
         <Button
           onClick={() => {
-            navigate("/thankyou", { state: { name: name } });
             socket.send(JSON.stringify({ type: "end" }));
+            resetAudioPlayer();
+            console.log("RESETED AUDIO STREAM")
+            navigate("/thankyou", { state: { name: name } });
           }}
           className="pr-9 pl-9 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors w-10 self-end"
         >
