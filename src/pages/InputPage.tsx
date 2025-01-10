@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { useWebSocket } from "@/contexts/WebSocketContext";
 import image from "../../public/bot-talking.gif";
 import image1 from "../../public/bot_not_talking.png";
+import { NAME_LIST } from "./constants";
+import styles from "./inputPage.module.scss";
 
 declare global {
   interface Window {
@@ -192,7 +194,9 @@ const InputPage = () => {
         try {
           const message = JSON.parse(event.data);
           if (message.type === "transcript") {
-            setTranscript((prev) => prev + " " + message.content);
+            setTranscript(
+              (prev) => prev + " " + message.content.wav_audio_base64
+            );
           } else if (message.type === "response_audio") {
             console.log("📥 Received audio response");
             const { reset_audio_buffer, wav_audio_base64 } = message.content;
@@ -364,11 +368,19 @@ const InputPage = () => {
               <Input
                 id="name"
                 type="text"
+                list="usersName"
                 placeholder="Enter your name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full border-purple-200 focus:border-purple-500"
               />
+              <datalist id="usersName" className={styles.datalist}>
+                {NAME_LIST.sort().map((name, index) => (
+                  <option key={index} value={name}>
+                    {name}
+                  </option>
+                ))}
+              </datalist>
             </div>
 
             <div className="space-y-2">
