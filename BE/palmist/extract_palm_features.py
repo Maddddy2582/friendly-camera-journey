@@ -10,8 +10,8 @@ class ExtractStatus(str, enum.Enum):
     NO_PALM_DETECTED = "No Palm detected"
 
 class ExtractStatusFace(str, enum.Enum):
-    PALM_DETECTED = "Face detected"
-    NO_PALM_DETECTED = "No Face detected"
+    FACE_DETECTED = "Face detected"
+    NO_FACE_DETECTED = "No Face detected"
 
 
 class ExtractEvent(BaseModel):

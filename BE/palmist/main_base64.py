@@ -118,7 +118,9 @@ async def websocket_endpoint(websocket: WebSocket):
                             if event.type == "response.audio_transcript.delta":
                                 message_dict = {
                                     "type": "transcript",
-                                    "content": event.delta,
+                                    "content":{ 
+                                      "reset_audio_buffer": not (past_response_id == event.response_id),
+                                      "wav_audio_base64" : event.delta},
                                 }
                                 await websocket.send_text(json.dumps(message_dict))
     
