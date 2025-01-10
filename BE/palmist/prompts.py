@@ -173,11 +173,21 @@ You know there are several lines in our palms, and each reveals a bit about thei
         "No palm image detected in the give image."
 """
 
-def get_palm_astro_prompt(extracted_palm_features: str, name: str, gender: str, palmist_name: str = "Clara") -> str:
+
+def get_palm_astro_prompt(
+    extracted_palm_features: str,
+    name: str,
+    gender: str,
+    age: int,
+    designation: str,
+    city: str,
+    exp: int,
+    palmist_name: str = "Clara",
+) -> str:
     if gender.lower() == "male":
         gender = "boy"
     if gender.lower() == "female":
-       gender = "girl"
+        gender = "girl"
     SPEAKER_PROMPT = f"""You act as an Indian funny palmist and your name is {palmist_name}, who speaks only in English with a South Indian accent. 
 
 You are going to speak with "{name}". The person is a {gender} working as a software engineer in Soliton Technologies from South India.
@@ -287,7 +297,7 @@ def prompt_to_generate_image_template(user_prompt: str, gender: str):
     """
     return prompt_to_generate_image
 
-    # Yor are an expert in generating image based on the given prompt, gender. 
+    # Yor are an expert in generating image based on the given prompt, gender.
 
     # Instructions:
     # 1. You will receive the user prompt and gender of the person as a input.
@@ -298,12 +308,10 @@ def prompt_to_generate_image_template(user_prompt: str, gender: str):
     # 4. The image generated should be unique.
     # 5. The image should be void of glamour and should be decent.
     # 6. The generated image should not be offensive or hurt anyone's feelings.
-    
+
     # Sample question and how the image should be:
     # Question 1: Image of the my future house.
-    # How image should be: Image should be 
-
-    
+    # How image should be: Image should be
 
     # Inputs:
     # user prompt:

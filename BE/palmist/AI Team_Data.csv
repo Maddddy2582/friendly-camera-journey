@@ -1,0 +1,367 @@
+
+Emp ID, Name,Current Designation,DOB,Age,Email Address,Start Date,Probation completion date,Exp in Soliton (Years),Previous Work Exp (Years),Total Work Exp (Years),Present City
+1001,Ganesh Devaraj,Executive Chairman,17-Mar-1968,56.9,ganesh.devaraj@solitontech.com,18-Dec-1997,,27.1,1,28.1,Banglore
+1007,Senthilnathan,Sr. Solutions Architect / Project Manager,21-Sep-1978,46.3,senthil@solitontech.com,10-May-1999,,25.7,0,25.7,Salem
+1009,Mekhala Devaraj,Director,16-Jul-1968,56.5,mekhala@solitontech.com,9-Jun-1999,,25.6,0,25.6,Banglore
+1011,Anish Mathews,"President, Soliton Technologies Inc. (US Subsidiary)",31-Jan-1978,47,anish@solitontech.com,9-Sep-1999,,25.4,0,25.4,Dallas
+1024,Ravichandran P.,Office Driver,4-Dec-1968,56.1,NA,1-Oct-2001,,23.3,4,27.3,Coimbatore
+1026,Balasubramanian A.,Manager - Accounts,20-Oct-1965,59.3,abalu@solitontech.com,1-Apr-2002,,22.8,11,33.8,Coimbatore
+1070,Varalakshmi B.,Project Manager,19-May-1983,41.7,varalakshmi@solitontech.com,23-Nov-2005,,19.1,0,19.1,Hyderbad
+1073,Saranraj A.,Purchase Coordinator,9-Jul-1987,37.5,saran@solitontech.com,16-Nov-2005,,19.2,5,24.2,Banglore
+1080,Saranya B.,Director - Engineering  ,2-Mar-1985,39.9,saranya@solitontech.com,7-Jun-2006,,18.6,0,18.6,Gurugram
+1084,Vinod Kumar M.,Lead - System Administration,15-Jan-1977,48,vinod@solitontech.com,3-Jul-2006,,18.5,4,22.5,Banglore
+1087,Soumya C.,Senior Project Manager,3-Oct-1984,40.3,soumya@solitontech.com,3-Oct-2006,,18.3,0.6,18.9,"Krishna District
+Andhra Pradesh"
+1091,Nusra Banu,Secretary & Visa Processing Specialist,2-Jan-1980,45.1,nusra@solitontech.com,14-May-2007,,17.7,4,21.7,Banglore
+1093,Arvind B,Project Manager,3-Sep-1985,39.4,arvind@solitontech.com,1-Jun-2007,,17.6,0,17.6,Coimbatore
+1101,Sandeep Achari,VP of Global Key Accounts Strategy and Development,16-Jul-1986,38.5,sandeep@solitontech.com,1-Jun-2007,,17.6,0,17.6,Texas
+1103,Vishnu Prasad N.,Enterprise Software Architect,9-Nov-1985,39.2,vishnuprasad@solitontech.com,1-Jun-2007,,17.6,0,17.6,Coimbatore
+1125,Raja G.,Architect - PXI Solutions,12-Mar-1987,37.9,raja@solitontech.com,2-Jun-2008,,16.6,0,16.6,Dallas
+1140,VijayKrishna G.,VP of Global Sales and Business Development,6-Nov-1987,37.2,vijaykrishna@solitontech.com,1-Sep-2009,,15.4,0,15.4,Dallas
+1149,Manjula B,Office staff,14-May-1973,51.7,NA,30-Oct-2008,,16.2,0,16.2,Banglore
+1150,Srividhya N.,People & Project Strategist,12-Jun-1982,42.6,srividhya@solitontech.com,15-Sep-2010,,14.3,10,24.3,Coimbatore
+1166,Sudha Rani S.,Lead - Accounting & Compliance,10-Sep-1990,34.4,sudharani@solitontech.com,1-Feb-2012,,13,0.6,13.6,Banglore
+1169,Karthik Abiram T.A.,Solutions Architect,3-Nov-1990,34.2,karthik.abiram@solitontech.com,21-May-2012,,12.7,0,12.7,Coimbatore
+1185,Srinivas V.,Senior Lead - Project Execution,11-Mar-1991,33.9,srinivas@solitontech.com,18-Jun-2012,,12.6,0,12.6,Banglore
+1186,Uthrakumar A.,Manager - Presales,29-Mar-1991,33.8,uthrakumar@solitontech.com,18-Jun-2012,,12.6,0,12.6,Coimbatore
+1195,Teena H.,Project Manager,13-Jul-1991,33.5,teena@solitontech.com,15-Oct-2012,,12.2,0,12.2,Coimbatore
+1214,Navin S.,Solutions Architect - Automation & AI,20-Dec-1991,33.1,navin@solitontech.com,15-Jul-2013,,11.5,0,11.5,Dindugal
+1219,Arjun S.,CEO,11-Aug-1978,46.5,arjun.sathiyaseelan@solitontech.com,25-Jul-2013,,11.5,10.3,21.8,Banglore
+1238,Naveenkumar N.,Manager - Sales/Account Management,22-Jun-1992,32.6,naveenkumar@solitontech.com,21-Apr-2014,,10.7,0,10.7,Tiruppur
+1240,Jaishankar U.,Project Manager,22-Jan-1993,32,jaishankar@solitontech.com,21-Apr-2014,,10.7,0,10.7,Tiruppur
+1248,Sweatha K.,Lead - Technical Solutions,20-Jul-1991,33.5,sweatha.krishnamoorthi@solitontech.com,5-May-2014,,10.7,0,10.7,Coimbatore
+1252,Dhibana C.K.,Program Manager,17-Oct-1992,32.3,dhibana@solitontech.com,12-May-2014,,10.7,0,10.7,Kotagiri
+1253,Keerthana K.,Senior Lead - Technical Solutions,13-May-1993,31.7,keerthana@solitontech.com,12-May-2014,,10.7,0,10.7,Coimbatore
+1256,Prabhakaran P.,Project Manager,16-Mar-1993,31.8,prabhakaran@solitontech.com,12-May-2014,,10.7,0,10.7,Tiruppur
+1259,Sree Ranjani S.,Lead - Technical Solutions,28-Jan-1993,32,sreeranjani@solitontech.com,12-May-2014,,10.7,0,10.7,Coimbatore
+1267,Immalda Rani S.,Lead - Accounting & Compliance,7-Feb-1986,39,suriya.sebastian@solitontech.com,4-Aug-2014,,10.4,5,15.4,Coimbatore
+1270,Vidyadhar B.,Office Driver,22-Mar-1985,39.8,bvidyadhar129@gmail.com,16-Aug-2014,,10.4,0,10.4,Chittor
+1273,Santhosh Ramaraj,Senior Lead � Strategic Offering,13-Feb-1994,30.9,santhosh.ramaraj@solitontech.com,23-Mar-2015,,9.8,0,9.8,USA
+1274,Abinaya K.,Senior Lead - Technical Solutions,10-Mar-1994,30.9,abinaya.kannan@solitontech.com,23-Mar-2015,,9.8,0,9.8,Coimbatore
+1276,Sivashankar B,Senior Lead � Strategic Offering,2-Jul-1993,31.6,sivashankar@solitontech.com,23-Mar-2015,,9.8,0,9.8,Coimbatore
+1279,Manikandan G.,Senior Lead - Project Execution,1-Jan-1990,35.1,manikandan.gangadharan@solitontech.com,6-Apr-2015,,9.8,3.7,13.5,Hosur
+1289,Gokilavani S.,Senior Lead - Project Execution,26-Jul-1994,30.5,gokilavani.sivanantham@solitontech.com,18-May-2015,,9.7,0,9.7,Coimbatore
+1293,Mohamed Nizar S.,Senior Lead - Project Execution,23-Jun-1993,31.6,nizar.shajahan@solitontech.com,18-May-2015,,9.7,0,9.7,Sengottai
+1295,Ram Kumar P.S.,Staff Engineer,25-Oct-1993,31.2,ramkumar.palaniappan@solitontech.com,18-May-2015,,9.7,0,9.7,Tiruchengode
+1296,Satheeshvarma S.J,Senior Lead - Technical Solutions,22-Jul-1994,30.5,satheeshvarma@solitontech.com,18-May-2015,,9.7,0,9.7,Chennai
+1300,Bhaghyaraj R.,Senior Lead - Technical Solutions,2-Apr-1994,30.8,bhaghyaraj.ravichandran@solitontech.com,22-Jun-2015,,9.6,0,9.6,Salem
+1301,Karthick S.,Senior Lead - Technical Solutions,16-Feb-1994,30.9,karthick.shanmuga@solitontech.com,22-May-2015,,9.6,0,9.6,Coimbatore
+1305,Suriya Prashath S.,Senior Lead - Technical Solutions,1-Jun-1994,30.6,suriya.sadaiyappan@solitontech.com,22-May-2015,,9.6,0,9.6,Coimbatore
+1316,Chandrakala V,Office staff,14-Jan-1979,46,NA,2-Sep-2015,,9.4,0,9.4,Banglore
+1323,Govarthanam K.,Senior Lead � Strategic Offering,22-Aug-1994,30.4,govarthanam.krishnasamy@solitontech.com,19-Apr-2016,,8.7,0,8.7,Coimbatore
+1327,Surya Prakash S.,Senior Lead - Project Execution,19-Sep-1994,30.3,suryaprakash.somasundaram@solitontech.com,19-Apr-2016,,8.7,0,8.7,Coimbatore
+1332,Manjula G,Office Maid,5-Mar-1972,52.9,NA,1-Apr-2016,,8.8,0,8.8,Unavailable
+1334,Ilayaraja S.,Senior Lead - Technical Solutions,19-Jul-1994,30.5,ilayaraja.selvaraj@solitontech.com,18-May-2016,,8.7,0,8.7,Coimbatore
+1337,Mohanraj T.,Lead - Technical Solutions,26-Nov-1994,30.1,mohanraj.subramanian@solitontech.com,18-May-2016,,8.7,0,8.7,Erode
+1342,Raghul R.,Senior Lead - Technical Solutions,27-Dec-1994,30.1,raghul.ravichandran@solitontech.com,18-May-2016,17-Nov-2016,8.7,0,8.7,Chennai
+1344,Ramya M.,Senior Lead - Technical Solutions,12-Oct-1994,30.3,ramya.muthukumar@solitontech.com,18-May-2016,,8.7,0,8.7,Chennai
+1348,Sudharsan V.,Project Manager,6-Feb-1995,30,sudharsan.varadharajan@solitontech.com,18-May-2016,,8.7,0,8.7,Coimbatore
+1351,Vidhyaprabha V.,Senior Lead - Technical Solutions,30-Jul-1994,30.5,vidhyaprabha.vasudevan@solitontech.com,18-May-2016,,8.7,0,8.7,Coimbatore
+1352,Viknesh Ramm L.,Senior Lead - Technical Solutions,25-Mar-1995,29.8,viknesh.narayanan@solitontech.com,18-May-2016,,8.7,0,8.7,Coimbatore
+1358,Santhosh Kumar Velumani,Manager - IT,3-Jul-1991,33.6,santhosh.velumani@solitontech.com,21-Nov-2016,,8.1,4,12.1,Coimbatore
+1367,Bharathi R,Senior Lead - Technical Solutions,11-Aug-1992,32.4,bharathi.rajamani@solitontech.com,3-Apr-2017,,7.8,1.9,9.7,Coimbatore
+1370,Santhosh Kumar V.,Lead - Technical Solutions,11-Nov-1995,29.2,santhosh.venkatesan@solitontech.com,17-Apr-2017,,7.7,0,7.7,Salem
+1371,Ishwarya D.,Lead - Project Execution,10-Nov-1995,29.2,ishwarya.devaraj@solitontech.com,24-Apr-2017,,7.7,0,7.7,Coimbatore
+1372,Narendranath Babu S., Business Solutions Manager ,5-May-1996,28.7,narendranath.sugumar@solitontech.com,24-Apr-2017,,7.7,0,7.7,Coimbatore
+1373,Vignesh R.,Senior Lead - Technical Solutions,14-Mar-1996,28.8,vignesh.ravichandran@solitontech.com,2-May-2017,,7.7,0,7.7,Coimbatore
+1378,Saravana Kumar M.,Product Manager,4-Nov-1995,29.2,saravana.muthusamy@solitontech.com ,10-May-2017,,7.7,0,7.7,Tiruppur
+1379,Sandhiya R.,Senior Lead - Project Execution,24-Aug-1995,29.4,sandhiya.ranganathan@solitontech.com,10-May-2017,,7.7,0,7.7,Coimbatore
+1381,Shyam S,Senior Lead� - Project Execution,22-Mar-1996,28.8,shyam.shanmugasundaram@solitontech.com,10-May-2017,,7.7,0,7.7,Coimbatore
+1382,Usha K.,Senior Lead - Technical Solutions,8-Mar-1995,29.9,usha.kanagaraj@solitontech.com,10-May-2017,,7.7,0,7.7,Coimbatore
+1384,Keerthivarman N.,Lead - Technical Solutions,21-Apr-1995,29.7,keerthivarman.nageshwaran@solitontech.com,22-May-2017,,7.6,0,7.6,Karur
+1390,Maya K.,Senior Lead - Project Execution,12-Jun-1995,29.6,maya.krishnan@solitontech.com,1-Jun-2017,,7.6,0,7.6,Kannur
+1392,Nishanth R.,Senior Lead� - Technical Solutions,29-Sep-1995,29.3,nishanth.rangasamy@solitontech.com,1-Jun-2017,,7.6,0,7.6,Chennai
+1393,Sairam S.,Lead - Learning & Development,23-Apr-1996,28.7,sairam@solitontech.com,1-Jun-2017,,7.6,0,7.6,Coimbatore
+1397,Vinitha Nair,Lead - Project Execution,28-Mar-1986,38.8,vinitha@solitontech.com,1-Jun-2017,,7.6,4.2,11.8,Coimbatore 
+1399,Suseendran J.,Senior Lead - Technical Solutions,16-Feb-1994,30.9,suseendran.jeevanantham@solitontech.com,3-Jul-2017,,7.5,2.5,10,Karur
+1401,Vignesh Annamalai ,Senior Lead - Technical Solutions,12-Mar-1994,30.9,vignesh.annamalai@solitontech.com,3-Oct-2017,,7.3,2.25,9.55,Coimbatore
+1404,Padmanaban J.,Lead - Quality Assurance,24-Mar-1995,29.8,padmanaban.jayaraman@solitontech.com,1-Dec-2017,,7.1,0,7.1,Coimbatore
+1410,Miruthula Balasundaram,Senior Manager � Delivery,4-Jun-1987,37.6,miruthula.balasundaram@solitontech.com,4-Apr-2018,,6.8,9.6,16.4,Coimbatore
+1412,Sharanya Shanmugham,Senior Executive -  PMO ,24-Apr-1990,34.7,sharanya.shanmugham@solitontech.com,7-Apr-2020,,4.8,4.1,8.9,Coimbatore
+1420,Debby Gladys,Lead - Project Execution,7-Mar-1997,27.9,debby.george@solitontech.com,1-Jun-2018,,6.6,0,6.6,Coimbatore
+1421,Bhargavi Gowri,Lead - UI/UX Design,15-Aug-1997,27.4,bhargavi.gowri@solitontech.com,1-Jun-2018,,6.6,0,6.6,Hyderbaderabad
+1424,Karthik K.,Lead - Technical Solutions,24-Sep-1996,28.3,karthik.kannan@solitontech.com,1-Jun-2018,,6.6,0,6.6,Chennai
+1425,Karthik M. R.,Lead - Technical Solutions,17-Aug-1997,27.4,"
+karthik.renganathan@solitontech.com",1-Jun-2018,,6.6,0,6.6,Kancheepuram
+1426,Karthikeswari V.,Lead - Technical Solutions,16-Nov-1996,28.2,karthikeswari.veerakumar@solitontech.com,1-Jun-2018,,6.6,0,6.6,Chennai
+1431,Naresh Kumaar S.,Lead - Project Execution,25-Jul-1996,28.5,naresh.shankar@solitontech.com,1-Jun-2018,,6.6,0,6.6,Coimbatore
+1432,Nigharikkha S.,Lead - Project Execution,25-Jul-1996,28.5,nigharikkha.shankar@solitontech.com,1-Jun-2018,,6.6,0,6.6,Banglore
+1435,Prasanna Kumar V.,Lead - Project Execution,30-May-1996,28.6,prasannakumar@solitontech.com,1-Jun-2018,,6.6,0,6.6,Trichy
+1444,Tharun Sundar B.,Lead - Project Execution,14-Jul-1997,27.5,tharun.balasubramanian@solitontech.com,1-Jun-2018,,6.6,0,6.6,Chennai
+1445,Venkatesh Perumal Pranay Chandragiri,Senior Lead - Technical Solutions,04-Feb-1997,28,venkatesh.chandragiri@solitontech.com,1-Jun-2018,,6.6,0,6.6,Chennai
+1447,Vignesh K. S.,Lead - Technical Solutions,11-Sep-1996,28.4,vignesh.shankar@solitontech.com,1-Jun-2018,,6.6,0,6.6,Hosur
+1448,Vikram Deva S.,Lead - Technical Solutions,4-Sep-1996,28.4,vikramdeva.sridhar@solitontech.com,1-Jun-2018,,6.6,0,6.6,Dindigul
+1449,Ram Ganesh,Senior Lead � Strategic Offering,26-Mar-1994,30.8,ramganesh.ramalingam@solitontech.com,4-Jun-2018,,6.6,3,9.6,Coimbatore
+1466,Balasivaguru S,Staff Test Engineer,17-Sep-1997,27.3,balasivaguru.shanmugam@solitontech.com,3-Jun-2019,,5.6,0,5.6,Coimbatore
+1467,BalaVignesh.K,Lead - Technical Solutions,3-May-1998,26.7,balavignesh@solitontech.com,3-Jun-2019,,5.6,0,5.6,Chennai
+1470,Devi Shree.S,Lead - Technical Solutions,22-Oct-1998,26.2,devishree.sivasamy@solitontech.com,3-Jun-2019,,5.6,0,5.6,Chennai
+1473,Gayathri S. K.,Lead - Project Execution,5-Dec-1997,27.1,gayathri.senthilkumar@solitontech.com,3-Jun-2019,,5.6,0,5.6,Coimbatore
+1475,Hem Kumar Rao.R,Lead - Technical Solutions,9-Mar-1998,26.9,hemkumar.rao@solitontech.com,3-Jun-2019,,5.6,0,5.6,Chennai
+1477,Kabil Yogesh T,Lead - UI/UX Design,28-Dec-1997,27.1,kabilyogesh@solitontech.com,3-Jun-2019,,5.6,0,5.6,Coimbatore
+1479,Monisha Mary AA,Lead - Technical Solutions,26-Sep-1997,27.3,monisha.mary@solitontech.com,3-Jun-2019,,5.6,0,5.6,Chennai
+1480,Mukes.S,Staff Engineer,26-Oct-1997,27.2,mukes.shanmugam@solitontech.com,3-Jun-2019,,5.6,0,5.6,Coimbatore
+1483,Nabeena Begum A,Senior Project Engineer,25-Aug-1997,27.4,nabeena.begum@solitontech.com,3-Jun-2019,,5.6,0,5.6,Chengalpattu
+1485,Noufal shafeeq J,Lead - Technical Solutions,16-Jul-1997,27.5,noufal.shafeeq@solitontech.com,3-Jun-2019,,5.6,0,5.6,Coimbatore
+1487,Prithvi S,Lead - Technical Solutions,7-Jan-1998,27,prithvi.subaraja@solitontech.com,3-Jun-2019,,5.6,0,5.6,Coimbatore
+1488,Rajaram N R,Lead - Technical Solutions,19-Nov-1997,27.2,rajaram.rajasekaran@solitontech.com,3-Jun-2019,,5.6,0,5.6,Salem
+1492,Sowmya R.,Lead - Technical Solutions,15-Oct-1997,27.3,sowmya.raveendran@solitontech.com,3-Jun-2019,,5.6,0,5.6,Tirunelveli
+1493,Sreeram K,Lead - Technical Solutions,26-May-1998,26.6,sreeram.kalyanasundaram@solitontech.com,3-Jun-2019,,5.6,0,5.6,Chennai
+1497,Nischitha G,Lead - Learning & Development,15-May-1995,29.7,nischitha.govarthanam@solitontech.com,1-Oct-2019,,5.3,0,5.3,Coimbatore
+1499,Sathya Prakash U,Senior Lead - Technical Solutions,3-Apr-1993,31.8,sathyaprakash@solitontech.com,9-Dec-2019,,5.1,5.4,10.5,Banglore
+1501,Sudha B.,Maid,18-Jul-1984,40.5,NA,1-Feb-2020,,4.9,1,5.9,Coimbatore
+1502,Rabiyathul Basiriya K A,Lead - Administration,5-Feb-1985,40,rabiya@solitontech.com ,10-Feb-2020,,4.9,7,11.9,Coimbatore
+1507,Aajay Sriram Ravichandran,Senior Project Engineer,4-Jan-1999,26,aajay.ravichandran@solitontech.com,1-Jul-2020,,4.5,0,4.5,Erode
+1508,Aasief Khan SA,Senior Project Engineer,09-01-1999,26,aasiefkhan@solitontech.com,1-Jul-2020,,4.5,0,4.5,Coimbatore
+1509,Arjun T.,Senior Project Engineer,16-May-1999,25.7,arjun.thyagarajan@solitontech.com,1-Jul-2020,,4.5,0,4.5,Kanyakumari
+1513,Devadharshini D,Senior Project Engineer,28-Feb-1999,25.9,devadharshini@solitontech.com,1-Jul-2020,,4.5,0,4.5,Coimbatore
+1516,Janani Priyadharshini S.K,Senior Project Engineer,28-Oct-1998,26.2,janani.sivakumar@solitontech.com,1-Jul-2020,,4.5,0,4.5,Madurai
+1517,Jayabal KS,Lead - Technical Solutions,1-Jul-1999,25.6,jayabal.somasundram@solitontech.com,1-Jul-2020,,4.5,0,4.5,Tiruppur
+1519,Karthikeyan K,Senior Project Engineer,22-Jul-1998,26.5,karthikeyan.kumaravel@solitontech.com,1-Jul-2020,,4.5,0,4.5,Pollachi
+1520,Karvendan V,Lead - Project Execution,20-Apr-1998,26.7,karvendan.velusamy@solitontech.com,1-Jul-2020,,4.5,0,4.5,Sathyamangalam
+1521,Mohanprasath P,Senior Project Engineer,3-Feb-1999,26,mohanprasath.palanisamy@solitontech.com,1-Jul-2020,,4.5,0,4.5,Tiruppur
+1522,Mohamed Suhail S.M,Technical & Project Lead,30-Oct-1998,26.2,mohamed.suhail@solitontech.com,1-Jul-2020,,4.5,0,4.5,Coimbatore
+1523,Namratha B,Technical & Project Lead,19-02-1998,26.9,namratha.balakrishna@solitontech.com,1-Jul-2020,,4.5,0,4.5,Coimbatore
+1524,Nanthagopal E,Lead - Technical Solutions,13-01-1999,26,nanthagopal.eswaran@solitontech.com,1-Jul-2020,,4.5,0,4.5,Tiruppur
+1527,Prem Kumar Chinnaraj,Lead - Technical Solutions,19-Dec-1998,26.1,prem.chinnaraj@solitontech.com,1-Jul-2020,,4.5,0,4.5,Krishnagiri
+1528,Prithieraj MR,Senior Project Engineer,20-Nov-1998,26.2,prithieraj.ravikumar@solitontech.com,1-Jul-2020,,4.5,0,4.5,Coimbatore
+1530,Rakesh Nath S,Lead - Technical Solutions,7-Feb-1999,25.9, rakesh.shivaraj@solitontech.com,1-Jul-2020,,4.5,0,4.5,Hosur
+1532,Ramya S,Lead - Project Execution,9-Jan-1999,26,ramya.sivakumar@solitontech.com,1-Jul-2020,,4.5,0,4.5,Coimbatore
+1533,Ranjgith S,Lead - Technical Solutions,22-Oct-1998,26.2,ranjgith.sivakumar@solitontech.com,1-Jul-2020,,4.5,0,4.5,Pollachi
+1535,Shalini sonia,Senior Project Engineer,19-10-1998,26.2,shalini.sonia@solitontech.com,1-Jul-2020,,4.5,0,4.5,Nilgris
+1537,Srihariharan D,Lead - Technical Solutions,5-Oct-1998,26.3,srihariharan@solitontech.com,1-Jul-2020,,4.5,0,4.5,Tindivanam
+1538,Srisoundari K,Senior Project Engineer,12-May-1999,25.7,srisoundari.kumaresan@solitontech.com,1-Jul-2020,,4.5,0,4.5,Namakkal
+1540,Vasantha Kumar J,Lead Staff Engineer,25-Aug-1998,26.4,vasanthakumar@solitontech.com,1-Jul-2020,,4.5,0,4.5,Coimbatore
+1541,Vikash Kumar V,Lead - Project Execution,12-Sep-1998,26.4,vikash.venkatesh@solitontech.com,1-Jul-2020,,4.5,0,4.5,Erode
+1543,Aadhya C M V S,Senior UI/UX Designer,15-Oct-1998,26.3,aadhya.chukkala@solitontech.com,3-Aug-2020,,4.4,0,4.4,Chennai
+1544,Bernice Dainty J,Senior Project Engineer,13-Sep-1998,26.3,bernice.john@solitontech.com,3-Aug-2020,,4.4,0,4.4,Chennai
+1546,Kani Mozhi E,Staff Test Engineer,3-Dec-1998,26.1,kanimozhi.elango@solitontech.com,3-Aug-2020,,4.4,0,4.4,Madurai
+1547,Kowsalya N,Lead - Project Execution,25-Mar-1999,25.8,kowsalya.nandha@solitontech.com,3-Aug-2020,,4.4,0,4.4,Chennai
+1550,Muthu Rajan S,Lead - Technical Solutions,28-Jun-1999,25.6,muthurajan.senthil@solitontech.com,3-Aug-2020,,4.4,0,4.4,Madurai
+1551,Praveen Jim Prakash,Lead - Technical Solutions,1-Jun-1999,25.6,praveen.sesu@solitontech.com,3-Aug-2020,2-Feb-2021,4.4,0,4.4,Trichy
+1552,Sai Krishnan P,Senior Project Engineer,23-Sep-1998,26.3,saikrishnan.perumal@solitontech.com,3-Aug-2020,,4.4,0,4.4,Chennai
+1553,Santosh S.S ,Lead - Technical Solutions,18-Mar-1999,25.8,santosh.srinivasulu@solitontech.com,3-Aug-2020,,4.4,0,4.4,Vellore
+1556,Anu Antony,Manager - People Team,30-Oct-1982,42.2,anu.antony@solitontech.com,17-Aug-2020,,4.4,14,18.4,Banglore
+1557,Manjula R,Office staff,5-May-1969,55.7,NA,1-Sep-2020,,4.4,0,4.4,Coimbatore
+1562,Vivek Rajendran,Senior Lead - Project Execution,5-Sep-1993,31.4,vivek.rajendran@solitontech.com,10-Feb-2021,,3.9,5.8,9.7,Coimbatore
+1563,Dhivya Saminathan,Lead - Project Execution,12-Sep-1991,33.4,dhivya@solitontech.com,1-Feb-2021,,3.9,3.2,7.1,Karur
+1564,Vikram SA.,Lead - Technical Solutions,30-Jan-1996,29,vikram.sa@solitontech.com,26-Apr-21,,3.7,3.3,7,Banglore
+1565,Ponnusamy R,Driver,25-Dec-57,67.1,srividhya@solitontech.com,1-May-21,,3.7,,,Coimbatore
+1567,Aishwarya Subramanian,Senior Project Engineer,9-Mar-2000,24.9,aishwarya.subramanian@solitontech.com,1-Jun-21,,3.6,0,3.6,Madurai
+1568,Akilesh A R,Senior Project Engineer,14-Sep-1999,25.3,akilesh.ramasamy@solitontech.com,1-Jun-21,,3.6,0,3.6,Erode
+1570,Avinash S,Senior Project Engineer,12-Nov-2000,24.2,avinash.suresh@solitontech.com,1-Jun-21,,3.6,0,3.6,Ariyalur
+1571,Elakkya Periasamy,Senior Project Engineer,26-Mar-2000,24.8,elakkya.periasamy@solitontech.com,1-Jun-21,,3.6,0,3.6,Namakkal
+1572,Eswar SM,Senior Project Engineer,20-May-1999,25.7,eswar.saravanan@solitontech.com,1-Jun-21,,3.6,0,3.6,Coimbatore
+1573,Govintha raj K,Senior Project Engineer,27-Nov-1999,25.1,govintharaj.kesavaraj@solitontech.com,1-Jun-21,,3.6,0,3.6,CudDallasore
+1574,Gowtham K,Senior Project Engineer,21-Jan-2000,25,gowtham.karunakaran@solitontech.com,1-Jun-21,,3.6,0,3.6,Dharapuram
+1577,Jayaprakash S,Senior Project Engineer,8-Jan-2000,25,jayaprakash.shanmugasundaram@solitontech.com,1-Jun-21,,3.6,0,3.6,Erode
+1579,Kanisha S M,Senior Project Engineer,24-May-2000,24.7,kanisha.selvaraj@solitontech.com,1-Jun-21,,3.6,0,3.6,Namakkal
+1580,Kartheeswaran S,Senior Project Engineer,1-Dec-1999,25.1,kartheeswaran.subramaniam@solitontech.com,1-Jun-21,,3.6,0,3.6,Tiruppur
+1581,Kaviarasu S,Senior Project Engineer,15-Nov-1999,25.2,kaviarasu.selvarasu@solitontech.com,1-Jun-21,,3.6,0,3.6,Coimbatore
+1582,Krishna Kanth R,Senior Project Engineer,25-May-2000,24.6,krishnakanth.ravi@solitontech.com,1-Jun-21,,3.6,0,3.6,Thoothukudi
+1583,Madhu Vishal V,Senior Project Engineer,12-May-2000,24.7,madhuvishal.velavan@solitontech.com,1-Jun-21,,3.6,0,3.6,Namakkal
+1584,Nageswarvijay S,Senior Project Engineer,11-Mar-2000,24.9,nageshwar.saravana@solitontech.com,1-Jun-21,,3.6,0,3.6,Salem
+1585,Nirmal Prasad Kamaladharan,Senior Project Engineer,20-Dec-1999,25.1,nirmal.prasad@solitontech.com,1-Jun-21,,3.6,0,3.6,Coimbatore
+1586,Priyadarshini Gopal,Senior Project Engineer,1-Dec-1999,25.1,priyadarshini.gopal@solitontech.com,1-Jun-21,,3.6,0,3.6,Tiruppur
+1587,Rishi Kumar R K,Senior Project Engineer,26-May-1999,25.6,rishi.ramachandran@solitontech.com,1-Jun-21,,3.6,0,3.6,Coimbatore
+1588,Sabthagiri Murugan,Senior Project Engineer,22-Oct-1999,25.2,sabthagiri.murugan@solitontech.com,1-Jun-21,,3.6,0,3.6,CudDallasore
+1590,Sandeep Appachiappan,Senior Project Engineer,5-Apr-2000,24.8,sandeep.appachiappan@solitontech.com,1-Jun-21,,3.6,0,3.6,Coimbatore
+1592,Sathishraja J,Senior Project Engineer,20-Jul-2000,24.5,sathishraja.jeyaraja@solitontech.com,1-Jun-21,,3.6,0,3.6,Tenkasi
+1593,Shangar Arivazhagan,Senior Project Engineer,20-Mar-2000,24.8,shangar.arivazhagan@solitontech.com,1-Jun-21,,3.6,0,3.6,Namakkal
+1594,Sreenidhi T V,Senior Project Engineer,12-Feb-2000,24.9,sreenidhi.vasudevan@solitontech.com,1-Jun-21,,3.6,0,3.6,Coimbatore
+1596,Uthayachanthiran A,Senior Project Engineer,31-Jan-2000,25,uthayachanthiran@solitontech.com,1-Jun-21,,3.6,0,3.6,Coimbatore
+1597,Vinodhini R,Senior Project Engineer,21-Dec-1999,25.1,vinodhini.radhakrishnan@solitontech.com,1-Jun-21,,3.6,0,3.6,Virudhunagar
+1598,Vivin Krishna R N,Senior Project Engineer,2-Sep-1999,25.4,vivin.krishna@solitontech.com,1-Jun-21,,3.6,0,3.6,Coimbatore
+1599,Manjunatha MS,Senior Project Engineer,26-Apr-1996,28.7,manjunatha.sreenivasa@solitontech.com,7-Jun-21,,3.6,2.9,6.5,"Tumakuru, KA"
+1601,S. Saradha,Sr. Lead - PMO,5-Feb-1988,37,saradha.sankar@solitontech.com,7-Jul-21,,3.5,11.4,14.9,Coimbatore
+1602,Sukhbir Singh Sachdeva,Senior Lead- L&D,13-Apr-1987,37.8,sukhbir.sachdev@solitontech.com,26-Jul-21,,3.5,9.9,13.4,Amritsar
+1607,Mari Saravanan Sankaran,Senior UI/UX Designer,30-Nov-1998,26.1,saravanan.sankaran@solitontech.com,16-Nov-21,,3.2,1.7,4.9,Chennai
+1613,Nandini Arunkumar,Sr.Lead - Talent Acquisition,4-Apr-1987,37.8,nandini.arun@solitontech.com,1-Mar-22,,2.9,11,13.9,Mumbai
+1615,Neha R Krishnan,Sr.PMO Executive,14-Jun-1995,29.6,neha.ramakrishnan@solitontech.com,23-Mar-22,,2.8,3.5,6.3,Coimbatore
+1616,Romauld Francis Xavier,Project Manager,26-Dec-1990,34.1,romauld.francis@solitontech.com,4-Apr-22,,2.8,7.3,10.1,Coimbatore
+1617,Aagash Raaj J.M.,Senior Project Engineer,20-Feb-2001,23.9,aagash.maridas@solitontech.com,1-Jun-22,,2.6,0,2.6,Virudhunagar
+1618,Aarthi Thambusamy,Senior Project Engineer,9-Aug-2000,24.4,aarthi.thambusamy@solitontech.com,1-Jun-22,,2.6,0,2.6,Chennai
+1622,Akash Krishnaa S K,Senior Project Engineer,11-Nov-2000,24.2,akash.suresh@solitontech.com,1-Jun-22,,2.6,0,2.6,Chennai
+1623,Akash M.,Senior Project Engineer,2-Apr-2001,23.8,akash.manoharan@solitontech.com,1-Jun-22,,2.6,0,2.6,Thiruvallur
+1624,Arun Natarajan,Senior Project Engineer,19-Mar-2000,24.8,arun.natarajan@solitontech.com,1-Jun-22,,2.6,0,2.6,Coimbatore
+1625,Athira Kumar,Senior Project Engineer,25-May-2000,24.6,athira.kumar@solitontech.com,1-Jun-22,,2.6,0,2.6,Coimbatore
+1626,Chethan Rathnappa,Senior Project Engineer,17-Jun-2001,23.6,chethan.rathnappa@solitontech.com,1-Jun-22,,2.6,0,2.6,Krishnagiri
+1628,Dhanusram.B,Senior Project Engineer,21-Dec-2000,24.1,dhanusram.bojan@solitontech.com,1-Jun-22,,2.6,0,2.6,Pollachi
+1629,Dhanusri Venugopal,Senior Project Engineer,21-Dec-2000,24.1,dhanusri.venugopal@solitontech.com,1-Jun-22,,2.6,0,2.6,Coimbatore
+1630,Gokuldharan S,Senior Project Engineer,18-Apr-2001,23.8,gokul.selvaraj@solitontech.com,1-Jun-22,,2.6,0,2.6,Namakkal
+1631,Gowtham Srinivasan,Senior Project Engineer,27-May-2001,23.6,gowtham.srinivasan@solitontech.com,1-Jun-22,,2.6,0,2.6,salem
+1632,Indhu Ramalingam,Senior Project Engineer,23-Sep-2001,23.3,indhu.ramalingam@solitontech.com,1-Jun-22,,2.6,0,2.6,Coimbatore
+1633,Jayaseelan James,Senior Project Engineer,7-Oct-2000,24.3,jayaseelan.james@solitontech.com,1-Jun-22,,2.6,0,2.6,Chennai
+1634,Joshua J,Senior Project Engineer,10-Dec-2000,24.1,joshua.joseph@solitontech.com,1-Jun-22,,2.6,0,2.6,Thiruvallur
+1636,Kavin E D,Senior Project Engineer,8-Oct-2000,24.3,kavin.deivasigamani@solitontech.com,1-Jun-22,,2.6,0,2.6,Erode
+1639,Meenatchi Thenappan,Senior UI/UX Designer,11-Oct-2000,24.3,meenatchi.thenappan@solitontech.com,1-Jun-22,,2.6,0,2.6,Chennai
+1640,Mithun N S,Senior Project Engineer,25-Sep-2000,24.3,mithun.subramani@solitontech.com,1-Jun-22,,2.6,0,2.6,Tiruppur
+1641,Monisha Devi Sakthivel Murugan,Senior Project Engineer,30-May-2001,23.6,monisha.sakthivel@solitontech.com,1-Jun-22,,2.6,0,2.6,Karur
+1642,Nandha Kumar Palanisamy,Senior Project Engineer,28-Sep-2000,24.3,nandhakumar.palanisamy@solitontech.com,1-Jun-22,,2.6,0,2.6,Tiruppur
+1643,Nandhini Vijayakumar,Senior Project Engineer,29-Oct-2000,24.2,nandhini.vijayakumar@solitontech.com,1-Jun-22,,2.6,0,2.6,Chennai
+1644,Nivetha Velumani,Senior Project Engineer,31-Jul-2000,24.5,nivetha.velumani@solitontech.com,1-Jun-22,,2.6,0,2.6,Coimbatore
+1646,Madhan Mohan Reddy Peram ,Senior Project Engineer,28-May-2000,24.6,madhanreddy.peram@solitontech.com,1-Jun-22,,2.6,0,2.6,"Nellore, AP"
+1648,Priyadarshini Piramanayagam,Senior Project Engineer,5-May-2000,24.7,priyadarshini.p@solitontech.com,1-Jun-22,,2.6,0,2.6,Chennai
+1649,Rahul Raja Rajangam,Senior Project Engineer,31-Jan-2001,24,rahulraja.rajangam@solitontech.com,1-Jun-22,,2.6,0,2.6,Dindigul
+1650,Ramya Dhandapani,Senior Project Engineer,2-Jun-2001,23.6,ramya.dhandapani@solitontech.com,1-Jun-22,,2.6,0,2.6,Tiruppur
+1651,Rasswanth Shanmugasundaram,Senior Project Engineer,3-Nov-2000,24.2,rasswanth.sundar@solitontech.com,1-Jun-22,,2.6,0,2.6,Tiruppur
+1652,Roshana Ananthkumar,Senior Project Engineer,13-Feb-2001,23.9,roshana.ananth@solitontech.com,1-Jun-22,,2.6,0,2.6,Ooty
+1654,Sangeetha Jothilingam,Senior Project Engineer,15-Sep-2000,24.3,sangeetha.jothi@solitontech.com,1-Jun-22,,2.6,0,2.6,Tiruppur
+1655,Sanjay kumar Duraisamy,Senior Project Engineer,6-Dec-2000,24.1,sanjay.duraisamy@solitontech.com,1-Jun-22,,2.6,0,2.6,Erode
+1656,Shaalini Subrammanian,Senior Project Engineer,16-Aug-2000,24.4,shaalini.subrammanian@solitontech.com,1-Jun-22,,2.6,0,2.6,Coimbatore
+1658,Sneha B S,Senior Project Engineer,11-Jun-2001,23.6,sneha.babu@solitontech.com,1-Jun-22,,2.6,0,2.6,Tiruppur
+1659,Snehalatha Selvakumaran,Senior Project Engineer,9-Jun-2000,24.6,snehalatha@solitontech.com,1-Jun-22,,2.6,0,2.6,Chennai
+1661,Sujeev Rithan,Senior Project Engineer,17-May-2001,23.7,sujeev.rithan@solitontech.com,1-Jun-22,,2.6,0,2.6,Coimbatore
+1662,Thilak Chandar C.,Senior Project Engineer,4-Dec-2000,24.1,thilak.chandar@solitontech.com,1-Jun-22,,2.6,0,2.6,Chennai
+1664,Vaishnav Rengan Venkatram,Senior Project Engineer,9-Mar-2000,24.9,vaishnav.venkatram@solitontech.com,1-Jun-22,,2.6,0,2.6,Coimbatore
+1665,Varshini Periyasamy,Senior Project Engineer,13-Nov-2000,24.2,varshini.periyasamy@solitontech.com,1-Jun-22,,2.6,0,2.6,Trichy
+1666,Vineel Prasad Inukonda,Senior Project Engineer,14-Aug-2001,23.4,vineel.inukonda@solitontech.com,1-Jun-22,,2.6,0,2.6,Secunderabad
+1667,Yogapriya Pappaian,Senior Project Engineer,25-Dec-2000,24.1,yogapriya.pappaian@solitontech.com,1-Jun-22,,2.6,0,2.6,Madurai
+1669,Madhaneeswaran P,Senior Project Engineer,15-Oct-1998,26.3,madhaneeswaran@solitontech.com,6-Jul-22,,2.5,1,3.5,Pudukottai
+1671,Santhosh M,Lead - Project Execution,13-Mar-1992,32.9,santhosh.manoharan@solitontech.com,11-Jul-22,,2.5,7.5,10,Mettupalayam
+1675,Poornima P R,Senior Project Engineer,30-Dec-1998,26.1,poornima.rajan@solitontech.com,12-Sep-22,,2.3,2,4.3,Banglore
+1677,Paramasivam Gnanasekaran,Senior Project Engineer,7-Oct-1999,25.3,paramasivam.g@solitontech.com,14-Sep-22,,2.3,1.5,3.8,Erode
+1678,Akhil Kumar Arshid,Lead - Technical Solutions,15-Dec-1995,29.1,akhil.arshid@solitontech.com,15-Sep-22,,2.3,4,6.3,Hyderbad
+1679,Amulya Balusupati ,Senior Project Engineer,18-Dec-1995,29.1,amulya.balusupati@solitontech.com,10-Oct-22,,2.3,5.1,7.4,"Suryapet, Telangana"
+1681,Battu Mounika ,Project Engineer,20-Mar-1999,25.8,battu.mounika@solitontech.com,28-Nov-22,,2.1,1.8,3.9,Chennai
+1687,Dinesh M,Senior Project Engineer,29-May-1999,25.6,dinesh.marudhachalam@solitontech.com,2-Jan-23,,2,2.3,4.3,Coimbatore
+1689,Gowtham Krishnan,Senior Lead - Technical Solutions,12-Aug-1990,34.4,gowtham.krishnan@solitontech.com,19-Jan-23,21-Jul-23,2,10.5,12.5,Coimbatore
+1690,Sankalp Sharma,Chief of Staff,3-Jun-1991,33.6,sankalp.sharma@solitontech.com,10-Feb-23,12-Aug-23,1.9,5.6,7.5,Banglore
+1691,Srinivasa N,Office Driver,15-Mar-76,48.9,_,1-Mar-23,31-Aug-23,1.9,23,24.9,Banglore
+1693,Suganth S.,Senior Project Engineer,4-Aug-1999,25.5,suganth.sadaiyappan@solitontech.com,3-Apr-23,3-Oct-23,1.8,1.7,3.5,Coimbatore
+1697,Kesavan R,Senior System Administrator,5-Dec-1989,35.1,kesavan.rangasamy@solitontech.com,19-May-23,18-Nov-23,1.7,12,13.7,Coimbatore
+1699,Ilakkia S Pandian,People Specialist,2-Aug-1989,35.5,ilakkia.pandian@solitontech.com,1-Jun-23,1-Dec-23,1.6,6,7.6,Coimbatore
+1701,Abishlal Nelson,Project Engineer,1-Nov-2001,23.2,abishlal.nelson@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1702,Aishwarya Shree Jayabhaarath,Inside Sales Engineer,7-Mar-2002,22.9,aishwarya.jayabhaarath@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1703,Aishwarya Thanasekar,Project Engineer,11-Oct-2001,23.3,aishwarya.thanasekar@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1704,Ammar Husain Huk,Project Engineer,19-Nov-2001,23.2,ammarhusain@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1706,Aravind Karlambakkam Murali,Project Engineer,23-Mar-2002,22.8,aravind.murali@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1707,Aravindhan Palanisamy,Project Engineer,30-Jul-2002,22.5,aravindhan.palanisamy@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1708,Arthi Balasubramanian,Project Engineer,18-Sep-2000,24.3,arthi.bala@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1709,Arun Krishna Kumar,Project Engineer,14-Dec-2001,23.1,arun.krishna@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1710,Ashritha Shankar,Project Engineer,21-Jan-2002,23,ashritha.shankar@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1711,Asif Muhammed A,Project Engineer,21-May-2002,22.7,asif.muhammed@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1713,Deepika K,Project Engineer,8-Nov-2001,23.2,deepika.karthikeyan@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1714,Deepika P,Project Engineer,7-Aug-2001,23.4,deepika.palanisamy@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1715,Dhanush Chakkaravarthy M,Project Engineer,2-May-2002,22.7,Dhanush.murugaprakasam@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1716,Dinesh Babu P,Project Engineer,4-Apr-2002,22.8,dinesh.babu@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1717,Geffrey N,Project Engineer,17-Oct-2001,23.3,geffrey.nirmal@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1719,Giriharan Ravichandran,Project Engineer,19-Dec-2001,23.1,giriharan.ravi@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1720,Gokulprasanth Ravi,Project Engineer,24-Nov-2001,23.1,gokulprasanth.ravi@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1721,Hari Ram Karthik M,Project Engineer,18-May-2002,22.7,hariram.manohar@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1722,Hariharan Sreedhar,Project Engineer,21-May-2002,22.7,hariharan.sreedhar@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1723,Indrajith M,Project Engineer,16-Mar-2001,23.8,indrajith.mohanasundaram@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1724,Jayasudha Kathavarayan,Project Engineer,9-Mar-2002,22.9,jayasudha.kathavarayan@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1725,Jishnu Ravichandran,Project Engineer,30-Aug-2001,23.4,jishnu.ravi@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1726,Jotheeswaran Nandagopal,Project Engineer,10-Mar-2002,22.9,jothees.nanda@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1727,Kaiser Asan,Project Engineer,31-Aug-2001,23.4,kaiser.asan@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1728,Kalaiarasi M,Project Engineer,12-Sep-2001,23.3,kalaiarasi.masilamani@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1729,Kavin N S,Project Engineer,21-Nov-2001,23.2,kavin.siva@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1730,Kavin Palanisamy,Project Engineer,27-Sep-2001,23.3,kavin.palanisamy@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1731,Kingsly Andrews Maria Thomai,Project Engineer,1-Sep-2001,23.4,kingslyandrews@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1732,Kishor Kumar B,Project Engineer,22-Aug-2002,22.4,kishor.bala@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1733,Kishore Kumar Nagaraj,Project Engineer,26-Feb-2001,23.9,kishore.nagaraj@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1735,Krishnaprasath Murugesan,Project Engineer,27-Feb-2002,22.9,krishnaprasath@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1736,Madhumita Ashok Kumar,Project Engineer,24-Sep-2000,24.3,madhumita.ashok@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1737,Manisha Sivakumar,Project Engineer,18-Aug-2001,23.4,manisha.sivakumar@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1738,Manudev Rethinakumar,Project Engineer,23-Jul-2001,23.5,manudev.rethina@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1739,Mohammed Siddique Mohammed Abdul Rahim,Project Engineer,30-Dec-2001,23,siddique.abdul@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1740,Monish Prakash S,Project Engineer,16-Dec-2000,24.1,monish.sivakumar@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1743,Pradeep S,Project Engineer,8-Sep-2002,22.4,pradeep.suresh@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1744,Pranav Sabarish R,Project Engineer,7-Mar-2002,22.9,pranav.ravikumar@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1749,Richie Soshan,Project Engineer,20-Mar-2001,23.8,richie.soshan@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1750,Rishwanth Thiyagaraj,Project Engineer,12-Mar-2001,23.9,rishwanth.thiyagaraj@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1751,Sabarinathan Gopal,Project Engineer,12-Mar-2002,22.9,sabarinathan.gopal@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1752,Sadhana Suresh Kumar,Project Engineer,26-Nov-2001,23.1,sadhana.suresh@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1753,Sakthivel Ganapathy,Project Engineer,26-Nov-2001,23.1,sakthivel.ganapathy@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1754,Sarvabhotla Venkata Lakshmi Ganesh Nithin,Project Engineer,16-Aug-2002,22.4,nithin.sarvabhotla@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1755,Sathika J,Project Engineer,3-Aug-2001,23.5,sathika.jaheer@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1757,Shiyam Kiruthik Sundara Moorthy,Project Engineer,17-Aug-2001,23.4,shiyam.sundaramoorthy@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1760,Sudeep Aryan,Project Engineer,25-Nov-2001,23.1,sudeeparyan.g@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1761,Suganya N,Project Engineer,27-Mar-2002,22.8,suganya.natarajan@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1762,Tamil Mani P,Project Engineer,29-Aug-2001,23.4,tamilmani.p@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1763,Venkata Gunasekhar V,Project Engineer,17-Jan-2002,23,venkat.guna@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1765,Vignesh Arivazhagan,Project Engineer,14-May-2002,22.7,vignesh.arivazhagan@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1766,Vigneshwaran Selvaraj,Project Engineer,26-Dec-2001,23.1,vignesh.selvaraj@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1767,Vijai K S,Project Engineer,3-Nov-2001,23.2,vijai.sivakumar@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1768,Vishva Pechi,Project Engineer,25-Mar-2002,22.8,vishva.pechi@solitontech.com,1-Jun-23,1-Dec-23,1.6,0,1.6,Coimbatore
+1769,Mugilan M,Admin Executive,27-Oct-1999,25.2,mugilan.murugavel@solitontech.com,1-Jun-23,1-Dec-23,1.6,2,3.6,Kallakurichi
+1771,Veda Habbu,Executive - Talent Acquisition,13-Nov-2000,24.2,veda.habbu@solitontech.com,3-Jul-23,2-Jan-24,1.5,1.4,2.9,Vijayapura
+1772,Keerthana Chandrasekar,Executive - People Team,7-Nov-1989,35.2,keerthana.chandrasekar@solitontech.com,10-Jul-23,9-Jan-24,1.5,2.5,4,Coimbatore
+1773,Adam Jayahar,Content Writer,6-Apr-1999,25.8,adam.jayahar@solitontech.com,17-Aug-23,16-Feb-24,1.4,2.6,4,Erode
+1774,Karthikeyan Balasubramanian,Senior Lead - Project Execution,24-May-1992,32.7,karthikeyan.balasubramanian@solitontech.com,1-Sep-23,2-Mar-24,1.4,6.9,8.3,Banglore
+1775,Kavya Dharani B,Lead - Technical Solutions,4-Aug-1994,30.5,kavya.balakrishnan@solitontech.com,4-Sep-23,5-Mar-24,1.4,7.4,8.8,Banglore
+1776,Manikanta NP,Manager - Marketing,13-Aug-1997,27.4,mani.np@solitontech.com,28-Sep-23,29-Mar-24,1.3,6.10,7.4,Banglore
+1777,Aadhavan GS,System Administrator,26-Sep-2000,24.3,aadhavan.gunavalagan@solitontech.com,3-Oct-23,3-Apr-24,1.3,1.10,2.4,Trichy
+1779,Sathish Kumar,Lead - Technical Solutions,21-Nov-1996,28.2,sathishkumar.thangavel@solitontech.com,23-Nov-23,24-May-24,1.1,5.50,6.6,Coimbatore
+1780,Shivam Chhabra,Senior Project Engineer,7-Oct-1998,26.3,shivam.chhabra@solitontech.com,2-Jan-24,3-Jul-24,1,3.60,4.6,Banglore
+1781,Ipsita Roy,Executive - Talent Acquisition,5-Nov-1996,28.2,ipsita.roy@solitontech.com,1-Dec-23,1-Jun-24,1.1,0.00,1.1,"Purulia, West Bengal"
+1783,Joshua J Roy ,Manager - University Relations & Campus Hiring,30-Apr-1983,41.7,joshua.roy@solitontech.com,1-Feb-24,2-Aug-24,0.9,16.70,17.6,Coimbatore
+1784,Sudha Balan,Manager - Internship Program,23-Dec-1978,46.1,sudha@solitontech.com,1-Feb-24,2-Aug-24,0.9,19.40,20.3,Coimbatore
+1785,Gowtham V,Lead - Project Execution,12-Mar-1995,29.9,gowtham.venugopal@solitontech.com,13-Mar-24,12-Sep-24,0.8,7.60,8.4,Coimbatore
+1786,Vivek Satheesan,Lead - Project Execution,25-May-1996,28.7,vivek.satheesan@solitontech.com,6-May-24,5-Nov-24,0.7,5.11,5.81,Banglore
+1787,Naveen Kumar,Senior Project Engineer,24-Mar-1997,27.8,naveenkumar.kb@solitontech.com,15-May-24,14-Nov-24,0.7,5.10,5.8,Coimbatore
+1788,Nipun Pal,Lead - Technical Solutions,14-Feb-1993,31.9,nipun.pal@solitontech.com,22-Jul-24,21-Jan-25,0.5,6.10,6.6,Pune
+1789,Arul Murugan Subburaj,Project Engineer,16-Dec-2002,22.1,arul.subburaj@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Coimbatore
+1790,Danush Adithya Pandiyarajan,Project Engineer,30-Jan-2003,22,danush.pandiyarajan@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Coimbatore
+1791,Dhana Abhiraj Kumarasamy,Project Engineer,11-Jun-2003,21.6,dhana.kumarasamy@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Erode
+1792,Kavin Prashad Saravanan,Project Engineer,21-Aug-2002,22.4,kavin.saravanan@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Salem
+1793,Krishnan Murugan,Project Engineer,9-Dec-2002,22.1,krishnan.murugan@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Tiruppur
+1794,Mahesan Periyasamy,Project Engineer,3-Oct-2002,22.3,mahesan.periyasamy@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Salem
+1795,Mohammed Shafiq Ilyas,Project Engineer,15-Oct-2002,22.3,shafiq.ilyas@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Coimbatore
+1796,Nithish Kumar Sekar,Project Engineer,30-Dec-2002,22,nithish.sekar@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Salem
+1797,Preethi Suresh kumar,Project Engineer,29-Nov-2002,22.1,preethi.suresh@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Coimbatore
+1798,Puviyarasu Sakthivel,Project Engineer,14-Aug-2003,21.4,puviyarasu.sakthivel@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Udumalpet
+1799,Ranjith Kumar Eswaran,Project Engineer,7-Oct-2002,22.3,ranjith.eswaran@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Tiruppur
+1800,Sabarish Kannan,Project Engineer,3-Oct-2003,21.3,sabarish.kannan@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Karur
+1801,Selva Gowtham Sivaraj,Project Engineer,1-Oct-2002,22.3,selva.gowtham@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Dharapuram
+1802,Sruthi Subaraja,Project Engineer,12-Jan-2003,22,sruthi.subaraja@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Coimbatore
+1803,Subhasri V Pandian,Project Engineer,10-May-2002,22.7,subhasri.pandian@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Coimbatore
+1804,Sujith Sivan Ramakrishnan,Project Engineer,17-Nov-2002,22.2,sujith.ramakrishnan@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Coimbatore
+1805,Vignesh Shivaram Muruganandan,Project Engineer,10-Aug-2002,22.4,vignesh.muruganandan@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Tiruppur
+1806,Vimalkumar Selvakumar,Project Engineer,17-Apr-2002,22.8,vimal.selva@solitontech.com,1-Aug-24,31-Jan-25,0.4,0.00,0.4,Komarapalayam
+1807,Abdulla Ibak M,Project Engineer,5-Mar-2003,21.9,abdulla.ibak@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Nagercoil
+1808,Adhavan Rajendran,Project Engineer,15-Jun-2002,22.6,adhavan.rajendran@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Thanjavur
+1809,Aghilan,Project Engineer,22-May-2003,21.7,aghilan.amar@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Puducherry
+1810,Ahalya Radhakrishnan,Project Engineer,9-Sep-2001,23.4,ahalya.radhakrishnan@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Coimbatore
+1811,Aishwarya Lakshmi S S,Project Engineer,12-Feb-2003,21.9,aishwarya.lakshmi@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Tirunelveli
+1812,Arun Roshan K R,Project Engineer,3-Dec-2002,22.1,arun.roshan@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Salem
+1813,Arunan Rangaraj,Project Engineer,3-Feb-2003,22,arunan.rangaraj@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Tiruppur
+1814,Gobburu Bindhu Madava Varma,Project Engineer,9-Aug-2003,21.4,bindhu.gobburu@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Andhra Pradesh
+1815,Divakar Selvam,Project Engineer,9-Jul-2003,21.5,divakar.selvam@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,
+1816,Giftlin Devapriya,Project Engineer,27-Aug-2002,22.4,giftlin.devapriya@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Tirunelveli
+1817,Jaswanthika Ramu,Project Engineer,20-Aug-2002,22.4,jaswanthika.ramu@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Chennai
+1818,Khishore Kumar KM,Project Engineer,27-Mar-2003,21.8,khishore.kumar@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Trichy
+1819,Mathankumar,Project Engineer,1-Mar-2003,21.9,mathankumar.venkat@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Tiruppur
+1820,Neelamparesh Velappan,Project Engineer,29-May-2003,21.6,neelamparesh.velappan@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Coimbatore
+1821,Raguram Kasthurisamy,Project Engineer,16-Apr-2003,21.8,raguram.kasthurisamy@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Coimbatore
+1822,Sam Rishi R,Project Engineer,21-May-2003,21.7,sam.rishi@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Pollachi
+1823,Sanjay Sampathkumar,Project Engineer,15-Nov-2002,22.2,sanjay.sampath@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Coimbatore
+1824,Shri Ram Karthic Veluswamy,Project Engineer,7-Sep-2002,22.4,karthic.veluswamy@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Coimbatore
+1825,Shriramya Karur,Project Engineer,15-Nov-2001,23.2,shriramya.karur@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Coimbatore
+1826,Snehaa Sailendran,Project Engineer,13-Nov-2002,22.2,snehaa.sailendran@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Chennai
+1827,Sri Varshini Senthilvel,Project Engineer,5-Mar-2003,21.9,varshini.senthilvel@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Coimbatore
+1828,Varshini Senthilkumar,Project Engineer,7-Apr-2003,21.8,varshini.senthil@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Coimbatore
+1829,Vishnu Govindaraj,Project Engineer,4-May-2003,21.7,vishnu.govindaraj@solitontech.com,2-Sep-24,4-Mar-25,0.4,0.00,0.4,Tiruppur
+1830,Ancy Augustin,Project Engineer,26-Nov-2002,22.1,ancy.augustin@solitontech.com,1-Oct-24,2-Apr-25,0.3,0.00,0.3,Coimbatore
+1831,Ashiq Abdhul Rahman,Project Engineer,16-Oct-2002,22.3,ashiq.rahman@solitontech.com,1-Oct-24,2-Apr-25,0.3,0.00,0.3,Coimbatore
+1832,Ganeshkumaar S,Project Engineer,10-Dec-2002,22.1,sganeshkumaar@solitontech.com,1-Oct-24,2-Apr-25,0.3,0.00,0.3,Banglore
+1833,Kadambari Sree Rama Aditya,Project Engineer,26-Mar-2003,21.8,aditya.kadambari@solitontech.com,1-Oct-24,2-Apr-25,0.3,0.00,0.3,Vijayawada
+1834,Kaviyarasu Sivakumar,Project Engineer,23-Mar-2003,21.8,kaviyarasu.sivakumar@solitontech.com,1-Oct-24,2-Apr-25,0.3,0.00,0.3,Dharmapuri
+1835,Lipika Maadeswaran,Project Engineer,5-Apr-2003,21.8,lipika.maadeswaran@solitontech.com,1-Oct-24,2-Apr-25,0.3,0.00,0.3,Coimbatore
+1836,Madav Mahesh,Project Engineer,24-Dec-2002,22.1,madav.mahesh@solitontech.com,1-Oct-24,2-Apr-25,0.3,0.00,0.3,Chennai
+1837,Nithin Joel,Project Engineer,31-Oct-2002,22.2,nithin.joel@solitontech.com,1-Oct-24,2-Apr-25,0.3,0.00,0.3,Coimbatore
+1838,Nivetha Vadivel,Project Engineer,1-Nov-2002,22.2,nivetha.vadivel@solitontech.com,1-Oct-24,2-Apr-25,0.3,0.00,0.3,Erode
+1839,Sanjeev Kumar M,Project Engineer,30-Aug-2002,22.4,sanjeev.manian@solitontech.com,1-Oct-24,2-Apr-25,0.3,0.00,0.3,Perundurai
+1840,Santharuban V S,Project Engineer,28-Mar-2002,22.8,santharu.subramanian@solitontech.com,1-Oct-24,2-Apr-25,0.3,0.00,0.3,Coimbatore
+1841,Shriram Sakthivel,Project Engineer,21-Sep-2002,22.3,shriram.sakthivel@solitontech.com,1-Oct-24,2-Apr-25,0.3,0.00,0.3,Perundurai
+1842,Sonali Thiruvenkataswamy,Project Engineer,4-Feb-2003,22,sonali.venkatasamy@solitontech.com,1-Oct-24,2-Apr-25,0.3,0.00,0.3,Coimbatore
+1843,Swetha Palanisamy,Project Engineer,14-Aug-2002,22.4,swetha.palanisamy@solitontech.com,1-Oct-24,2-Apr-25,0.3,0.00,0.3,Coimbatore
+1844,Vignesh G Varatharaj,Project Engineer,26-Feb-2003,21.9,vignesh.varatharaj@solitontech.com,1-Oct-24,2-Apr-25,0.3,0.00,0.3,Tiruppur
+1845,Thanga Dhiwan,Project Engineer,24-May-2002,22.7,thanga.dhiwan@solitontech.com,1-Oct-24,2-Apr-25,0.3,0.00,0.3,Panruti
+1846,Trupti Sreedharan,Senior Copywriter ,19 June 1983,41.6,trupti.sreedharan@solitontech.com,2-Sep-24,4-Mar-25,0.4,18.40,18.8,Goa
+1847,Rajendhiran Sokkalingam,Office staff,03 May 1984,40.7,NA,1-Oct-24,2-Apr-25,0.3,1.00,1.3,Coimbatore
+1848,Vinayak Chanabasayya Yakkihallimath,Senior Lead � Project Execution,06 June 1988,36.6,vinayak.chanabasayya@solitontech.com,6-Nov-24,8-May-25,0.2,10.40,10.6,Banglore
+1849,Guru Prasanth Saravanan,Senior Project Engineer,16 May 1995,29.7,guruprasanth.saravanan@solitontech.com,13-Nov-24,15-May-25,0.2,,,Coimbatore
+1850,Sankar,System Administrator,16-Aug-1995,29.4,sankar.pavanasam@solitontech.com,5-Dec-24,6-Jun-25,0.1,6.20,6.3,Coimbatore
+1851,Sugitha E.,Lead - Talent Development,16-Mar-1994,30.8,sugitha.elangovan@solitontech.com,20-Nov-24,22-May-25,0.1,0.00,0.1,Coimbatore
+1852,Akash Kumar Kheria,Sales Account Manager,16-Sep-1993,31.3,akash.kheria@solitontech.com,3-Jan-25,,,,,Coimbatore

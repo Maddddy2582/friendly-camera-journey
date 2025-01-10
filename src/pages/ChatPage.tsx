@@ -54,6 +54,9 @@ const ChatPage = () => {
   const { socket, isConnecting } = useWebSocket();
   const location = useLocation();
   const { imageResponse } = location.state || {};
+  const [transcriptSegments, setTranscriptSegments] = useState([]);
+
+  console.log(transcriptSegments, "transcriptSegments");
 
   // useEffect(() => {
   //   const timer = setTimeout(() => {
@@ -262,8 +265,39 @@ const ChatPage = () => {
         try {
           const message = JSON.parse(event.data);
           if (message.type === "transcript") {
-            console.log("📝 Received transcript:", message.content);
-            setTranscript((prev) => prev + " " + message.content);
+            console.log(
+              "📝 Received transcript:",
+              message.content.wav_audio_base64
+            );
+            console.log(message.content.reset_audio_buffer, "state");
+            setTranscript(
+              (prev) => prev + " " + message.content.wav_audio_base64
+            );
+            if (message.content.reset_audio_buffer) {
+              console.log("121");
+              // Start a new paragraph by appending an empty string
+              setTranscriptSegments((prevSegments) => [
+                ...prevSegments,
+                message.content.wav_audio_base64,
+              ]);
+            } else {
+              console.log("131");
+
+              // Append to the last paragraph
+              setTranscriptSegments((prevSegments) => {
+                console.log(prevSegments, "1234");
+                const updatedSegments = [...prevSegments];
+                if (updatedSegments.length === 0) {
+                  return [message.content.wav_audio_base64];
+                }
+                let lastSegment = updatedSegments[updatedSegments.length - 1];
+                console.log(lastSegment, "lastSegment");
+                console.log("message.content.wav_audio_base64", message.content.wav_audio_base64);
+                lastSegment += message.content.wav_audio_base64;
+                updatedSegments[updatedSegments.length - 1] = lastSegment;
+                return updatedSegments;
+              });
+            }
           } else if (message.type === "currently_image_generating") {
             setGenerating(true);
             console.log("🎨 Image generation started");
@@ -275,20 +309,20 @@ const ChatPage = () => {
           } else if (message.type === "response_audio") {
             console.log("📥 Received audio response");
             const { reset_audio_buffer, wav_audio_base64 } = message.content;
-  
+
             if (reset_audio_buffer) {
               console.log("🔄 Resetting audio buffer");
               resetAudioPlayer();
               stopCurrentAudio();
-              console.log("RESETED AUDIO STREAM")
-              return
+              console.log("RESETED AUDIO STREAM");
+              return;
             }
-  
+
             if (wav_audio_base64) {
               console.log("🎵 Processing audio data");
               const arrayBuffer = base64ToArrayBuffer(wav_audio_base64);
               const audioBuffer = await decodeAudioBuffer(arrayBuffer);
-              
+
               if (audioBuffer) {
                 console.log("🔊 Adding decoded audio to playback queue");
                 audioQueueRef.current.push(audioBuffer);
@@ -444,10 +478,17 @@ const ChatPage = () => {
 
         <div className="flex-1 bg-gray-800 rounded-lg p-6 overflow-auto">
           <p className="text-white text-lg leading-relaxed">
-            {transcript}
+            {transcriptSegments.map((segment, index) => (
+          <>
+          {/* <img src={image1} alt="bot"/> */}
+          <p key={index} className="text-white text-lg leading-relaxed">
+            {segment}
             <span className="animate-pulse">|</span>
-            <br />
-            <br />
+          </p>
+            <br></br></>
+        ))}
+              {/* {transcript} */}
+            <span className="animate-pulse">|</span>
           </p>
           {generating ? (
             <div className="loader">Loading...</div>
@@ -463,9 +504,9 @@ const ChatPage = () => {
           onClick={() => {
             socket.send(JSON.stringify({ type: "end" }));
             resetAudioPlayer();
-            console.log("RESETED AUDIO STREAM")
+            console.log("RESETED AUDIO STREAM");
             socket.close();
-            console.log("CLOSED SOCKET")
+            console.log("CLOSED SOCKET");
             navigate("/thankyou", { state: { name: name } });
           }}
           className="pr-9 pl-9 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors w-10 self-end"
