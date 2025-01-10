@@ -83,8 +83,8 @@ const ChatPage = () => {
   const playAudioStream = () => {
     setShowGif(true);
     console.log("🔊 Starting audio stream playback");
-    setIsMuted(true);
-    vad.pause();
+    // setIsMuted(true);
+    // vad.pause();
     if (
       !audioContextRef.current ||
       isPlayingRef.current ||
@@ -99,7 +99,7 @@ const ChatPage = () => {
       if (audioQueueRef.current.length === 0) {
         setIsMuted(false);
         setShowGif(false);
-        vad.start();
+        // vad.start();
 
         console.log("🔊❌❌❌ Audio playback ended");
       }
@@ -200,21 +200,62 @@ const ChatPage = () => {
       });
     };
 
-    const decodeAudioBuffer = async (
-      arrayBuffer: ArrayBuffer
-    ): Promise<AudioBuffer | null> => {
-      try {
-        console.log("🎵 Decoding audio buffer");
-        if (!audioContextRef.current) {
-          audioContextRef.current = new (window.AudioContext ||
-            window.webkitAudioContext)();
-        }
-        return await audioContextRef.current.decodeAudioData(arrayBuffer);
-      } catch (error) {
-        console.error("❌ Failed to decode audio data:", error);
-        return null;
+    // const decodeAudioBuffer = async (
+    //   arrayBuffer: ArrayBuffer
+    // ): Promise<AudioBuffer | null> => {
+    //   try {
+    //     console.log("🎵 Decoding audio buffer");
+    //     if (!audioContextRef.current) {
+    //       audioContextRef.current = new (window.AudioContext ||
+    //         window.webkitAudioContext)();
+    //     }
+    //     return await audioContextRef.current.decodeAudioData(arrayBuffer);
+    //   } catch (error) {
+    //     console.error("❌ Failed to decode audio data:", error);
+    //     return null;
+    //   }
+    // };
+
+    const base64ToArrayBuffer = (base64: string) => {
+      const binaryString = window.atob(base64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
       }
+      return bytes.buffer;
     };
+
+    // const handleWebSocketMessage = async (event: MessageEvent) => {
+    //   if (typeof event.data === "string") {
+    //     try {
+    //       const message = JSON.parse(event.data);
+    //       if (message.type === "transcript") {
+    //         console.log("📝 Received transcript:", message.content);
+    //         setTranscript((prev) => prev + " " + message.content);
+    //       } else if (message.type === "currently_image_generating") {
+    //         setGenerating(true);
+    //         console.log("🎨 Image generation started");
+    //       } else if (message.type === "image_generated") {
+    //         console.log("✨ Image generation completed");
+    //         const cleanedImage = message.content.replace(/^"|"$/g, "");
+    //         setImage(cleanedImage);
+    //         setGenerating(false);
+    //       }
+    //     } catch (error) {
+    //       console.error("❌ Error parsing WebSocket message:", error);
+    //     }
+    //   } else if (event.data instanceof Blob) {
+    //     console.log("EVENT DATA", event);
+    //     console.log("📥 Received audio blob from server", event.data);
+    //     const arrayBuffer = await event.data.arrayBuffer();
+    //     const audioBuffer = await decodeAudioBuffer(arrayBuffer);
+    //     if (audioBuffer) {
+    //       console.log("🔊 Adding decoded audio to playback queue", audioBuffer);
+    //       audioQueueRef.current.push(audioBuffer);
+    //       playAudioStream();
+    //     }
+    //   }
+    // };
 
     const handleWebSocketMessage = async (event: MessageEvent) => {
       if (typeof event.data === "string") {
@@ -231,20 +272,49 @@ const ChatPage = () => {
             const cleanedImage = message.content.replace(/^"|"$/g, "");
             setImage(cleanedImage);
             setGenerating(false);
+          } else if (message.type === "response_audio") {
+            console.log("📥 Received audio response");
+            const { reset_audio_buffer, wav_audio_base64 } = message.content;
+  
+            if (reset_audio_buffer) {
+              console.log("🔄 Resetting audio buffer");
+              resetAudioPlayer();
+              stopCurrentAudio();
+              console.log("RESETED AUDIO STREAM")
+              return
+            }
+  
+            if (wav_audio_base64) {
+              console.log("🎵 Processing audio data");
+              const arrayBuffer = base64ToArrayBuffer(wav_audio_base64);
+              const audioBuffer = await decodeAudioBuffer(arrayBuffer);
+              
+              if (audioBuffer) {
+                console.log("🔊 Adding decoded audio to playback queue");
+                audioQueueRef.current.push(audioBuffer);
+                playAudioStream();
+              }
+            }
           }
         } catch (error) {
-          console.error("❌ Error parsing WebSocket message:", error);
+          console.error("❌ Error processing WebSocket message:", error);
         }
-      } else if (event.data instanceof Blob) {
-        console.log("EVENT DATA", event);
-        console.log("📥 Received audio blob from server", event.data);
-        const arrayBuffer = await event.data.arrayBuffer();
-        const audioBuffer = await decodeAudioBuffer(arrayBuffer);
-        if (audioBuffer) {
-          console.log("🔊 Adding decoded audio to playback queue", audioBuffer);
-          audioQueueRef.current.push(audioBuffer);
-          playAudioStream();
+      }
+    };
+
+    const decodeAudioBuffer = async (
+      arrayBuffer: ArrayBuffer
+    ): Promise<AudioBuffer | null> => {
+      try {
+        console.log("🎵 Decoding audio buffer");
+        if (!audioContextRef.current) {
+          audioContextRef.current = new (window.AudioContext ||
+            window.webkitAudioContext)();
         }
+        return await audioContextRef.current.decodeAudioData(arrayBuffer);
+      } catch (error) {
+        console.error("❌ Failed to decode audio data:", error);
+        return null;
       }
     };
 
@@ -274,19 +344,19 @@ const ChatPage = () => {
     };
   }, [socket]);
 
-  const toggleMic = () => {
-    console.log(`🎤 Microphone ${!isMuted ? "muted" : "unmuted"}`);
-    setIsMuted(!isMuted);
-    if (!isMuted) {
-      console.log("⏸️ Pausing voice detection");
-      vad.pause();
-      setIsListening(false);
-    } else {
-      console.log("▶️ Starting voice detection");
-      vad.start();
-      setIsListening(true);
-    }
-  };
+  // const toggleMic = () => {
+  //   console.log(`🎤 Microphone ${!isMuted ? "muted" : "unmuted"}`);
+  //   setIsMuted(!isMuted);
+  //   if (!isMuted) {
+  //     console.log("⏸️ Pausing voice detection");
+  //     vad.pause();
+  //     setIsListening(false);
+  //   } else {
+  //     console.log("▶️ Starting voice detection");
+  //     vad.start();
+  //     setIsListening(true);
+  //   }
+  // };
 
   const { name } = location.state || {};
   console.log("CHatPage: ", name);
@@ -359,7 +429,7 @@ const ChatPage = () => {
             </p>
 
             <button
-              onClick={toggleMic}
+              // onClick={toggleMic}
               className="p-3 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
               aria-label={isMuted ? "Unmute microphone" : "Mute microphone"}
             >
@@ -394,6 +464,8 @@ const ChatPage = () => {
             socket.send(JSON.stringify({ type: "end" }));
             resetAudioPlayer();
             console.log("RESETED AUDIO STREAM")
+            socket.close();
+            console.log("CLOSED SOCKET")
             navigate("/thankyou", { state: { name: name } });
           }}
           className="pr-9 pl-9 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors w-10 self-end"
