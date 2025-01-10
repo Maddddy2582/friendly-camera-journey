@@ -263,7 +263,7 @@ const ChatPage = () => {
           const message = JSON.parse(event.data);
           if (message.type === "transcript") {
             console.log("📝 Received transcript:", message.content);
-            setTranscript((prev) => prev + " " + message.content);
+            setTranscript((prev) => prev + "\n" + message.content + "\n");
           } else if (message.type === "currently_image_generating") {
             setGenerating(true);
             console.log("🎨 Image generation started");
