@@ -100,6 +100,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
             async def handle_generate_avatar_event(image_file: bytes):
                 print("Creating Avatar.")
+                websocket.send_text(json.dumps({"type": "currently_image_generating", "content": "Image is generating"}))
                 image_base64 = await generate_avatar(image_file)
                 await websocket.send_text(json.dumps({"type": "image_generated", "content": image_base64}))
 
