@@ -8,6 +8,7 @@ import HomePage from "./pages/HomePage/Homepage";
 import CameraPage from "./pages/CameraPage";
 import ChatPage from "./pages/ChatPage";
 import InputPage from "./pages/InputPage";
+import Thankyou from "./pages/ThankYou/ThankYou";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
             <Route path="/input" element={<InputPage />} />
             <Route path="/camera" element={<CameraPage />} />
             <Route path="/chat" element={<ChatPage />} />
+            <Route path="/thankyou" element={<Thankyou />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>

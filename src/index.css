@@ -24,9 +24,40 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 262.1 83.3% 57.8%;
     --radius: 0.75rem;
+    --mystical-purple: #8B5CF6;
+    --deep-indigo: #4338CA;
+    --starlight: #E2E8F0;
+    --mystic-dark: #1E1B4B;
   }
  
   body {
     background-color: black;
   }
+
+  .mystical-text {
+    font-family: 'Cinzel', serif;
+  }
+  
 }
+
+::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+ 
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+ 
+*::-webkit-scrollbar-thumb {
+  background-color: #d9d9d9;
+  border-radius: 4px;
+}
+ 
+@supports (not selector(::-webkit-scrollbar)) {
+  html {
+    scrollbar-color: #d9d9d9 #ffffff;
+    scrollbar-width: 4px;
+  }
+}
+ 
