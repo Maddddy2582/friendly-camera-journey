@@ -9,17 +9,30 @@ class ExtractStatus(str, enum.Enum):
     PALM_DETECTED = "Palm detected"
     NO_PALM_DETECTED = "No Palm detected"
 
+class ExtractStatusFace(str, enum.Enum):
+    PALM_DETECTED = "Face detected"
+    NO_PALM_DETECTED = "No Face detected"
+
 
 class ExtractEvent(BaseModel):
         status: ExtractStatus = Field(description="The status of the extraction")
         description: str = Field(description="The extracted details from the palm image")
 
-def get_palm_details(base64_image: str) -> ExtractEvent:
+class ExtractEventFace(BaseModel):
+        status: ExtractStatusFace = Field(description="The status of the extraction")
+        description: str = Field(description="The extracted details from the face image")
+
+def get_palm_details(base64_image: str, prompt: str, name: str) -> ExtractEvent:
     # with open(image_file, "rb") as image_file:
     # with open("received_image.png", "wb") as file:                         
     #      file.write(base64.b64decode(image_binary))
     # with open("sample.txt", "w") as file:
     #     file.write(base64.b64decode(base64_image, validate=True))
+    response_format = None
+    if name  == "face":
+         response_format = ExtractEventFace
+    else:
+         response_format = ExtractEvent
     response = openai.beta.chat.completions.parse(
         model="gpt-4o",
         messages= [
@@ -28,7 +41,7 @@ def get_palm_details(base64_image: str) -> ExtractEvent:
                 "content": [
                     {
                     "type": "text",
-                    "text": EXTRACT_PROMPT
+                    "text": prompt
                     }
                 ],
             },
@@ -49,7 +62,7 @@ def get_palm_details(base64_image: str) -> ExtractEvent:
                 ]
             },
         ],
-        response_format=ExtractEvent
+        response_format=response_format
     )
     return ExtractEvent.model_validate_json(response.choices[0].message.content)
 

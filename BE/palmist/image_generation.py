@@ -44,3 +44,17 @@ def generate_image_based_on_the_prompt(user_query:str, gender: str):
     )
     generated_image_url = generation_response.data[0].b64_json  # extract image URL from response
     return generated_image_url
+
+
+
+async def generate_avatar(image_file: bytes):
+    generation_response = client.images.edit(
+        image=image_file,
+        model = "dall-e-3",
+        prompt="Modify into a South Indian Anime Character",
+        n=1,
+        size="1024x1024",
+        response_format="b64_json",
+    )
+    generated_image_url = generation_response.data[0].b64_json  # extract image URL from response
+    return generated_image_url
