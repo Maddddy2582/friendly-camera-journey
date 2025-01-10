@@ -286,7 +286,7 @@ async def websocket_endpoint(websocket: WebSocket):
                             }
                         )
                         await connection.response.create()
-                        asyncio.create_task(handle_generate_avatar_event(base64.b64decode(image_content)))
+                        asyncio.create_task(handle_generate_avatar_event(base64.b64decode(image_content["imageURL"].strip('"'))))
                     else:
                         await connection.session.update(
                             session={
