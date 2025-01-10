@@ -280,15 +280,14 @@ async def websocket_endpoint(websocket: WebSocket):
                     )
                     await connection.response.create()
                 elif message["type"] == "end":
-                    end_time = time.time()
-                    total_spent_time = end_time - start_time
-                    with open('log.csv', mode='a', newline='') as file:
-                        writer = csv.writer(file)
-                        if file.tell() == 0:
-                            writer.writerow(["Name", "Time (seconds)"])
-                    writer.writerow([user_info["name"], str(total_spent_time)])
+                    # end_time = time.time()
+                    # total_spent_time = end_time - start_time
+                    # with open('log.csv', mode='a', newline='') as file:
+                    #     writer = csv.writer(file)
+                    #     if file.tell() == 0:
+                    #         writer.writerow(["Name", "Time (seconds)"])
+                    # writer.writerow([user_info["name"], str(total_spent_time)])
                     print("Ended")
-                    continue
 
                 if event_task.done():
                     event_task = asyncio.create_task(handle_openai_events())
