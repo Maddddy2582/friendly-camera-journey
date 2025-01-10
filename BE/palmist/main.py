@@ -5,6 +5,7 @@ import json
 import asyncio
 from dotenv import load_dotenv
 import time
+from send_mail import send_mail_to_user 
 
 # Record start time
 
@@ -276,6 +277,20 @@ async def websocket_endpoint(websocket: WebSocket):
                     )
                     await connection.response.create()
                 elif message["type"] == "end":
+                    # end_time = time.time()
+                    # total_spent_time = end_time - start_time
+                    # with open('log.csv', mode='a', newline='') as file:
+                    #     writer = csv.writer(file)
+                    #     if file.tell() == 0:
+                    #         writer.writerow(["Name", "Time (seconds)"])
+                    # writer.writerow([user_info["name"], str(total_spent_time)])
+                    # await connection.session.update(
+                    #         session={
+                    #             "instructions": get_palm_astro_prompt(extracted_palm_details.description, user_info["name"], user_info["gender"], palmist_name=PALMIST_NAME),
+                    #             "voice": "coral",
+                    #         }
+                    #     )
+                    # await connection.response.create()
                     print("Ended")
 
                 if event_task.done():

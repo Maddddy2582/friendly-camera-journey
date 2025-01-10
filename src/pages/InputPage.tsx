@@ -83,6 +83,15 @@ const InputPage = () => {
     audioQueueRef.current = [];
   };
 
+  const base64ToArrayBuffer = (base64: string) => {
+    const binaryString = window.atob(base64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+  };
+
   const playAudioStream = () => {
     if (
       !audioContextRef.current ||
@@ -146,20 +155,38 @@ const InputPage = () => {
         document.head.appendChild(script);
       });
     };
+
+    // const decodeAudioBuffer = async (
+    //   arrayBuffer: ArrayBuffer
+    // ): Promise<AudioBuffer | null> => {
+    //   try {
+    //     if (!audioContextRef.current) {
+    //       audioContextRef.current = new (window.AudioContext ||
+    //         window.webkitAudioContext)();
+    //     }
+    //     return await audioContextRef.current.decodeAudioData(arrayBuffer);
+    //   } catch (error) {
+    //     console.error("Failed to decode audio data:", error);
+    //     return null;
+    //   }
+    // };
+
     const decodeAudioBuffer = async (
       arrayBuffer: ArrayBuffer
     ): Promise<AudioBuffer | null> => {
       try {
+        console.log("🎵 Decoding audio buffer");
         if (!audioContextRef.current) {
           audioContextRef.current = new (window.AudioContext ||
             window.webkitAudioContext)();
         }
         return await audioContextRef.current.decodeAudioData(arrayBuffer);
       } catch (error) {
-        console.error("Failed to decode audio data:", error);
+        console.error("❌ Failed to decode audio data:", error);
         return null;
       }
     };
+
     const handleWebSocketMessage = async (event: MessageEvent) => {
       if (typeof event.data === "string") {
         try {
@@ -167,18 +194,31 @@ const InputPage = () => {
           if (message.type === "transcript") {
             setTranscript((prev) => prev + " " + message.content);
           } else if (message.type === "response_audio") {
-            console.log("response_audio", message.content.wav_audio_base64);
-            console.log(message.content.reset_audio_buffer);
+            console.log("📥 Received audio response");
+            const { reset_audio_buffer, wav_audio_base64 } = message.content;
+
+            if (reset_audio_buffer) {
+              console.log("🔄 Resetting audio buffer");
+              resetAudioPlayer();
+              stopCurrentAudio();
+              console.log("RESETED AUDIO STREAM");
+              return;
+            }
+
+            if (wav_audio_base64) {
+              console.log("🎵 Processing audio data");
+              const arrayBuffer = base64ToArrayBuffer(wav_audio_base64);
+              const audioBuffer = await decodeAudioBuffer(arrayBuffer);
+
+              if (audioBuffer) {
+                console.log("🔊 Adding decoded audio to playback queue");
+                audioQueueRef.current.push(audioBuffer);
+                playAudioStream();
+              }
+            }
           }
         } catch (error) {
           console.error("Error parsing JSON:", error);
-        }
-      } else if (event.data instanceof Blob) {
-        const arrayBuffer = await event.data.arrayBuffer();
-        const audioBuffer = await decodeAudioBuffer(arrayBuffer);
-        if (audioBuffer) {
-          audioQueueRef.current.push(audioBuffer);
-          playAudioStream();
         }
       }
     };

@@ -71,6 +71,12 @@ const CameraPage = () => {
     audioQueueRef.current = [];
   };
 
+  const resetAudioPlayer = () => {
+    console.log("🔄 Resetting audio player");
+    stopCurrentAudio();
+    // setTranscript("");
+  };
+
   const playAudioStream = () => {
     if (
       !audioContextRef.current ||
@@ -115,53 +121,136 @@ const CameraPage = () => {
         document.head.appendChild(script);
       });
     };
+    // const decodeAudioBuffer = async (
+    //   arrayBuffer: ArrayBuffer
+    // ): Promise<AudioBuffer | null> => {
+    //   try {
+    //     if (!audioContextRef.current) {
+    //       audioContextRef.current = new (window.AudioContext ||
+    //         window.webkitAudioContext)();
+    //     }
+    //     return await audioContextRef.current.decodeAudioData(arrayBuffer);
+    //   } catch (error) {
+    //     console.error("Failed to decode audio data:", error);
+    //     return null;
+    //   }
+    // };
+
     const decodeAudioBuffer = async (
       arrayBuffer: ArrayBuffer
     ): Promise<AudioBuffer | null> => {
       try {
+        console.log("🎵 Decoding audio buffer");
         if (!audioContextRef.current) {
           audioContextRef.current = new (window.AudioContext ||
             window.webkitAudioContext)();
         }
         return await audioContextRef.current.decodeAudioData(arrayBuffer);
       } catch (error) {
-        console.error("Failed to decode audio data:", error);
+        console.error("❌ Failed to decode audio data:", error);
         return null;
       }
     };
+
+    const base64ToArrayBuffer = (base64: string) => {
+      const binaryString = window.atob(base64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      return bytes.buffer;
+    };
+
+    // const handleWebSocketMessage = async (event: MessageEvent) => {
+    //   if (typeof event.data === "string") {
+    //     try {
+        
+    //       const response = JSON.parse(event.data);
+    //       setServerResponse(response.content.description);
+    //       console.log(response);
+    //       if (response.content.status === "Palm detected") {
+    //         stopCurrentAudio();
+    //         console.log("Palm image", capturedImage);
+    //         console.log(temp);
+    //         console.log("NAVIAGTED");
+    //         console.log(imageUrl);
+    //         console.log(response);
+    //         navigate("/chat", {
+    //           state: { imageResponse: response.content.image, name:name },
+    //         });
+    //       } else if (response.content.status === "No Palm detected") {
+    //         setShowLiveVideo(true);
+    //         toast.error("Palm not detected. Please try again.");
+    //       }
+    //     } catch (error) {
+    //       console.error("Error parsing JSON:", error);
+    //     }
+    //   } 
+    // 
+    // else if (event.data instanceof Blob) {
+    //     const arrayBuffer = await event.data.arrayBuffer();
+    //     const audioBuffer = await decodeAudioBuffer(arrayBuffer);
+    //     if (audioBuffer) {
+    //       audioQueueRef.current.push(audioBuffer);
+    //       playAudioStream();
+    //     }
+    //   }
+    // };
+
     const handleWebSocketMessage = async (event: MessageEvent) => {
       if (typeof event.data === "string") {
         try {
-        
-          const response = JSON.parse(event.data);
-          setServerResponse(response.content.description);
-          console.log(response);
-          if (response.content.status === "Palm detected") {
+          // const message = JSON.parse(event.data);
+          // if (message.type === "transcript") {
+          //   console.log("📝 Received transcript:", message.content);
+          // }
+          const message = JSON.parse(event.data);
+          setServerResponse(message.content.description);
+          console.log(message);
+          if (message.content.status === "Palm detected") {
             stopCurrentAudio();
             console.log("Palm image", capturedImage);
             console.log(temp);
             console.log("NAVIAGTED");
             console.log(imageUrl);
-            console.log(response);
+            console.log(message);
             navigate("/chat", {
-              state: { imageResponse: response.content.image, name:name },
+              state: { imageResponse: message.content.image, name:name },
             });
-          } else if (response.content.status === "No Palm detected") {
+          } else if (message.content.status === "No Palm detected") {
             setShowLiveVideo(true);
             toast.error("Palm not detected. Please try again.");
           }
+            else if (message.type === "response_audio") {
+            console.log("📥 Received audio response");
+            const { reset_audio_buffer, wav_audio_base64 } = message.content;
+  
+            if (reset_audio_buffer) {
+              console.log("🔄 Resetting audio buffer");
+              resetAudioPlayer();
+              stopCurrentAudio();
+              console.log("RESETED AUDIO STREAM")
+              return
+            }
+  
+            if (wav_audio_base64) {
+              console.log("🎵 Processing audio data");
+              const arrayBuffer = base64ToArrayBuffer(wav_audio_base64);
+              const audioBuffer = await decodeAudioBuffer(arrayBuffer);
+              
+              if (audioBuffer) {
+                console.log("🔊 Adding decoded audio to playback queue");
+                audioQueueRef.current.push(audioBuffer);
+                playAudioStream();
+              }
+            }
+          }
         } catch (error) {
-          console.error("Error parsing JSON:", error);
-        }
-      } else if (event.data instanceof Blob) {
-        const arrayBuffer = await event.data.arrayBuffer();
-        const audioBuffer = await decodeAudioBuffer(arrayBuffer);
-        if (audioBuffer) {
-          audioQueueRef.current.push(audioBuffer);
-          playAudioStream();
+          console.error("❌ Error processing WebSocket message:", error);
         }
       }
     };
+
     const initialize = async () => {
       await loadVadScript();
       if (socket) {
@@ -176,7 +265,6 @@ const CameraPage = () => {
       // stopCurrentAudio();
     };
   }, [socket]);
-
 
   useEffect(() => {
     if (!name) {
@@ -247,6 +335,10 @@ const CameraPage = () => {
       videoRef.current.srcObject = stream;
     }
   }, [showLiveVideo, stream]);
+
+    useEffect(() => {
+      resetAudioPlayer();
+    }, []);
 
   return (
     <div className={`min-h-screen py-12 px-4 ${styles.mysticGlow}`}>

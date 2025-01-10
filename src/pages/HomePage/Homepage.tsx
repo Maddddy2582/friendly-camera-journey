@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import styles from "./CameraPage.module.scss";
 import { interpolateInferno } from "d3-scale-chromatic";
 import { useMicVAD } from "@ricky0123/vad-react";
-import {  Hand } from 'lucide-react';
+import { Hand } from "lucide-react";
 
 declare global {
   interface Window {
