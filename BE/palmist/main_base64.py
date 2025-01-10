@@ -238,7 +238,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     await connection.response.create()
                 elif message["type"] == "palm_image":
                     image_content: str = message["content"]
-                    extracted_palm_details = get_palm_details(image_content["imageURL"], EXTRACT_PROMPT)
+                    extracted_palm_details = get_palm_details(image_content["imageURL"], EXTRACT_PROMPT, "palm")
                     print(f"Extracted palm details: {extracted_palm_details}")
                     message_dict = {
                         "type": "palm_detected_status",
@@ -268,7 +268,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
                 elif message["type"] == "avatar":
                     image_content: str = message["content"]
-                    extracted_face_details = get_palm_details(image_content["imageURL"], "Check if there is any face detected or not")
+                    extracted_face_details = get_palm_details(image_content["imageURL"], "Check if there is any face detected or not", "face")
                     print(f"Extracted face details: {extracted_face_details}")
                     message_dict = {
                         "type": "face_detected_status",
@@ -284,6 +284,7 @@ async def websocket_endpoint(websocket: WebSocket):
                                 "instructions": get_palm_astro_prompt(extracted_palm_details.description, user_info["name"], user_info["gender"], palmist_name=PALMIST_NAME),
                             }
                         )
+                        await connection.response.create()
                         asyncio.create_task(handle_generate_avatar_event(base64.b64decode(image_content)))
                     else:
                         await connection.session.update(
