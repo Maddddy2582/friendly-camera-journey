@@ -1,4 +1,5 @@
 import base64
+from typing import Optional
 import openai
 from pydantic import BaseModel, Field
 from prompts import EXTRACT_PROMPT    
@@ -13,10 +14,10 @@ class ExtractStatusFace(str, enum.Enum):
     FACE_DETECTED = "Face detected"
     NO_FACE_DETECTED = "No Face detected"
 
-
 class ExtractEvent(BaseModel):
-        status: ExtractStatus = Field(description="The status of the extraction")
-        description: str = Field(description="The extracted details from the palm image")
+    status: ExtractStatus = Field(..., description="if palm not detected in image, The status of the extraction is No Palm detected, else Palm detected")
+    palm_not_detected_reason:  Optional[str] = Field(None, description="Say reason for palm not detected. If palm detected, keep it empty.")
+    palm_future_predictions: Optional[str] = Field(None, description="Include brief funny Key points detected on the palm, designation,  such as landmarks with relating his future.")
 
 class ExtractEventFace(BaseModel):
         status: ExtractStatusFace = Field(description="The status of the extraction")
@@ -64,7 +65,8 @@ def get_palm_details(base64_image: str, prompt: str, name: str):
         ],
         response_format=response_format
     )
-    return response_format.model_validate_json(response.choices[0].message.content)
+    response = response_format.model_validate_json(response.choices[0].message.content)
+    return response
 
 if __name__ == "__main__":
     with open("palm_images/face.jpeg", "rb") as image_file:

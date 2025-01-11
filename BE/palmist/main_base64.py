@@ -17,14 +17,11 @@ from pydub import AudioSegment
 from extract_palm_features import get_palm_details, ExtractEvent, ExtractStatus
 from prompts import (
     EXTRACT_PROMPT,
-    FACE_PHOTO_CAPTURE_PROMPT,
     get_palm_astro_prompt,
     WELCOME_PROMPT,
     PHOTO_CAPTURE_PROMPT,
     PHOTO_RE_CAPTURE_PROMPT,
-    PHOTO_RE_CAPTURE_PROMPT_FACE,
 )
-from image_generation import generate_avatar, generate_image_based_on_the_prompt
 
 client = AsyncOpenAI()
 app = FastAPI()
@@ -41,19 +38,6 @@ generate_image_based_on_the_prompt_tool = {
         "required": ["user_question"],
     },
 }
-# stop_generate_image_based_on_the_prompt_tool = {
-#     "type": "function",
-#     "name": "stop_generate_image_based_on_the_user_question",
-#     "description": "when user asks to stop image generation, this function can be called and stop image generation.",
-#     "parameters": {
-#         "type": "object",
-#         "properties": {
-#             "user_input": { "type": "string" }
-#         },
-#         "required": ["user_question"]
-#     }
-# }
-
 
 def convert_wav_to_pcm16(wav_bytes):
     """
@@ -96,11 +80,17 @@ def convert_pcm16_to_wav(pcm16_data, sample_rate=24000, num_channels=1):
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    start_time = time.time()
     try:
         user_info = {}
+        name = None
+        gender = None
+        age = None
+        exp = None
+        designation = None
+        city = None
         extracted_palm_details = ExtractEvent(
-            status=ExtractStatus.NO_PALM_DETECTED, description="Palm not captured"
+            status=ExtractStatus.NO_PALM_DETECTED,
+            palm_not_detected_reason="Palm not captured",
         )
 
         async with client.beta.realtime.connect(
@@ -108,34 +98,7 @@ async def websocket_endpoint(websocket: WebSocket):
         ) as connection:
             past_response_id = None
             transcript_past_response_id = None
-
-            async def handle_generate_avatar_event(image_file: bytes):
-                print("Creating Avatar.")
-                websocket.send_text(
-                    json.dumps(
-                        {
-                            "type": "currently_image_generating",
-                            "content": "Image is generating",
-                        }
-                    )
-                )
-                image_base64 = await generate_avatar(image_file)
-                await websocket.send_text(
-                    json.dumps({"type": "image_generated", "content": image_base64})
-                )
-
-            async def handle_generate_image_event(arguments):
-                print("image generation task created")
-                await websocket.send_text(
-                    json.dumps(
-                        {
-                            "type": "image_generated",
-                            "content": generate_image_based_on_the_prompt(
-                                arguments["user_question"], user_info["gender"]
-                            ),
-                        }
-                    )
-                )
+            instructions = ""
 
             async def handle_openai_events():
                 """
@@ -180,20 +143,6 @@ async def websocket_endpoint(websocket: WebSocket):
                             print(audio_message_dict["content"]["reset_audio_buffer"])
                             await websocket.send_text(json.dumps(audio_message_dict))
 
-                        # elif event.type == "response.audio_transcript.done":
-                        #     ai_transcript = event.transcript
-                        #     meme_id = select_meme_id(ai_transcript)
-                        #     if meme_id:
-                        #         base64_img = select_memes(meme_id)
-                        #         await websocket.send_text(
-                        #             {
-                        #                 "type": "meme",
-                        #                 "content":{
-                        #                     "base64_img": base64_img,
-                        #                 }
-                        #             }
-                        #         )
-
                         if event.type == "response.created":
                             if not past_response_id:
                                 past_response_id = event.response.id
@@ -201,67 +150,14 @@ async def websocket_endpoint(websocket: WebSocket):
                                 transcript_past_response_id = event.response.id
                             print("response created", event.response.id)
 
-                        elif event.type == "response.function_call_arguments.done":
-                            # check tool whether generate image or stop image
-                            image_task: asyncio.Task
-                            if (
-                                list(json.loads(event.arguments).keys())[0]
-                                == "user_question"
-                            ):
-                                # await connection.session.update(
-                                #     session={
-                                #         "instructions": "You are an English assistant to respond if user asks stop image generation or you ask about your palm",
-                                #         "tools": [stop_generate_image_based_on_the_prompt_tool],
-                                #     }
-                                # )
-                                await websocket.send_text(
-                                    json.dumps(
-                                        {
-                                            "type": "currently_image_generating",
-                                            "content": "please wait",
-                                        }
-                                    )
-                                )
-                                if (
-                                    user_info
-                                    and extracted_palm_details.status
-                                    == ExtractStatus.PALM_DETECTED
-                                ):
-                                    arguments = json.loads(event.arguments)
-                                    image_task = asyncio.create_task(
-                                        handle_generate_image_event(arguments)
-                                    )
-
-                            else:
-                                await connection.session.update(
-                                    session={
-                                        "instructions": get_palm_astro_prompt(
-                                            extracted_palm_details.description,
-                                            user_info["name"],
-                                            palmist_name=PALMIST_NAME,
-                                        ),
-                                        "tools": [
-                                            generate_image_based_on_the_prompt_tool
-                                        ],
-                                    }
-                                )
-                                image_task.cancel()  # Cancel the task
-                                try:
-                                    await image_task  # Wait for the task to handle the cancellation
-                                except asyncio.CancelledError:
-                                    print("Task cancellation acknowledged.")
-                                await websocket.send_text(
-                                    json.dumps(
-                                        {
-                                            "type": "image_cancelled",
-                                            "content": "image generation stopped",
-                                        }
-                                    )
-                                )
-
                         elif event.type == "response.done":
                             print("Conversation response done")
-                            break
+                            if extracted_palm_details.status == ExtractStatus.PALM_DETECTED:
+                                await connection.session.update(
+                                    session={
+                                        "instructions": instructions,
+                                    }
+                                )
 
                         elif event.type == "session.updated":
                             print(event)
@@ -301,10 +197,16 @@ async def websocket_endpoint(websocket: WebSocket):
                     # )
                     print(user_info["name"])
 
+                    name, gender, age, exp, designation, city = get_user_data(
+                        user_info["name"], user_info["gender"]
+                    )
+                    print(name, gender, age, exp, designation, city)
                     await connection.session.update(
                         session={
                             "instructions": PHOTO_CAPTURE_PROMPT.format(
-                                palmist_name=PALMIST_NAME, user_name=user_info["name"]
+                                palmist_name=PALMIST_NAME,
+                                user_name=user_info["name"],
+                                designation=designation,
                             ),
                         }
                     )
@@ -312,27 +214,26 @@ async def websocket_endpoint(websocket: WebSocket):
                 elif message["type"] == "palm_image":
                     image_content: str = message["content"]
                     extracted_palm_details = get_palm_details(
-                        image_content["imageURL"], EXTRACT_PROMPT, "palm"
+                        image_content["imageURL"],
+                        EXTRACT_PROMPT.format(
+                            designation=designation,
+                        ),
+                        "palm",
                     )
-                    print(f"Extracted palm details: {extracted_palm_details}")
-                    message_dict = {
-                        "type": "palm_detected_status",
-                        "content": {
-                            "status": extracted_palm_details.status,
-                            "description": extracted_palm_details.description,
-                            "image": image_content["imageURL"].strip('"'),
-                        },
-                    }
-                    await websocket.send_text(json.dumps(message_dict))
                     print(f"status: {extracted_palm_details.status}")
-                    name, gender, age, exp, designation, city = get_user_data(
-                        user_info["name"], user_info["gender"]
-                    )
                     if extracted_palm_details.status == ExtractStatus.PALM_DETECTED:
-                        await connection.session.update(
-                            session={
-                                "instructions": get_palm_astro_prompt(
-                                    extracted_palm_details.description,
+                        message_dict = {
+                            "type": "palm_detected_status",
+                            "content": {
+                                "status": extracted_palm_details.status,
+                                "description": extracted_palm_details.palm_future_predictions,
+                                "image": image_content["imageURL"].strip('"'),
+                            },
+                        }
+                        await websocket.send_text(json.dumps(message_dict))
+                        print(f"Extracted palm details: {extracted_palm_details}")
+                        instructions = get_palm_astro_prompt(
+                                    extracted_palm_details.palm_future_predictions,
                                     name=name,
                                     gender=gender,
                                     age=age,
@@ -340,11 +241,24 @@ async def websocket_endpoint(websocket: WebSocket):
                                     designation=designation,
                                     city=city,
                                     palmist_name=PALMIST_NAME,
-                                ),
+                        )
+                        await connection.session.update(
+                            session={
+                                "instructions": instructions,
                             }
                         )
                         await connection.response.create()
                     else:
+                        message_dict = {
+                            "type": "palm_detected_status",
+                            "content": {
+                                "status": extracted_palm_details.status,
+                                "description": extracted_palm_details.palm_not_detected_reason,
+                                "image": image_content["imageURL"].strip('"'),
+                            },
+                        }
+                        await websocket.send_text(json.dumps(message_dict))
+                        print(f"Extracted palm details: {extracted_palm_details}")
                         await connection.session.update(
                             session={
                                 "instructions": PHOTO_RE_CAPTURE_PROMPT.format(
@@ -354,58 +268,6 @@ async def websocket_endpoint(websocket: WebSocket):
                             }
                         )
                         await connection.response.create()
-
-                # elif message["type"] == "avatar":
-                #     image_content: str = message["content"]
-                #     extracted_face_details = get_palm_details(
-                #         image_content["imageURL"],
-                #         "Check if there is any face detected or not",
-                #         "face",
-                #     )
-                #     print(f"Extracted face details: {extracted_face_details}")
-                #     message_dict = {
-                #         "type": "face_detected_status",
-                #         "content": {
-                #             "status": extracted_face_details.status,
-                #             "description": extracted_face_details.description,
-                #         },
-                #     }
-                #     await websocket.send_text(json.dumps(message_dict))
-                #     if extracted_face_details.status == "Face detected":
-                #         name, gender, age, exp, designation, city = get_user_data(
-                #             user_info["name"], user_info["gender"]
-                #         )
-                #         await connection.session.update(
-                #             session={
-                #                 "instructions": get_palm_astro_prompt(
-                #                     extracted_palm_details.description,
-                #                     name=name,
-                #                     gender=gender,
-                #                     age=age,
-                #                     exp=exp,
-                #                     designation=designation,
-                #                     city=city,
-                #                     palmist_name=PALMIST_NAME,
-                #                 ),
-                #             }
-                #         )
-                #         await connection.response.create()
-                #         image_base64 = image_content["imageURL"].strip('"')
-                #         # padding_len = len(image_base64) % 4
-                #         # image_base64 += padding_len * '='
-                #         image_base64 += "=" * ((4 - len(image_base64) % 4) % 4)
-                #         print(base64.b64decode(image_base64))
-                #         asyncio.create_task(handle_generate_avatar_event())
-                    # else:
-                    #     await connection.session.update(
-                    #         session={
-                    #             "instructions": PHOTO_RE_CAPTURE_PROMPT_FACE.format(
-                    #                 palmist_name=PALMIST_NAME,
-                    #                 user_name=user_info["name"],
-                    #             ),
-                    #         }
-                    #     )
-                    #     await connection.response.create()
 
                 elif message["type"] == "audio":
                     print("Received audio message")
@@ -435,21 +297,6 @@ async def websocket_endpoint(websocket: WebSocket):
 
                 if event_task.done():
                     event_task = asyncio.create_task(handle_openai_events())
-
-                # elif message["type"] == "image_generation":
-                #     await connection.session.update(
-                #             session={
-                #                 "instructions": "You are an English assistant to ask user to write a prompt for the image generation. Read through some sample prompt examples :{'how is future partner look like?', 'how is my future house look like?', 'how is my future car look like?', 'how is my future pet look like?', 'how is my future job look like?', 'how is my future vacation look like?','how is my future friend}",
-                #             }
-                #         )
-
-                # elif message["type"] == "image_generation_prompt":
-                #     content = message["content"]
-                #     if extracted_palm_details.description != "Palm not captured":
-                #         image_url = generate_image_based_on_the_prompt(content["prompt"], extracted_palm_details.description, user_info["gender"])
-                #         await websocket.send_text(json.dumps({"type": "image_generated", "content": image_url}))
-                # else:
-                #     await websocket.send_text(json.dumps({"type": "image_generated", "content": "Palm not captured"}))
 
     except Exception as e:
         print(f"Error: {e}")
