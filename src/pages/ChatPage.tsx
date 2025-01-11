@@ -86,8 +86,8 @@ const ChatPage = () => {
   const playAudioStream = () => {
     setShowGif(true);
     console.log("🔊 Starting audio stream playback");
-    // setIsMuted(true);
-    // vad.pause();
+    setIsMuted(true);
+    vad.pause();
     if (
       !audioContextRef.current ||
       isPlayingRef.current ||
@@ -387,6 +387,7 @@ const ChatPage = () => {
       setIsListening(false);
     } else {
       console.log("▶️ Starting voice detection");
+      resetAudioPlayer();
       vad.start();
       setIsListening(true);
     }
@@ -397,6 +398,7 @@ const ChatPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    stopCurrentAudio();
     resetAudioPlayer();
   }, []);
 
