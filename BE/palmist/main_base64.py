@@ -152,12 +152,12 @@ async def websocket_endpoint(websocket: WebSocket):
 
                         elif event.type == "response.done":
                             print("Conversation response done")
-                            if extracted_palm_details.status == ExtractStatus.PALM_DETECTED:
-                                await connection.session.update(
-                                    session={
-                                        "instructions": instructions,
-                                    }
-                                )
+                            # if extracted_palm_details.status == ExtractStatus.PALM_DETECTED:
+                            #     await connection.session.update(
+                            #         session={
+                            #             "instructions": instructions,
+                            #         }
+                            #     )
 
                         elif event.type == "session.updated":
                             print(event)

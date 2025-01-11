@@ -1,4 +1,8 @@
 import os
+import logging
+
+logging.basicConfig(filename="app_user.log", level="INFO")
+logger = logging.getLogger(__name__)
 import pandas as pd
 
 from pathlib import Path
@@ -13,6 +17,10 @@ def get_user_data(name: str, gender: str) -> tuple:
         encoding="ISO-8859-1",
     )
     data = data[data[" Name"] == name]
+    try:
+        logger.info(str(data))
+    except Exception:
+        print("Something went wrong in logging")
     if data.empty:
         return (name, gender, None, None, None, None)
 
